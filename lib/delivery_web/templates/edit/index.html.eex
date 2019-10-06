@@ -1,0 +1,15 @@
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/author.js") %>"></script>
+
+<div>
+  <div id="app"/>
+</div>
+
+<script>
+var context = {
+  id: '<%= @id %>',
+  title: '<%= raw(@title) %>',
+  content: <%= raw(@content) %>,
+};
+
+window.mountAuthor('app', context);
+</script>

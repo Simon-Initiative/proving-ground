@@ -1,0 +1,28 @@
+<div class="item">
+  <a class="ui logo icon image" href="/">
+    <img src="/images/oli-icon.png">
+  </a>
+  <a href="/"><b>Lean OLI</b></a>
+</div>
+
+<div class="item">
+  <div class="header">Packages</div>
+  <div class="menu">
+    
+      <%= nav_link @conn, "View all", "/packages" %>
+      <%= nav_link @conn, "Create new", "/packages/new" %>
+
+  </div>
+
+</div>
+
+<div class="item">
+  <div class="header">Activities</div>
+  <div class="menu">
+    
+      <%= nav_link @conn, "View all", "/activities" %>
+      <%= nav_link @conn, "Create new", "/activities/new" %>
+    
+  </div>
+
+</div>

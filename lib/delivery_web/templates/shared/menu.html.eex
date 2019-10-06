@@ -1,0 +1,17 @@
+<div class="ui fixed inverted menu">
+  <div class="ui container">
+    <a href="#" class="header item">
+      <img class="logo" src="/images/oli-icon.png">
+      Lean OLI
+    </a>
+    <a href="#" class="item">Home</a>
+    <div class="ui simple dropdown item">
+      Courses <i class="dropdown icon"></i>
+      <div class="menu">
+        <div class="header">Packages</div>
+        <%= link "View all", to: "/packages", class: "item" %>
+        <%= link "Create new", to: "/packages/new", class: "item" %>
+      </div>
+    </div>
+  </div>
+</div>

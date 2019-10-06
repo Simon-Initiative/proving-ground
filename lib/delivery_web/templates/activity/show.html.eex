@@ -1,0 +1,43 @@
+<h1>Show Activity</h1>
+
+<ul>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @activity.title %>
+  </li>
+
+  <li>
+    <strong>Friendly:</strong>
+    <%= @activity.friendly %>
+  </li>
+
+  <li>
+    <strong>Type:</strong>
+    <%= @activity.type %>
+  </li>
+
+  <li>
+    <strong>Timed:</strong>
+    <%= @activity.timed %>
+  </li>
+
+  <li>
+    <strong>Require completion:</strong>
+    <%= @activity.require_completion %>
+  </li>
+
+  <li>
+    <strong>Grading strategy:</strong>
+    <%= @activity.grading_strategy %>
+  </li>
+
+  <li>
+    <strong>Tags:</strong>
+    <%= @activity.tags %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.activity_path(@conn, :edit, @activity) %></span>
+<span><%= link "Back", to: Routes.activity_path(@conn, :index) %></span>
