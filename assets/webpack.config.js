@@ -47,7 +47,7 @@ module.exports = (env, options) => ({
       },
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader']
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
       },
       { test: /\.(png|gif|jpg|jpeg|svg)$/, use: 'file-loader' },
       { test: /\.ts$/, use: ['babel-loader', 'ts-loader'], exclude: /node_modules/ },
