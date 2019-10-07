@@ -6,17 +6,17 @@ Testbed for proving out future Simon/OLI technologies.
 
 Have installed the following:
 
-- Elixir
-- Phoenix
+- Elixir (`$ brew install elixir`)
+- Phoenix (`$ mix archive.install hex phx_new 1.4.10`)
 - Docker
 
 ## Setup Instructions
 
-1. Start dockerized postgres:
+1. Start dockerized postgres via the included convenience script:
 ```
 $ ./db.sh
 ```
-2. Install node and mix dependencies:
+2. Install client and server dependencies:
 ```
 $ cd assets && npm install
 $ mix deps.get
