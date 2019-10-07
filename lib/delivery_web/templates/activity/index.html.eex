@@ -19,12 +19,12 @@
       <td><%= activity.title %></td>
       <td>
         <span><%= link "Show", to: Routes.edit_path(@conn, :show, activity) %></span>
-        <span><%= link "Edit", to: Routes.activity_path(@conn, :edit, activity) %></span>
-        <span><%= link "Delete", to: Routes.activity_path(@conn, :delete, activity), method: :delete, data: [confirm: "Are you sure?"] %></span>
+        <span><%= link "Edit", to: Routes.activity_path(@conn, :edit, @package_id, activity) %></span>
+        <span><%= link "Delete", to: Routes.activity_path(@conn, :delete, @package_id, activity), method: :delete, data: [confirm: "Are you sure?"] %></span>
       </td>
     </tr>
 <% end %>
   </tbody>
 </table>
 
-<span><%= link "New Activity", to: Routes.activity_path(@conn, :new) %></span>
+<span><%= link "New Activity", to: Routes.activity_path(@conn, :new, @package_id) %></span>

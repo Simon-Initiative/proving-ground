@@ -1,0 +1,24 @@
+<div class="ui attached message">
+  <div class="header">
+    <%= @package.title %>
+  </div>
+  <p><%= @package.description %></p>
+  <p>Version: <%= @package.version %></p>
+</div>
+
+<div class="ui form attached fluid segment">
+    <div>
+        <%= link "Edit Details", to: Routes.live_path(@conn, PackageLive.Edit, @package) %>
+    </div>
+    <div>
+        <%= link "Delete Package", to: '#',
+            phx_click: "delete_package",
+            phx_value: @package.id,
+            data: [confirm: "Are you sure?"] %>
+    </div>
+    <div>
+        <%= link "View activities", to: Routes.activity_path(@conn, :index, @package) %>
+    </div>
+</div>
+
+<span><%= link "Back", to: Routes.package_path(@conn, :index) %></span>

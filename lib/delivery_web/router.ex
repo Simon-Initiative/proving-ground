@@ -20,11 +20,14 @@ defmodule DeliveryWeb.Router do
     get "/", RootController, :index
 
 
-    live "/packages", PackageLive.Index
+    get "/packages", PackageController, :index
+    get "/packages/:id/show", PackageController, :show
+    get "/packages/:id/delete", PackageController, :delete
+
     live "/packages/new", PackageLive.New
     live "/packages/:id/edit", PackageLive.Edit
 
-    resources "/activities", ActivityController
+    resources "/packages/:package_id/activities", ActivityController
     get "/edit/:id", EditController, :show
 
     live "/search", SearchLive

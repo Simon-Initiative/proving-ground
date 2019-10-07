@@ -35,11 +35,11 @@ defmodule DeliveryWeb.PackageLive.Edit do
 
   def handle_event("save", %{"package" => package_params}, socket) do
     case Packages.update_package(socket.assigns.package, package_params) do
-      {:ok, _package} ->
+      {:ok, package} ->
         {:stop,
          socket
          |> put_flash(:info, "Package updated successfully.")
-         |> redirect(to: Routes.live_path(socket, PackageLive.Index))}
+         |> redirect(to: Routes.package_path(DeliveryWeb.Endpoint, :show, package))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

@@ -39,5 +39,5 @@
 
 </ul>
 
-<span><%= link "Edit", to: Routes.activity_path(@conn, :edit, @activity) %></span>
-<span><%= link "Back", to: Routes.activity_path(@conn, :index) %></span>
+<span><%= link "Edit", to: Routes.activity_path(@conn, :edit, @package_id, @activity) %></span>
+<span><%= link "Back", to: Routes.activity_path(@conn, :index, @package_id) %></span>

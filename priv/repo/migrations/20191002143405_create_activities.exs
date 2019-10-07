@@ -4,7 +4,6 @@ defmodule Delivery.Repo.Migrations.CreateActivities do
   def change do
     create table(:activities) do
       add :friendly, :string
-      add :package_id, :id
       add :type, :string
       add :timed, :boolean, default: false, null: false
       add :require_completion, :boolean, default: false, null: false
@@ -14,7 +13,7 @@ defmodule Delivery.Repo.Migrations.CreateActivities do
       add :draft_title, :string
       add :content, :map
       add :draft_content, :map
-
+      add(:package_id, references(:packages))
       timestamps()
     end
 

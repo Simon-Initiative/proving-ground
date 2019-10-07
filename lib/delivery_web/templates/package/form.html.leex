@@ -1,6 +1,5 @@
 
-
-<%= form_for @changeset, "#", [class: "ui form", phx_change: :validate, phx_submit: :save], fn f -> %>
+<%= form_for @changeset, "#", [class: "ui form attached fluid segment", phx_change: :validate, phx_submit: :save], fn f -> %>
   
   <%= input f, :title %>
 

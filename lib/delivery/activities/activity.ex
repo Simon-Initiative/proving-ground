@@ -14,8 +14,7 @@ defmodule Delivery.Activities.Activity do
     field :timed, :boolean, default: false
     field :title, :string
     field :type, :string
-    field :package_id, :id
-
+    belongs_to :package, Delivery.Packages.Package, foreign_key: :package_id
     timestamps()
   end
 

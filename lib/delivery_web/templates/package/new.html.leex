@@ -1,5 +1,10 @@
-<h3>Create new course package</h3>
+<div class="ui attached message">
+  <div class="header">
+    Create package
+  </div>
+  <p>Fill out the form below to create a new course package</p>
+</div>
 
 <%= render "form.html", assigns %>
       
-<span><%= link "Back", to: Routes.live_path(@socket, PackageLive.Index) %></span>
+<span><%= link "Back", to: Routes.package_path(DeliveryWeb.Endpoint, :index) %></span>

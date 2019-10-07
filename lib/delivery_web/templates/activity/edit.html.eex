@@ -13,11 +13,11 @@
   <%= input f, :timed %>
   <%= input f, :require_completion %>
   <%= input f, :grading_strategy %>
-
+  <%= hidden_input f, :package_id %>
   <div>
     <%= submit "Save" %>
   </div>
 <% end %>
 
-<span><%= link "Back", to: Routes.activity_path(@conn, :index) %></span>
+<span><%= link "Back", to: Routes.activity_path(@conn, @package_id, :index) %></span>
 

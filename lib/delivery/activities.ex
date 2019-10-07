@@ -21,6 +21,13 @@ defmodule Delivery.Activities do
     Repo.all(Activity)
   end
 
+  def list_activities_for(package_id) do
+    query = from a in Activity, where: a.package_id == ^package_id
+
+    # Send the query to the repository
+    Repo.all(query)
+  end
+
   @doc """
   Gets a single activity.
 

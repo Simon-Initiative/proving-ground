@@ -1,5 +1,10 @@
-<h3 class="ui header">Edit Package</h3>
+<div class="ui attached message">
+  <div class="header">
+    Edit package
+  </div>
+  <p>Edit the details of the following course package</p>
+</div>
 
 <%= render "form.html", assigns %>
 
-<span><%= link "Back", to: Routes.live_path(@socket, PackageLive.Index) %></span>
+<span><%= link "Back", to: Routes.package_path(DeliveryWeb.Endpoint, :show, @package) %></span>

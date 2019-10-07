@@ -5,7 +5,7 @@ import { Editor } from './editor/Editor';
 import { persist, getSnippets, createSnippet } from 'data/persistence';
 import { Code, create, Snippet, Math } from 'data/content/types';
 import { OrderedMap } from 'immutable';
-import { Block, Document, Editor as SlateEditor, Value } from 'slate';
+import { Block, Document, Editor as SlateEditor, Value, Node } from 'slate';
 import { insertImage, insertYouTube } from './editor/utils';
 import { Maybe } from 'tsmonad';
 import guid from 'utils/guid';
@@ -20,7 +20,7 @@ interface MainProps {
 
 type Header = {
   text: string;
-  key: string;
+  node: Node;
 };
   
 interface MainState {
@@ -48,7 +48,7 @@ export default class Main extends React.Component<MainProps, MainState> {
 
     const n = nodes
       .filter(n => n.type.startsWith('heading'))
-      .map(n => ({ text: n.nodes.get(0).text, key: n.key }))
+      .map(n => ({ text: n.nodes.get(0).text, node: n }))
       .toArray();
 
     return n;
@@ -59,15 +59,6 @@ export default class Main extends React.Component<MainProps, MainState> {
       this.snippetId = s.length > 0 ? s[0].id : null;
       this.setState({ snippets: Maybe.just(s) });
     });
-
-
-    console.log($('.ui.sticky'));
-
-    //($('.ui.sticky') as any)
-    //  .sticky({
-    //    context: '#editor',
-    //    pushing: true
-    //  });
   }
 
   onEdit(obj: Value) {
@@ -85,7 +76,23 @@ export default class Main extends React.Component<MainProps, MainState> {
 
   renderOutline() {
 
-    const items = this.state.headers.map(h => <a className="item">{h.text}</a>);
+    const indents = {
+      'heading-one': '0px',
+      'heading-two': '0px',
+      'heading-three': '0px',
+      'heading-four': '10px',
+      'heading-five': '20px',
+      'heading-six': '30px', 
+    };
+
+    const onClick = (h: Header) => this.editor
+      .moveAnchorToStartOfNode(h.node)
+      .moveFocusToStartOfNode(h.node)
+      .focus();
+
+    const items = this.state.headers.map(h => <a className="item" 
+      onClick={onClick.bind(this, h)} 
+      style={ { marginLeft: indents[h.node.object] } }>{h.text}</a>);
 
     return (
       <div style={ { position: 'fixed' } }>
@@ -182,19 +189,23 @@ export default class Main extends React.Component<MainProps, MainState> {
       <div>
         <p></p>
         <p></p>
-        <div className="ui" style={ { position: 'fixed' } }>
-          <div className="ui icon small basic vertical buttons" role="group" aria-label="First group">
-            <button onClick={addCode} type="button" className="ui button"><i className={'code icon'} /></button>
-            <button onClick={addMath} type="button" className="ui button"><i className={'calculator icon'} /></button>
-            <button onClick={addImage} type="button" className="ui button"><i className={'image outline icon'} /></button>
-            <button onClick={addYouTube} type="button" className="ui button"><i className={'youtube icon'} /></button>
-            <button onClick={addTable} type="button" className="ui button"><i className={'table icon'} /></button>
-            <button onClick={addExample} type="button" className="ui button"><i className={'balance scale icon'} /></button>
-            <button onClick={addQuestion} type="button" className="ui button"><i className={'question icon'} /></button>
-            <button onClick={addDelivery} type="button" className="ui button"><i className={'graduation cap icon'} /></button>
-            <button onClick={addOrdered} type="button" className="ui button"><i className={'list ol icon'} /></button>
-            <button onClick={addUnordered} type="button" className="ui button"><i className={'list ul icon'} /></button>
-          </div>
+          <div style={ { display: 'flex ', justifyContent: 'flex-end' } }>
+            <div style={ { marginRight: '75px' } }>
+            <div className="ui" style={ { position: 'fixed' } }>
+              <div className="ui icon small basic vertical buttons" role="group" aria-label="First group">
+                <button onClick={addCode} type="button" className="ui button"><i className={'code icon'} /></button>
+                <button onClick={addMath} type="button" className="ui button"><i className={'calculator icon'} /></button>
+                <button onClick={addImage} type="button" className="ui button"><i className={'image outline icon'} /></button>
+                <button onClick={addYouTube} type="button" className="ui button"><i className={'youtube icon'} /></button>
+                <button onClick={addTable} type="button" className="ui button"><i className={'table icon'} /></button>
+                <button onClick={addExample} type="button" className="ui button"><i className={'balance scale icon'} /></button>
+                <button onClick={addQuestion} type="button" className="ui button"><i className={'question icon'} /></button>
+                <button onClick={addDelivery} type="button" className="ui button"><i className={'graduation cap icon'} /></button>
+                <button onClick={addOrdered} type="button" className="ui button"><i className={'list ol icon'} /></button>
+                <button onClick={addUnordered} type="button" className="ui button"><i className={'list ul icon'} /></button>
+              </div>
+            </div>
+        </div>
         </div>
       </div>
     );

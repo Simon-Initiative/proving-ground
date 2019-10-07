@@ -1,6 +1,6 @@
 <h3>New Activity</h3>
 
-<%= form_for @changeset, Routes.activity_path(@conn, :create), [class: "ui form"], fn f -> %>
+<%= form_for @changeset, Routes.activity_path(@conn, :create, @package_id), [class: "ui form"], fn f -> %>
   <%= if @changeset.action do %>
     <div class="alert alert-danger">
       <p>Oops, something went wrong! Please check the errors below.</p>
@@ -13,11 +13,11 @@
   <%= input f, :timed %>
   <%= input f, :require_completion %>
   <%= input f, :grading_strategy %>
-
+  <%= hidden_input f, :package_id %>
   <div>
     <%= submit "Save", class: "ui primary button", phx_disable_with: "Saving..." %>
   </div>
 
 <% end %>
 
-<span><%= link "Back", to: Routes.activity_path(@conn, :index) %></span>
+<span><%= link "Back", to: Routes.activity_path(@conn, :index, @package_id) %></span>

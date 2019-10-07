@@ -7,7 +7,7 @@ defmodule Delivery.Packages.Package do
     field :friendly, :string
     field :title, :string
     field :version, :string
-
+    has_many :activities, Delivery.Activities.Activity
     timestamps()
   end
 
