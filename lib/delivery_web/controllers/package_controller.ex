@@ -1,10 +1,7 @@
 defmodule DeliveryWeb.PackageController do
   use DeliveryWeb, :controller
 
-  import Phoenix.LiveView.Controller
-
   alias Delivery.Packages
-  alias Delivery.Packages.Package
 
   def index(conn, _params) do
     packages = Packages.list_packages()

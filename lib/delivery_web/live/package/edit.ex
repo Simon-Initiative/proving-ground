@@ -1,7 +1,6 @@
 defmodule DeliveryWeb.PackageLive.Edit do
   use Phoenix.LiveView
 
-  alias DeliveryWeb.PackageLive
   alias DeliveryWeb.PackageView
   alias DeliveryWeb.Router.Helpers, as: Routes
 

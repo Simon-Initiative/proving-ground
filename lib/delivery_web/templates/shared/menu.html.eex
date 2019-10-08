@@ -22,10 +22,9 @@
       </div>
     </div>
     <div class="right menu">
-      <div class="item">
-        <%= Phoenix.LiveView.live_render(@conn, DeliveryWeb.SearchLive) %>
-      </div>
-
+      
+      <%= Phoenix.LiveView.live_render(@conn, DeliveryWeb.SearchLive) %>
+      
       <%= if @current_user do %>
         <div class="ui simple dropdown item">
           <%= @current_user.email %> <i class="dropdown icon"></i>

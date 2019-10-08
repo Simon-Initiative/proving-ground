@@ -1,5 +1,6 @@
 # Custom ignores
 .elixir_ls/
+.vscode
 *~
 
 # The directory Mix will write compiled artifacts to.

@@ -1,8 +1,7 @@
 defmodule DeliveryWeb.LoginController do
   use DeliveryWeb, :controller
-  alias Delivery.Activities
+
   alias Delivery.Accounts
-  alias Delivery.Accounts.User
 
   @spec login(Plug.Conn.t(), map) :: Plug.Conn.t()
   def login(conn, %{"id" => id }) do
