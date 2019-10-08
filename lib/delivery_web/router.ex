@@ -1,6 +1,11 @@
 defmodule DeliveryWeb.Router do
   use DeliveryWeb, :router
 
+  defp fetch_user_token(conn, _) do
+    conn
+    |> assign(:current_user, get_session(conn, :user))
+  end
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +13,7 @@ defmodule DeliveryWeb.Router do
     plug Phoenix.LiveView.Flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_user_token
   end
 
   pipeline :api do
@@ -28,7 +34,11 @@ defmodule DeliveryWeb.Router do
     live "/packages/:id/edit", PackageLive.Edit
 
     resources "/packages/:package_id/activities", ActivityController
-    get "/edit/:id", EditController, :show
+    get "/page/:id", PageController, :show
+
+    resources "/users", UserController
+    get "/login/:id", LoginController, :login
+    get "/logout", LoginController, :logout
 
     live "/search", SearchLive
   end
@@ -36,7 +46,9 @@ defmodule DeliveryWeb.Router do
   scope "/api", DeliveryWeb do
     pipe_through :api
 
-    post "/edit/:id", EditController, :write
+    post "/page/:id", PageController, :write
+    get "/question/:id", QuestionController, :read
+    post "/question/:id", QuestionController, :write
 
   end
 end

@@ -1,0 +1,31 @@
+
+<h3>Users</h3>
+
+<div class="ui divider"></div>
+
+<table class="ui celled table">
+  <thead>
+    <tr>
+      <th>First name</th>
+      <th>Last name</th>
+      <th>Email</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for user <- @users do %>
+    <tr>
+      <td><%= user.first_name %></td>
+      <td><%= user.last_name %></td>
+      <td><%= user.email %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.user_path(@conn, :show, user) %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New User", to: Routes.user_path(@conn, :new) %></span>

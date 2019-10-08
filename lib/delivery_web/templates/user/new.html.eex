@@ -1,0 +1,10 @@
+<div class="ui attached message">
+  <div class="header">
+    Create user
+  </div>
+  <p>Fill out the form below to create a new user</p>
+</div>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.user_path(@conn, :create)) %>
+
+<span><%= link "Back", to: Routes.user_path(@conn, :index) %></span>
