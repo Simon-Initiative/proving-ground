@@ -5,8 +5,8 @@ defmodule DeliveryWeb.SearchLive do
 
   def render(assigns) do
     ~L"""
-    <div class="ui fluid category search item">
-      <div class="ui icon input">
+    <div class="ui fluid category search item" style="margin-top: 9px;">
+      <div class="ui inverted transparent icon input small">
         <input class="prompt" type="text" phx-keyup="search" phx-throttle="500" placeholder="Search...">
         <i class="search icon"></i>
       </div>
