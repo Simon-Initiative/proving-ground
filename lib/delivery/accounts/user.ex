@@ -6,6 +6,7 @@ defmodule Delivery.Accounts.User do
     field :email, :string
     field :first_name, :string
     field :last_name, :string
+    has_many :enrollments, Delivery.Sections.Enrollment
 
     timestamps()
   end

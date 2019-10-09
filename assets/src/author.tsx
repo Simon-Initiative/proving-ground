@@ -284,10 +284,6 @@ export default class Main extends React.Component<MainProps, MainState> {
             {this.renderOutline()}
           </div>
           
-          <div className="ui left attached rail">
-            {this.renderToolbar()}
-          </div>
-          
 
           <div id="editor">
             <Editor 

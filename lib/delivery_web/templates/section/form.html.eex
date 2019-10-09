@@ -1,0 +1,39 @@
+<%= form_for @changeset, @action, [class: "ui equal width form attached fluid segment"], fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <%= input f, :title %>
+  <%= input f, :institution %>
+    
+  <div class="field">
+      <%= label f, :start_date %>
+      <%= date_input f, :start_date %>
+      <%= error_tag f, :start_date %>
+  </div>
+
+  <div class="field">
+      <%= label f, :end_date %>
+      <%= date_input f, :end_date %>
+      <%= error_tag f, :end_date %>
+  </div>
+
+  <div class="ui selection dropdown">
+    <input type="hidden" name="section[package_id]" id="section_package_id">
+    <i class="dropdown icon"></i>
+    <div class="default text">Package</div>
+    <div class="menu">
+      <%= for p <- @packages do %>
+        <div class="item" data-value="<%= p.id %>" data-text="<%= p.title %>"><%= p.title %></div>
+      <% end %>
+    </div>
+  </div>
+  <%= error_tag f, :package_id %>
+
+    
+  <div>
+    <%= submit "Save", class: "ui primary button" %>
+  </div>
+<% end %>

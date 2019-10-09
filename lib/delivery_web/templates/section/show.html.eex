@@ -1,0 +1,33 @@
+<h1>Show Section</h1>
+
+<ul>
+
+  <li>
+    <strong>Start date:</strong>
+    <%= @section.start_date %>
+  </li>
+
+  <li>
+    <strong>End date:</strong>
+    <%= @section.end_date %>
+  </li>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @section.title %>
+  </li>
+
+  <li>
+    <strong>Institution:</strong>
+    <%= @section.institution %>
+  </li>
+
+  <li>
+    <strong>Package:</strong>
+    <%= @section.package_id %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.section_path(@conn, :edit, @section) %></span>
+<span><%= link "Back", to: Routes.section_path(@conn, :index) %></span>

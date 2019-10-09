@@ -1,0 +1,10 @@
+<div class="ui attached message">
+  <div class="header">
+    Edit course section
+  </div>
+  <p>Fill out the form below to edit the course section</p>
+</div>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.section_path(@conn, :update, @section)) %>
+
+<span><%= link "Back", to: Routes.section_path(@conn, :index) %></span>

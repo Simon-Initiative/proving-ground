@@ -8,6 +8,7 @@ defmodule Delivery.Packages.Package do
     field :title, :string
     field :version, :string
     has_many :activities, Delivery.Activities.Activity
+    has_many :sections, Delivery.Sections.Section
     timestamps()
   end
 
@@ -72,16 +73,4 @@ defmodule Delivery.Packages.Package do
     String.downcase(title, :default) |> String.replace(" ", "_")
   end
 
-  def validate_uniqueness(changeset, field, options \\ []) do
-    validate_change(changeset, field, fn _, friendly ->
-
-      {:ok, %{num_rows: num_rows }} = Ecto.Adapters.SQL.query(
-      Delivery.Repo, "SELECT * FROM packages WHERE friendly = $1;", [friendly])
-
-      case num_rows do
-        0 -> []
-        1 -> [{field, options[:message] || "This friendly id is already taken"}]
-      end
-    end)
-  end
 end

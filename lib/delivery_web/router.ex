@@ -29,11 +29,12 @@ defmodule DeliveryWeb.Router do
     get "/packages", PackageController, :index
     get "/packages/:id/show", PackageController, :show
     get "/packages/:id/delete", PackageController, :delete
-
     live "/packages/new", PackageLive.New
     live "/packages/:id/edit", PackageLive.Edit
 
+    resources "/sections", SectionController
     resources "/packages/:package_id/activities", ActivityController
+
     get "/page/:id", PageController, :show
 
     resources "/users", UserController
