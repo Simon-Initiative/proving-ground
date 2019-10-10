@@ -13,6 +13,30 @@
     <div>
         <%= link "Delete", to: Routes.user_path(@conn, :delete, @user), method: :delete, data: [confirm: "Are you sure?"] %>
     </div>
+
+
+
+
+    <div class="ui celled list">
+      <div class="item">
+        <div class="content">
+          <div class="header">Snickerdoodle</div>
+          An excellent companion
+        </div>
+      </div>
+      <div class="item">
+        <div class="content">
+          <div class="header">Poodle</div>
+          A poodle, its pretty basic
+        </div>
+      </div>
+      <div class="item">
+        <div class="content">
+          <div class="header">Paulo</div>
+          He's also a dog
+        </div>
+      </div>
+    </div>
     
 </div>
 

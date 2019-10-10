@@ -7,6 +7,9 @@ defmodule Delivery.Sections do
   alias Delivery.Repo
 
   alias Delivery.Sections.Section
+  alias Delivery.Sections.Enrollment
+  alias Delivery.Accounts.User
+
 
   @doc """
   Returns the list of sections.
@@ -19,6 +22,26 @@ defmodule Delivery.Sections do
   """
   def list_sections do
     Repo.all(Section)
+  end
+
+  def list_sections_for_user(user_id) do
+    query = from s in Section,
+          join: e in Enrollment, on: s.id == e.section_id,
+          join: u in User, on: u.id == e.user_id,
+          where: u.id == ^user_id,
+          select:  %{role: e.role, title: s.title, id: s.id }
+    Repo.all(query)
+  end
+
+  def add_enrollment(section_id, user_id, role) do
+    %Enrollment{}
+    |> Enrollment.changeset(%{ section_id: section_id, user_id: user_id, role: role })
+    |> Repo.insert()
+  end
+
+  def remove_enrollment(id) do
+    e = Repo.get!(Enrollment, id)
+    Repo.delete!(e)
   end
 
   @doc """
@@ -35,7 +58,20 @@ defmodule Delivery.Sections do
       ** (Ecto.NoResultsError)
 
   """
-  def get_section!(id), do: Repo.get!(Section, id)
+  def get_section!(id) do
+
+    Repo.get!(Section, id)
+
+  end
+
+  def get_enrollments_for(section_id) do
+
+    query = from e in Enrollment,
+          join: u in User, on: u.id == e.user_id,
+          where: e.section_id == ^section_id,
+          select:  %{id: e.id, role: e.role, email: u.email, first_name: u.first_name, last_name: u.last_name}
+    Repo.all(query)
+  end
 
   @doc """
   Creates a section.
@@ -50,8 +86,29 @@ defmodule Delivery.Sections do
 
   """
   def create_section(attrs \\ %{}) do
-    %Section{}
-    |> Section.changeset(attrs)
+
+    owner = hd(Map.get(attrs, "enrollments"))
+
+    result = %Section{}
+      |> Section.changeset(attrs)
+      |> Repo.insert()
+
+    case result do
+      {:ok, section} ->
+        create_enrollment(Map.put(owner, "section_id", section.id))
+      _ -> nil
+    end
+
+    result
+  end
+
+  @spec create_enrollment(
+          :invalid
+          | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: any
+  def create_enrollment(attrs \\ %{}) do
+    %Enrollment{}
+    |> Enrollment.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -86,7 +143,12 @@ defmodule Delivery.Sections do
 
   """
   def delete_section(%Section{} = section) do
-    Repo.delete(section)
+    Repo.transaction(fn ->
+      Ecto.Adapters.SQL.query(
+         Delivery.Repo, "DELETE FROM enrollments WHERE section_id = $1", [section.id])
+      Repo.delete(section)
+    end)
+
   end
 
   @doc """

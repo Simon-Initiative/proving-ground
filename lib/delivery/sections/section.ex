@@ -8,7 +8,7 @@ defmodule Delivery.Sections.Section do
     field :start_date, :date
     field :title, :string
     belongs_to :package, Delivery.Packages.Package, foreign_key: :package_id
-    has_many :entrollments, Delivery.Sections.Enrollment
+    has_many :enrollments, Delivery.Sections.Enrollment
     timestamps()
   end
 

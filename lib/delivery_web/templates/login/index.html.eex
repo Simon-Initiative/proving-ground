@@ -3,11 +3,11 @@
     <h2 class="ui primary image header">
       <img src="/images/oli-icon.png" class="image">
       <div class="content">
-        Log-in to your account
+        Welcome!
       </div>
     </h2>
     <%= form_for @changeset, Routes.login_path(@conn, :login), [class: "ui large form"], fn _f -> %>
-      <div class="ui segment">
+      
         <div class="ui selection dropdown">
             <input type="hidden" name="user_id">
             <i class="dropdown icon"></i>
@@ -19,13 +19,12 @@
             </div>
         </div>
         <%= submit "Login", class: "ui primary button" %>
-      </div>
-
+      
       <div class="ui error message"></div>
 
     <% end %>
 
-    <div class="ui message">
+    <div style="margin-top: 75px;">
       New to us? <%= link "Create an account", to: Routes.user_path(@conn, :new) %>
     </div>
   </div>

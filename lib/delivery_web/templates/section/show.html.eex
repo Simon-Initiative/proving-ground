@@ -1,33 +1,87 @@
-<h1>Show Section</h1>
+<div class="ui attached message">
+  <div class="header">
+    Manage section
+  </div>
+  <p>Edit section details, manage the section roster</p>
+</div>
 
-<ul>
+<div class="ui form attached fluid segment">
+  <h5 class="ui header">Details</h5>
 
-  <li>
-    <strong>Start date:</strong>
-    <%= @section.start_date %>
-  </li>
+    <div class="ui celled list">
+      <div class="item">
+        <div class="content">
+          <div class="header">Title</div>
+          <%= @section.title %>
+        </div>
+      </div>
+      <div class="item">
+        <div class="content">
+          <div class="header">Start date</div>
+          <%= @section.start_date %>
+        </div>
+      </div>
+      <div class="item">
+        <div class="content">
+          <div class="header">End date</div>
+          <%= @section.end_date %>
+        </div>
+      </div>
+      <div class="item">
+        <div class="content">
+          <div class="header">Institution</div>
+          <%= @section.institution %>
+        </div>
+      </div>
+    </div>
 
-  <li>
-    <strong>End date:</strong>
-    <%= @section.end_date %>
-  </li>
+  <span><%= link "Edit", to: Routes.section_path(@conn, :edit, @section) %></span>
+  <span><%= link "Delete", to: Routes.section_path(@conn, :delete, @section), method: :delete, data: [confirm: "Are you sure?"] %></span>
+</div>
 
-  <li>
-    <strong>Title:</strong>
-    <%= @section.title %>
-  </li>
+<div class="ui form attached fluid segment">
+  <h5 class="ui header">Roster</h5>
+    
+  <div class="ui celled list">
+      
+      <%= for e <- @enrollments do %>
+        <div class="item">
+          <%= if e.role != "owner" do %>
+          <div class="right floated content">
+            <%= link "Delete", to: Routes.section_path(@conn, :remove_enrollment, @section.id, e.id), method: :delete, data: [confirm: "Are you sure?"] %>
+          </div>
+          <% end %>
+          <div class="content">
+            <div class="header"><%= e.role %></div>
+            <%= e.last_name <> ", " <> e.first_name <> " " <> e.email %>
+          </div>
+        </div>
+      <% end %>
+  </div>
+  <%= form_for @changeset, Routes.section_path(@conn, :add_enrollment, @section.id), [class: "ui form"], fn _f -> %>
+    <input type="hidden" name="section_id" value="<%= @section.id %>">
+    <div class="ui selection dropdown">
+      <input type="hidden" name="user_id">
+      <i class="dropdown icon"></i>
+      <div class="default text">User</div>
+      <div class="menu">
+      <%= for u <- @users do %>
+          <div class="item" data-value="<%= u.id %>" data-text="<%= u.email %>"><%= u.email %></div>
+      <% end %>
+      </div>
+    </div>
+    <div class="ui selection dropdown">
+      <input type="hidden" name="role">
+      <i class="dropdown icon"></i>
+      <div class="default text">Role</div>
+      <div class="menu">
+        <div class="item" data-value="instructor" data-text="instructor">Instructor</div>
+        <div class="item" data-value="student" data-text="student">Student</div>
+      </div>
+    </div>
+    <%= submit "Add", class: "ui primary button" %>
+  <% end %>
+    
+</div>
 
-  <li>
-    <strong>Institution:</strong>
-    <%= @section.institution %>
-  </li>
-
-  <li>
-    <strong>Package:</strong>
-    <%= @section.package_id %>
-  </li>
-
-</ul>
-
-<span><%= link "Edit", to: Routes.section_path(@conn, :edit, @section) %></span>
 <span><%= link "Back", to: Routes.section_path(@conn, :index) %></span>

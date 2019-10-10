@@ -59,7 +59,11 @@ defmodule DeliveryWeb.Router do
     get "/packages/:id/delete", PackageController, :delete
     live "/packages/new", PackageLive.New
     live "/packages/:id/edit", PackageLive.Edit
+
     resources "/sections", SectionController
+    post "/sections/:section_id/enrollment", SectionController, :add_enrollment
+    delete "/sections/:section_id/enrollment/:id", SectionController, :remove_enrollment
+
     resources "/packages/:package_id/activities", ActivityController
     get "/page/:id", PageController, :show
 
