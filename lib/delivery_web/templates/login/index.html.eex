@@ -1,0 +1,32 @@
+<div class="ui middle aligned center aligned grid">
+  <div class="column">
+    <h2 class="ui primary image header">
+      <img src="/images/oli-icon.png" class="image">
+      <div class="content">
+        Log-in to your account
+      </div>
+    </h2>
+    <%= form_for @changeset, Routes.login_path(@conn, :login), [class: "ui large form"], fn _f -> %>
+      <div class="ui segment">
+        <div class="ui selection dropdown">
+            <input type="hidden" name="user_id">
+            <i class="dropdown icon"></i>
+            <div class="default text">Users</div>
+            <div class="menu">
+            <%= for u <- @users do %>
+                <div class="item" data-value="<%= u.id %>" data-text="<%= u.email %>"><%= u.email %></div>
+            <% end %>
+            </div>
+        </div>
+        <%= submit "Login", class: "ui primary button" %>
+      </div>
+
+      <div class="ui error message"></div>
+
+    <% end %>
+
+    <div class="ui message">
+      New to us? <%= link "Create an account", to: Routes.user_path(@conn, :new) %>
+    </div>
+  </div>
+</div>

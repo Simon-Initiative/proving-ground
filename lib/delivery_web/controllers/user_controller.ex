@@ -19,7 +19,8 @@ defmodule DeliveryWeb.UserController do
       {:ok, user} ->
         conn
         |> put_flash(:info, "User created successfully.")
-        |> redirect(to: Routes.user_path(conn, :show, user))
+        |> put_session(:user, user)
+        |> redirect(to: Routes.section_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -27,14 +28,8 @@ defmodule DeliveryWeb.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-
-    is_active = case get_session(conn, "user") do
-      %{ "id" => ^id } -> true
-      _ -> false
-    end
-
     user = Accounts.get_user!(id)
-    render(conn, "show.html", user: user, is_active: is_active)
+    render(conn, "show.html", user: user)
   end
 
   def edit(conn, %{"id" => id}) do

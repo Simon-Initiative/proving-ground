@@ -1,31 +1,40 @@
+<% user_disabled = case @current_user do
+      nil -> " disabled"
+      _ -> ""
+    end
+ %>
+
 <div class="ui fixed inverted menu">
   <div class="ui container">
     <a href="/" class="header item">
       <img class="logo" src="/images/oli-icon.png">
       Lean OLI
     </a>
-    <a href="/" class="item">Home</a>
     <div class="ui simple dropdown item">
       Courses <i class="dropdown icon"></i>
       <div class="menu">
         <div class="header">Packages</div>
-        <%= link "View all", to: "/packages", class: "item" %>
-        <%= link "Create new", to: "/packages/new", class: "item" %>
+        <%= link "View all", to: "/packages", class: "item" <> user_disabled %>
+        <%= link "Create new", to: "/packages/new", class: "item" <> user_disabled %>
+        <div class="header">Sections</div>
+        <%= link "View yours", to: "/sections", class: "item" <> user_disabled %>
+        <%= link "Create new", to: "/sections/new", class: "item" <> user_disabled %>
       </div>
     </div>
 
     <div class="ui simple dropdown item">
       Users <i class="dropdown icon"></i>
       <div class="menu">
-        <%= link "View all", to: "/users", class: "item" %>
+        <%= link "View all", to: "/users", class: "item" <> user_disabled %>
         <%= link "Create new", to: "/users/new", class: "item" %>
       </div>
     </div>
     <div class="right menu">
       
-      <%= Phoenix.LiveView.live_render(@conn, DeliveryWeb.SearchLive) %>
-      
       <%= if @current_user do %>
+        
+        <%= Phoenix.LiveView.live_render(@conn, DeliveryWeb.SearchLive) %>
+      
         <div class="ui simple dropdown item">
           <%= @current_user.email %> <i class="dropdown icon"></i>
           <div class="menu">

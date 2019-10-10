@@ -14,12 +14,6 @@
         <%= link "Delete", to: Routes.user_path(@conn, :delete, @user), method: :delete, data: [confirm: "Are you sure?"] %>
     </div>
     
-    <%= unless @is_active do  %>
-      <div>
-        <%= link "Login", to: Routes.login_path(@conn, :login, @user.id) %>
-    </div>
-    <% end %>
-
 </div>
 
 <span><%= link "Back", to: Routes.user_path(@conn, :index) %></span>
