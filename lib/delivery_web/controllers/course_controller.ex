@@ -1,13 +1,8 @@
 defmodule DeliveryWeb.CourseController do
   use DeliveryWeb, :controller
 
-  alias Delivery.Packages
   alias Delivery.Sections
-  alias Delivery.Sections.Section
-  alias Delivery.Sections.Enrollment
   alias Delivery.Activities
-  alias Delivery.Accounts
-
 
   def index(conn, %{ "section_id" => section_id }) do
 
@@ -24,7 +19,7 @@ defmodule DeliveryWeb.CourseController do
     IO.inspect(page.content)
     translated_content = DeliveryWeb.Utils.HTML.to_html(Map.get(page.content, "nodes"))
 
-    render(conn, "page.html", pages: pages, title: page.title, content: translated_content)
+    render(conn, "page.html", pages: pages, title: page.title, content: translated_content, activity_id: page_id)
   end
 
 

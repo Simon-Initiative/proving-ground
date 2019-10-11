@@ -4,6 +4,8 @@ defmodule DeliveryWeb.UserSocket do
   ## Channels
   # channel "room:*", DeliveryWeb.RoomChannel
 
+  channel("notification:*", DeliveryWeb.NotificationChannel)
+
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
   # verification, you can put default assigns into

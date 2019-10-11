@@ -59,6 +59,9 @@ defmodule DeliveryWeb.Utils.HTML do
   end
 
   def wrap_marks(text, marks) do
+    IO.puts "wrap-marks"
+    IO.inspect text
+    IO.inspect marks
     map = %{
       "sub" => "sub",
       "sup" => "sup",
@@ -70,7 +73,10 @@ defmodule DeliveryWeb.Utils.HTML do
       "mark" => "mark"
     }
     Enum.reverse(marks)
-      |> Enum.reduce(text, fn m, t -> "<" <> Map.get(map, m) <> ">" <> t <> "</" <> Map.get(map, m) <> ">" end)
+      |> Enum.reduce(text,
+        fn %{"type" => m}, t ->
+          "<" <> Map.get(map, m) <> ">" <> t <> "</" <> Map.get(map, m) <> ">"
+        end)
   end
 
 end

@@ -65,7 +65,8 @@ defmodule DeliveryWeb.Router do
     delete "/sections/:section_id/enrollment/:id", SectionController, :remove_enrollment
 
     resources "/packages/:package_id/activities", ActivityController
-
+    get "/packages/:package_id/activities/publish/all", ActivityController, :publish_all
+    get "/packages/:package_id/activities/:activity_id/publish", ActivityController, :publish
 
     get "/course/:section_id", CourseController, :index
     get "/course/:section_id/:page_id", CourseController, :page
@@ -81,6 +82,7 @@ defmodule DeliveryWeb.Router do
     get "/logout", LoginController, :logout
 
     live "/search", SearchLive
+    live "/notification/:activity_id", NotificationLive
   end
 
   scope "/api", DeliveryWeb do

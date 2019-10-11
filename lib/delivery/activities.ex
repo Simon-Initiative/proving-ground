@@ -28,6 +28,21 @@ defmodule Delivery.Activities do
     Repo.all(query)
   end
 
+  def publish_all(package_id) do
+    from(a in Activity,
+      where: a.package_id == ^package_id,
+      update: [set: [content: a.draft_content, is_draft: false]])
+      |> Repo.update_all([])
+
+  end
+
+  def publish(activity_id) do
+    from(a in Activity,
+      where: a.id == ^activity_id,
+      update: [set: [content: a.draft_content, is_draft: false]])
+      |> Repo.update_all([])
+  end
+
   @doc """
   Gets a single activity.
 

@@ -9,6 +9,22 @@ defmodule DeliveryWeb.ActivityController do
     render(conn, "index.html", activities: activities, package_id: package_id)
   end
 
+  def publish_all(conn, %{"package_id" => package_id}) do
+    Activities.publish_all(package_id)
+
+    conn
+      |> redirect(to: Routes.activity_path(conn, :index, package_id))
+  end
+
+  def publish(conn, %{"package_id" => package_id, "activity_id" => activity_id}) do
+    Activities.publish(activity_id)
+    DeliveryWeb.Endpoint.broadcast!("notification:" <> activity_id, "publish", %{user: get_session(conn, :user)})
+
+    conn
+      |> redirect(to: Routes.activity_path(conn, :index, package_id))
+  end
+
+
   def new(conn, %{"package_id" => package_id}) do
 
     changeset = Activities.change_activity(%Activity{ type: "page", package_id: package_id })
