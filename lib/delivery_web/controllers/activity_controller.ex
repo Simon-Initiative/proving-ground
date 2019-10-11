@@ -10,7 +10,13 @@ defmodule DeliveryWeb.ActivityController do
   end
 
   def publish_all(conn, %{"package_id" => package_id}) do
+
+    drafts = Activities.get_draft_activities(package_id)
     Activities.publish_all(package_id)
+
+    for %{:id => id} <- drafts do
+      DeliveryWeb.Endpoint.broadcast!("notification:" <> id, "publish", %{user: get_session(conn, :user)})
+    end
 
     conn
       |> redirect(to: Routes.activity_path(conn, :index, package_id))

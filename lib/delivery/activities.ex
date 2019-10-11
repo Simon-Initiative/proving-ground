@@ -28,6 +28,14 @@ defmodule Delivery.Activities do
     Repo.all(query)
   end
 
+  def get_draft_activities(package_id) do
+
+    query = from e in Activity,
+          where: e.package_id == ^package_id and e.is_draft == true,
+          select:  %{id: e.id, title: e.title}
+    Repo.all(query)
+  end
+
   def publish_all(package_id) do
     from(a in Activity,
       where: a.package_id == ^package_id,

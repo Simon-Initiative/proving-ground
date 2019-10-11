@@ -1,8 +1,5 @@
 defmodule DeliveryWeb.Utils.HTML do
 
-
-
-
   def to_html(%{"object" => "block", "type" => "paragraph", "nodes" => nodes}) do
     IO.puts "p"
     "<p>" <> to_html(nodes) <> "</p>\n"
