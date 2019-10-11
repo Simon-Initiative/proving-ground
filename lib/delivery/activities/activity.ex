@@ -3,6 +3,7 @@ defmodule Delivery.Activities.Activity do
   import Ecto.Changeset
 
   @derive {Poison.Encoder, only: [:content, :draft_content]}
+  @derive {Jason.Encoder, only: [:id, :friendly, :type, :title, :content, :timed, :require_completion]}
   schema "activities" do
     field :content, :map
     field :draft_content, :map
@@ -25,4 +26,5 @@ defmodule Delivery.Activities.Activity do
     |> cast(attrs, [:package_id, :is_draft, :friendly, :type, :timed, :require_completion, :grading_strategy, :tags, :title, :draft_title, :content, :draft_content])
     |> validate_required([:friendly, :type, :timed, :require_completion, :title, :content])
   end
+
 end

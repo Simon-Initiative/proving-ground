@@ -92,5 +92,7 @@ defmodule DeliveryWeb.Router do
     get "/question/:id", QuestionController, :read
     post "/question/:id", QuestionController, :write
 
+    get "/packages/:package_id/activities/:activity_id", ActivityController, :read_api
+
   end
 end
