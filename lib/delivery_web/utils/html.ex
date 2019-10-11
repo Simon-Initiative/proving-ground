@@ -5,6 +5,30 @@ defmodule DeliveryWeb.Utils.HTML do
     "<p>" <> to_html(nodes) <> "</p>\n"
   end
 
+  def to_html(%{"object" => "block",
+    "data" => %{"src" => src, "height" => height, "width" => width},
+    "type" => "image"}) do
+    IO.puts "p"
+    """
+    <img style="display: block; margin-left: auto; margin-right: auto;" src=#{src} height=#{height} width=#{width}/>
+    """
+  end
+
+  def to_html(%{"object" => "block",
+    "data" => %{"src" => src},
+    "type" => "youtube"}) do
+    IO.puts "p"
+    """
+    <iframe
+      width="640"
+      height="476"
+      src="https://www.youtube.com/embed/#{src}"
+      frameBorder="0"
+      style="display: block; margin-left: auto; margin-right: auto;"
+    />
+    """
+  end
+
   def to_html(%{"object" => "block", "type" => "heading-one", "nodes" => nodes}) do
     "<h1>" <> to_html(nodes) <> "</h1>\n"
   end
