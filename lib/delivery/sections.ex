@@ -5,8 +5,9 @@ defmodule Delivery.Sections do
 
   import Ecto.Query, warn: false
   alias Delivery.Repo
-
+  alias Delivery.Activities.Activity
   alias Delivery.Sections.Section
+  alias Delivery.Packages.Package
   alias Delivery.Sections.Enrollment
   alias Delivery.Accounts.User
 
@@ -30,6 +31,15 @@ defmodule Delivery.Sections do
           join: u in User, on: u.id == e.user_id,
           where: u.id == ^user_id,
           select:  %{role: e.role, title: s.title, id: s.id }
+    Repo.all(query)
+  end
+
+  def get_pages_for_course(section_id) do
+    query = from a in Activity,
+          join: p in Package, on: a.package_id == p.id,
+          join: s in Section, on: s.package_id == p.id,
+          where: s.id == ^section_id,
+          select:  %{page_id: a.id, title: a.title }
     Repo.all(query)
   end
 

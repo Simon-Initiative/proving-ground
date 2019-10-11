@@ -1,0 +1,15 @@
+
+<h3 class="ui header"><%= @title %></h3>
+
+<div class="ui segment">   
+    <div class="ui relaxed divided selection list">
+        <%= for p <- @pages do %>
+            <div class="item">
+                <i class="large file alternate middle aligned icon"></i>
+                <div class="content">
+                    <div class="header"><%= link p.title, to: Routes.course_path(@conn, :page, @section_id, p.page_id) %></div>
+                </div>
+            </div>
+        <% end %>
+    </div>
+</div>

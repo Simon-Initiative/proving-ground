@@ -14,6 +14,7 @@ defmodule Delivery.Activities.Activity do
     field :timed, :boolean, default: false
     field :title, :string
     field :type, :string
+    field :is_draft, :boolean
     belongs_to :package, Delivery.Packages.Package, foreign_key: :package_id
     timestamps()
   end
@@ -21,7 +22,7 @@ defmodule Delivery.Activities.Activity do
   @doc false
   def changeset(activity, attrs) do
     activity
-    |> cast(attrs, [:package_id, :friendly, :type, :timed, :require_completion, :grading_strategy, :tags, :title, :draft_title, :content, :draft_content])
+    |> cast(attrs, [:package_id, :is_draft, :friendly, :type, :timed, :require_completion, :grading_strategy, :tags, :title, :draft_title, :content, :draft_content])
     |> validate_required([:friendly, :type, :timed, :require_completion, :title, :content])
   end
 end

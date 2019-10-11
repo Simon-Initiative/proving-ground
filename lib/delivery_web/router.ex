@@ -65,7 +65,12 @@ defmodule DeliveryWeb.Router do
     delete "/sections/:section_id/enrollment/:id", SectionController, :remove_enrollment
 
     resources "/packages/:package_id/activities", ActivityController
-    get "/page/:id", PageController, :show
+
+
+    get "/course/:section_id", CourseController, :index
+    get "/course/:section_id/:page_id", CourseController, :page
+
+    get "/page/edit/:id", PageController, :show
 
     get "/users", UserController, :index
     get "/users/:id/edit", UserController, :edit
@@ -81,7 +86,7 @@ defmodule DeliveryWeb.Router do
   scope "/api", DeliveryWeb do
     pipe_through :api
 
-    post "/page/:id", PageController, :write
+    post "/page/edit/:id", PageController, :write
     get "/question/:id", QuestionController, :read
     post "/question/:id", QuestionController, :write
 

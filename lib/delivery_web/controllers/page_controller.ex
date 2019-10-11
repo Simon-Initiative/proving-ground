@@ -7,7 +7,7 @@ defmodule DeliveryWeb.PageController do
 
     activity = Activities.get_activity!(id)
 
-    case Activities.update_activity(activity, %{draft_content: %{ nodes: nodes }}) do
+    case Activities.update_activity(activity, %{draft_content: %{ nodes: nodes }, is_draft: true}) do
       {:ok, _activity} -> json(conn, %{ saved: True })
       {:error, _changeset} -> json(conn, %{ saved: False })
     end

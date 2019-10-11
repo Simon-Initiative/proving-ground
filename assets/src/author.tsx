@@ -64,6 +64,9 @@ export default class Main extends React.Component<MainProps, MainState> {
   onEdit(obj: Value) {
 
     const o = obj.toJSON();
+
+    console.log(JSON.stringify(o, null, 2));
+
     const nodes = o.document.nodes;
     persist(this.props.id, { nodes });
 

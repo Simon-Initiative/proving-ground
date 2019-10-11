@@ -1,0 +1,18 @@
+
+
+
+<h3 class="ui header"><%= @title %></h3>
+
+<div class="ui segment"> 
+
+    <div class="ui right rail">
+    
+    </div>
+    <div class="ui left rail">
+    </div>
+
+    <div>
+        <%= raw(@content) %>
+    </div>
+
+</div>

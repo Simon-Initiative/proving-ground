@@ -19,7 +19,7 @@
         <%= if section.role != "student" do %>
         <div><%= link "Manage section", to: Routes.section_path(@conn, :show, section.id) %></div>
         <% end %>
-        <div><%= link "Enter course", to: Routes.section_path(@conn, :edit, section.id) %></div>
+        <div><%= link "Enter course", to: Routes.course_path(@conn, :index, section.id) %></div>
         
       </td>
     </tr>

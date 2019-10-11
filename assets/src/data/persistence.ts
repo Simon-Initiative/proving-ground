@@ -77,7 +77,7 @@ export function authenticatedFetch(params: HttpRequestParams): Promise<any> {
 
 export function persist(id: string, contents: Object): Promise<any> {
   
-  const url = `/api/page/${id}`;
+  const url = `/api/page/edit/${id}`;
 
   const body = JSON.stringify(contents);
   const method = 'POST';
