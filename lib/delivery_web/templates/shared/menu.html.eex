@@ -7,8 +7,8 @@
 <div class="ui fixed inverted menu">
   <div class="ui container">
     <a href="/" class="header item">
-      <img class="logo" src="/images/oli-icon.png">
-      Lean OLI
+      <img class="logo" src="/images/torus.png">
+      Tokamak
     </a>
     <div class="ui simple dropdown item">
       Courses <i class="dropdown icon"></i>
