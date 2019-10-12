@@ -1,24 +1,24 @@
-<div class="ui attached message">
+<div class="ui message">
+  <div style="float: right;">
+    <%= button("Edit", to: Routes.live_path(@conn, PackageLive.Edit, @package), method: "get", class: "ui button mini")  %>  
+  </div>
   <div class="header">
     <%= @package.title %>
   </div>
+  
   <p><%= @package.description %></p>
   <p>Version: <%= @package.version %></p>
 </div>
 
-<div class="ui form attached fluid segment">
-    <div>
-        <%= link "Edit Details", to: Routes.live_path(@conn, PackageLive.Edit, @package) %>
-    </div>
-    <div>
-        <%= link "Delete Package", to: '#',
-            phx_click: "delete_package",
-            phx_value: @package.id,
-            data: [confirm: "Are you sure?"] %>
-    </div>
-    <div>
-        <%= link "View activities", to: Routes.activity_path(@conn, :index, @package) %>
-    </div>
-</div>
+<div class="ui message">
 
-<span><%= link "Back", to: Routes.package_path(@conn, :index) %></span>
+  <div style="float: right;">
+    <%= button("New", to: Routes.activity_path(@conn, :new, @package.id), method: "get", class: "ui button tiny primary")  %>
+    <%= button("Publish all", to: Routes.activity_path(@conn, :publish_all, @package.id), method: :get, data: [confirm: "Are you sure?"], class: "ui button tiny") %>
+  </div>
+
+  <div class="header">
+    Activities
+  </div>
+  <%= render DeliveryWeb.ActivityView, "index.html", assigns %>
+</div>

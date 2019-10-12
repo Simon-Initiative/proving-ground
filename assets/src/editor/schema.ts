@@ -73,18 +73,39 @@ export const schema = {
     table: {
       nodes: [
         {
-          match: [{ type: 'row' }],
+          match: [{ type: 'thead' }, { type: 'tbody' }],
         },
       ],
     },
-    row: {
+    thead: {
       nodes: [
         {
-          match: [{ type: 'cell' }],
+          match: [{ type: 'tr' }],
         },
       ],
     },
-    cell: {
+    tbody: {
+      nodes: [
+        {
+          match: [{ type: 'tr' }],
+        },
+      ],
+    },
+    tr: {
+      nodes: [
+        {
+          match: [{ type: 'td' }, { type: 'th' }],
+        },
+      ],
+    },
+    td: {
+      nodes: [
+        {
+          match: [{ type: 'paragraph' },{ type: 'image' }],
+        },
+      ],
+    },
+    th: {
       nodes: [
         {
           match: [{ type: 'paragraph' },{ type: 'image' }],

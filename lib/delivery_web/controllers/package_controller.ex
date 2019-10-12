@@ -2,6 +2,7 @@ defmodule DeliveryWeb.PackageController do
   use DeliveryWeb, :controller
 
   alias Delivery.Packages
+  alias Delivery.Activities
 
   def index(conn, _params) do
     packages = Packages.list_packages()
@@ -10,7 +11,8 @@ defmodule DeliveryWeb.PackageController do
 
   def show(conn, %{"id" => id }) do
     package = Packages.get_package!(id)
-    render(conn, "show.html", package: package)
+    activities = Activities.list_activities_for(id)
+    render(conn, "show.html", package: package, activities: activities)
   end
 
   def delete(conn, %{"id" => id}) do

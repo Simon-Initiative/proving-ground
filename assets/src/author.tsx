@@ -13,6 +13,7 @@ import $ from 'jquery';
 
 
 interface MainProps {
+  packageId: string;
   id: string;
   title: string;
   content: Object;
@@ -37,6 +38,8 @@ export default class Main extends React.Component<MainProps, MainState> {
     super(props);
 
     this.onEdit = this.onEdit.bind(this);
+    this.onDone = this.onDone.bind(this);
+    this.onPublish = this.onPublish.bind(this);
 
     this.state = {
       snippets: Maybe.nothing(),
@@ -59,6 +62,16 @@ export default class Main extends React.Component<MainProps, MainState> {
       this.snippetId = s.length > 0 ? s[0].id : null;
       this.setState({ snippets: Maybe.just(s) });
     });
+  }
+
+  onDone() {
+    const { packageId, id } = this.props;
+    (window as any).location = `/packages/${packageId}/show`;
+  }
+
+  onPublish() {
+    const { packageId, id } = this.props;
+    (window as any).location = `/packages/${packageId}/activities/${id}/publish`;
   }
 
   onEdit(obj: Value) {
@@ -148,10 +161,26 @@ export default class Main extends React.Component<MainProps, MainState> {
     const addTable = () => {
 
       const p = (text) => Block.create({ type: 'paragraph', nodes: [{ object: 'text', text}]});
-      const cell = (text) => Block.create({ type: 'cell', nodes: [ p(text )]});
-      const row = (t1, t2) => Block.create({ type: 'row', nodes: [ cell(t1), cell(t2) ]});
+      const td = (text) => Block.create({ type: 'td', nodes: [ p(text )]});
+      const th = (text) => Block.create({ type: 'th', nodes: [ p(text )]});
+      
+      const thead = (t) => 
+        Block.create({ type: 'thead', nodes: [tr(th, t)]});
+      
+      const tr = (f, t) => 
+        Block.create({ type: 'tr', nodes: t.map(e => f(e))});
+
+      const tbody = (d) => 
+        Block.create({ type: 'tbody', nodes: d.map(e => tr(td, e))});
+
       const nodes = 
-        [ row('A', 'B'), row('A', 'B') ];
+        [ 
+          thead(['ID', 'Title', 'Description']), 
+          tbody([
+            ['1', 'Jaws', 'Shark scares beachgoers'],
+            ['2', 'Rocky', 'A nobody gets his chance'],
+            ['3', 'The Godfather', 'Crime pays'],
+          ])];
 
       const block = Block.create({ data: {}, type: 'table', nodes });
       this.editor.insertBlock(block);
@@ -280,6 +309,10 @@ export default class Main extends React.Component<MainProps, MainState> {
     return (
       
       <div>
+        <div style={ { float: 'right' } }>
+          <button onClick={this.onDone} className="ui button tiny primary">Done</button>
+          <button onClick={this.onPublish} className="ui button tiny ">Done and Publish</button>
+        </div>
         <h3>{title}</h3>
         <div className="ui segment">
         
@@ -306,6 +339,6 @@ export default class Main extends React.Component<MainProps, MainState> {
 
 (window as any).mountAuthor = (id, context) => {
   ReactDOM.render(
-    <Main id={context.id} title={context.title} content={context.content} />, 
+    <Main packageId={context.package} id={context.id} title={context.title} content={context.content} />, 
     document.getElementById(id));
 }

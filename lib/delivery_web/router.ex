@@ -64,14 +64,14 @@ defmodule DeliveryWeb.Router do
     post "/sections/:section_id/enrollment", SectionController, :add_enrollment
     delete "/sections/:section_id/enrollment/:id", SectionController, :remove_enrollment
 
-    resources "/packages/:package_id/activities", ActivityController
+    resources "/packages/:package_id/activities", ActivityController, except: [:edit]
     get "/packages/:package_id/activities/publish/all", ActivityController, :publish_all
     get "/packages/:package_id/activities/:activity_id/publish", ActivityController, :publish
 
     get "/course/:section_id", CourseController, :index
     get "/course/:section_id/:page_id", CourseController, :page
 
-    get "/page/edit/:id", PageController, :show
+    get "/packages/:package_id/activities/:id/edit", PageController, :show
 
     get "/users", UserController, :index
     get "/users/:id/edit", UserController, :edit
@@ -93,6 +93,7 @@ defmodule DeliveryWeb.Router do
     post "/question/:id", QuestionController, :write
 
     get "/packages/:package_id/activities/:activity_id", ActivityController, :read_api
+    get "/packages/:package_id/activities/:activity_id/edit", ActivityController, :read_api
 
   end
 end

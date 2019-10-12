@@ -94,14 +94,20 @@ export function renderBlock(props, editor, next) {
       return <YouTube {...props} />
     case 'table':
       return (
-        <table className="ui table">
-          <tbody {...attributes}>{children}</tbody>
+        <table {...attributes} className="ui celled compact table">
+          {children}
         </table>
       );
-    case 'row':
+    case 'tr':
       return <tr {...attributes}>{children}</tr>
-    case 'cell':
+    case 'td':
       return <td {...attributes}>{children}</td>
+    case 'th':
+      return <th {...attributes}>{children}</th>  
+    case 'thead':
+      return <thead {...attributes}>{children}</thead>  
+    case 'tbody':
+      return <tbody {...attributes}>{children}</tbody>  
     case 'example':
       return <Example {...props}/>;
     case 'multiple_choice':

@@ -19,5 +19,3 @@
   </div>
 
 <% end %>
-
-<span><%= link "Back", to: Routes.activity_path(@conn, :index, @package_id) %></span>

@@ -1,12 +1,5 @@
 
-<div style="float: right;">
-  <%= button("New", to: Routes.activity_path(@conn, :new, @package_id), method: "get", class: "ui button tiny primary")  %>
-  <%= button("Publish all", to: Routes.activity_path(@conn, :publish_all, @package_id), method: :get, data: [confirm: "Are you sure?"], class: "ui button tiny") %>
-</div>
-
-<h3>Activities</h3>
-
-<table class="ui celled table">
+<table class="ui celled compact table">
   <thead>
     <tr>
       <th class="twelve wide">Title</th>
@@ -17,7 +10,7 @@
   <tbody>
 <%= for activity <- @activities do %>
     <tr>
-      <td><%= activity.title %>
+      <td><%= link activity.title, to: Routes.page_path(@conn, :show, @package.id, activity) %>
         <%= if activity.is_draft do %>
           <a class="ui tiny yellow label">Draft</a>
         <% end %>
@@ -26,9 +19,7 @@
       
       <td>
         <% maybeDisabled = if activity.is_draft do "disabled" else "" end %>
-        <div><%= link "Publish", to: Routes.activity_path(@conn, :publish, @package_id, activity), method: :get, class: maybeDisabled %></div>
-        <div><%= link "Edit", to: Routes.page_path(@conn, :show, activity) %></div>
-        <div><%= link "Delete", to: Routes.activity_path(@conn, :delete, @package_id, activity), method: :delete, data: [confirm: "Are you sure?"] %></div>
+        <div><%= link "Delete", to: Routes.activity_path(@conn, :delete, @package.id, activity), method: :delete, data: [confirm: "Are you sure?"] %></div>
       </td>
     </tr>
 <% end %>

@@ -21,11 +21,11 @@ defmodule DeliveryWeb.ActivityController do
     Activities.publish_all(package_id)
 
     for %{:id => id} <- drafts do
-      DeliveryWeb.Endpoint.broadcast!("notification:" <> id, "publish", %{user: get_session(conn, :user)})
+      DeliveryWeb.Endpoint.broadcast!("notification:" <> Integer.to_string(id), "publish", %{user: get_session(conn, :user)})
     end
 
     conn
-      |> redirect(to: Routes.activity_path(conn, :index, package_id))
+      |> redirect(to: Routes.package_path(conn, :show, package_id))
   end
 
   def publish(conn, %{"package_id" => package_id, "activity_id" => activity_id}) do
@@ -33,7 +33,7 @@ defmodule DeliveryWeb.ActivityController do
     DeliveryWeb.Endpoint.broadcast!("notification:" <> activity_id, "publish", %{user: get_session(conn, :user)})
 
     conn
-      |> redirect(to: Routes.activity_path(conn, :index, package_id))
+      |> redirect(to: Routes.package_path(conn, :show, package_id))
   end
 
 

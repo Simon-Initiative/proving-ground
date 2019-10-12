@@ -14,11 +14,11 @@ defmodule DeliveryWeb.PageController do
 
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"id" => id, "package_id" => package_id }) do
 
     a = Activities.get_activity!(id)
 
-    render(conn, "index.html", id: a.id, title: a.title, content: Poison.encode!(a.draft_content))
+    render(conn, "index.html", package_id: package_id, id: a.id, title: a.title, content: Poison.encode!(a.draft_content))
   end
 
 end

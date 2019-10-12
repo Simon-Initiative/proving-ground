@@ -1,16 +1,86 @@
 defmodule DeliveryWeb.Utils.HTML do
 
   def to_html(%{"object" => "block", "type" => "paragraph", "nodes" => nodes}) do
-    IO.puts "p"
     "<p>" <> to_html(nodes) <> "</p>\n"
+  end
+
+  def to_html(%{"object" => "block", "type" => "table", "nodes" => nodes}) do
+    """
+    <table class="ui compact celled table">
+      #{to_html(nodes)}
+    </table>
+    """
+  end
+
+  def to_html(%{"object" => "block", "type" => "thead", "nodes" => nodes}) do
+    """
+    <thead>
+      #{to_html(nodes)}
+    </thead>
+    """
+  end
+
+  def to_html(%{"object" => "block", "type" => "tbody", "nodes" => nodes}) do
+    """
+    <tbody>
+      #{to_html(nodes)}
+    </tbody>
+    """
+  end
+
+  def to_html(%{"object" => "block", "type" => "tr", "nodes" => nodes}) do
+    """
+    <tr>
+      #{to_html(nodes)}
+    </tr>
+    """
+  end
+
+  def to_html(%{"object" => "block", "type" => "td", "nodes" => nodes}) do
+    """
+    <td>
+      #{to_html(nodes)}
+    </td>
+    """
+  end
+
+  def to_html(%{"object" => "block", "type" => "th", "nodes" => nodes}) do
+    """
+    <th>
+      #{to_html(nodes)}
+    </th>
+    """
   end
 
   def to_html(%{"object" => "block",
     "data" => %{"src" => src, "height" => height, "width" => width},
     "type" => "image"}) do
-    IO.puts "p"
     """
     <img style="display: block; margin-left: auto; margin-right: auto;" src=#{src} height=#{height} width=#{width}/>
+    """
+  end
+
+  def to_html(%{"object" => "block",
+    "type" => "code", "nodes" => nodes}) do
+    """
+    <div class="ui segment"
+      style="font-family: Menlo, Monaco, Courier New, monospace;
+        padding: 9px;
+        margin-left: 20px;
+        margin-right: 20px;
+        border: 1px solid #eeeeee;
+        border-left: 2px solid darkblue;
+        min-height: 60px;
+        position: relative;">
+      #{to_html(nodes)}
+    </div>
+    """
+  end
+
+  def to_html(%{"object" => "block",
+    "type" => "code_line", "nodes" => nodes}) do
+    """
+    <div>#{to_html(nodes)}</div>
     """
   end
 
