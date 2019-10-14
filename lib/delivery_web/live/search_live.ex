@@ -55,7 +55,7 @@ defmodule DeliveryWeb.SearchLive do
         Delivery.Repo, "SELECT id, concat(first_name,' ',last_name) \"name\", email FROM users WHERE to_tsvector(first_name || ' ' || last_name || ' ' || email) @@ to_tsquery($1) LIMIT 5;", [query])
 
     package_to_result = fn row -> %{ :link => Routes.package_path(DeliveryWeb.Endpoint, :show, hd(row)), :title => hd(tl(row)), :details => List.last(row) } end
-    activity_to_result = fn row -> %{ :link => Routes.activity_path(DeliveryWeb.Endpoint, :show, Enum.at(row, 1), hd(row)), :title => Enum.at(row, 2), :details => List.last(row) } end
+    activity_to_result = fn row -> %{ :link => Routes.page_path(DeliveryWeb.Endpoint, :show, Enum.at(row, 1), hd(row)), :title => Enum.at(row, 2), :details => List.last(row) } end
     user_to_result = fn row -> %{ :link => Routes.user_path(DeliveryWeb.Endpoint, :show, hd(row)), :title => hd(tl(row)), :details => List.last(row) } end
 
     categories = [
