@@ -64,11 +64,7 @@ export const schema = {
   },
   blocks: {
     paragraph: {
-      nodes: [
-        {
-          match: { object: 'text' },
-        },
-      ],
+      
     },
     table: {
       nodes: [

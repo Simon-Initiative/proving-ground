@@ -58,6 +58,7 @@ defmodule DeliveryWeb.Router do
     get "/packages", PackageController, :index
     get "/packages/:id/show", PackageController, :show
     get "/packages/:id/delete", PackageController, :delete
+    get "/packages/:id/qa/:type", PackageController, :qa
     live "/packages/new", PackageLive.New
     live "/packages/:id/edit", PackageLive.Edit
 

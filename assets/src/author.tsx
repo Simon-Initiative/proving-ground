@@ -28,6 +28,25 @@ interface MainState {
   snippets: Maybe<Snippet[]>;
   headers: Header[];
 }
+
+function wrapLink(editor, href) {
+  editor.wrapInline({
+    type: 'link',
+    data: { href },
+  })
+
+  editor.moveToEnd()
+}
+
+/**
+ * A change helper to standardize unwrapping links.
+ *
+ * @param {Editor} editor
+ */
+
+function unwrapLink(editor) {
+  editor.unwrapInline('link')
+}
   
 export default class Main extends React.Component<MainProps, MainState> {
 
@@ -125,6 +144,51 @@ export default class Main extends React.Component<MainProps, MainState> {
       const block = Block.create({ data, type: data.object, nodes });
       this.editor.insertBlock(block);
     };
+
+    const hasLinks = () => {
+      const { value } = this.editor;
+      return value.inlines.some(inline => inline.type === 'link')
+    }
+  
+
+    const onClickLink = event => {
+      event.preventDefault()
+  
+      const { editor } = this
+      const { value } = editor
+      const has = hasLinks();
+  
+      if (has) {
+        editor.command(unwrapLink)
+      } else if (value.selection.isExpanded) {
+        const href = window.prompt('Enter the URL of the link:')
+  
+        if (href == null) {
+          return
+        }
+  
+        editor.command(wrapLink, href);
+        
+      } else {
+        const href = window.prompt('Enter the URL of the link:')
+  
+        if (href == null) {
+          return
+        }
+  
+        const text = window.prompt('Enter the text for the link:')
+  
+        if (text == null) {
+          return
+        }
+  
+        editor
+          .insertText(text)
+          .moveFocusBackward(text.length)
+          .command(wrapLink, href)
+      }
+    };
+  
 
     const addCode = add.bind(this, create<Code>(
       { object: 'code', tags: [], id: guid(), language: 'javascript' }),
@@ -225,6 +289,7 @@ export default class Main extends React.Component<MainProps, MainState> {
             <div style={ { marginRight: '75px' } }>
             <div className="ui" style={ { position: 'fixed' } }>
               <div className="ui icon small basic vertical buttons" role="group" aria-label="First group">
+                <button onClick={onClickLink} type="button" className="ui button"><i className={'linkify icon'} /></button>
                 <button onClick={addCode} type="button" className="ui button"><i className={'code icon'} /></button>
                 <button onClick={addMath} type="button" className="ui button"><i className={'calculator icon'} /></button>
                 <button onClick={addImage} type="button" className="ui button"><i className={'image outline icon'} /></button>

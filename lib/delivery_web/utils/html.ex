@@ -11,6 +11,12 @@ defmodule DeliveryWeb.Utils.HTML do
 
   end
 
+  def to_html(%{"object" => "inline", "data" => %{"href" => href}, "type" => "link", "nodes" => nodes}) do
+    """
+    <a href="#{href}">#{to_html(nodes)}</a>
+    """
+  end
+
   def to_html(%{"object" => "block", "type" => "choice", "nodes" => nodes}) do
     """
     <div class="field">
@@ -164,13 +170,24 @@ defmodule DeliveryWeb.Utils.HTML do
   def to_html(%{"object" => "block",
     "data" => %{"src" => src, "height" => height, "width" => width},
     "type" => "image"}) do
+    IO.puts "html image"
     """
-    <img style="display: block; margin-left: auto; margin-right: auto;" src=#{src} height=#{height} width=#{width}/>
+    <img style="display: block; max-height: 500px; margin-left: auto; margin-right: auto;" src="#{src}" height=#{height} width=#{width}/>
+    """
+  end
+
+  def to_html(%{"object" => "block",
+    "data" => %{"src" => src },
+    "type" => "image"}) do
+    IO.puts "html image"
+    """
+    <img style="display: block; max-height: 500px; margin-left: auto; margin-right: auto;" src="#{src}"/>
     """
   end
 
   def to_html(%{"object" => "block",
     "type" => "code", "nodes" => nodes}) do
+
     """
     <div class="ui segment"
       style="font-family: Menlo, Monaco, Courier New, monospace;
@@ -241,6 +258,7 @@ defmodule DeliveryWeb.Utils.HTML do
   end
 
   def to_html(%{"object" => "block"}) do
+    IO.puts "html unkown"
     ""
   end
 
@@ -250,6 +268,7 @@ defmodule DeliveryWeb.Utils.HTML do
   end
 
   def to_html(_) do
+    IO.puts "html other"
     ""
   end
 
