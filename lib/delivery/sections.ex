@@ -39,6 +39,7 @@ defmodule Delivery.Sections do
           join: p in Package, on: a.package_id == p.id,
           join: s in Section, on: s.package_id == p.id,
           where: s.id == ^section_id,
+          order_by: a.id,
           select:  %{page_id: a.id, title: a.title }
     Repo.all(query)
   end

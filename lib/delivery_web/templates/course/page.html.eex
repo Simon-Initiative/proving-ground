@@ -15,3 +15,7 @@
     </div>
 
 </div>
+
+<%= if @next != nil do %>
+<%= link "Next: " <> @next.title, to: Routes.course_path(@conn, :page, @section_id, @next.page_id) %>
+<% end %>

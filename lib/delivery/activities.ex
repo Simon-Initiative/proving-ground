@@ -22,7 +22,7 @@ defmodule Delivery.Activities do
   end
 
   def list_activities_for(package_id) do
-    query = from a in Activity, where: a.package_id == ^package_id
+    query = from a in Activity, where: a.package_id == ^package_id, order_by: a.id
 
     # Send the query to the repository
     Repo.all(query)

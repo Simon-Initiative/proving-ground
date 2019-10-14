@@ -1,0 +1,520 @@
+{
+    "nodes": [
+      {
+        "data": {
+          
+        },
+        "nodes": [
+          {
+            "marks": [
+              
+            ],
+            "object": "text",
+            "text": "Battle of Fort Sumter"
+          }
+        ],
+        "object": "block",
+        "type": "heading-three"
+      },
+      {
+        "data": {
+          
+        },
+        "nodes": [
+          {
+            "data": {
+              
+            },
+            "nodes": [
+              {
+                "data": {
+                  
+                },
+                "nodes": [
+                  {
+                    "data": {
+                      
+                    },
+                    "nodes": [
+                      {
+                        "data": {
+                          
+                        },
+                        "nodes": [
+                          {
+                            "marks": [
+                              
+                            ],
+                            "object": "text",
+                            "text": "Side"
+                          }
+                        ],
+                        "object": "block",
+                        "type": "paragraph"
+                      }
+                    ],
+                    "object": "block",
+                    "type": "th"
+                  },
+                  {
+                    "data": {
+                      
+                    },
+                    "nodes": [
+                      {
+                        "data": {
+                          
+                        },
+                        "nodes": [
+                          {
+                            "marks": [
+                              
+                            ],
+                            "object": "text",
+                            "text": "Forces Engaged"
+                          }
+                        ],
+                        "object": "block",
+                        "type": "paragraph"
+                      }
+                    ],
+                    "object": "block",
+                    "type": "th"
+                  },
+                  {
+                    "data": {
+                      
+                    },
+                    "nodes": [
+                      {
+                        "data": {
+                          
+                        },
+                        "nodes": [
+                          {
+                            "marks": [
+                              
+                            ],
+                            "object": "text",
+                            "text": "Casualties"
+                          }
+                        ],
+                        "object": "block",
+                        "type": "paragraph"
+                      }
+                    ],
+                    "object": "block",
+                    "type": "th"
+                  }
+                ],
+                "object": "block",
+                "type": "tr"
+              }
+            ],
+            "object": "block",
+            "type": "thead"
+          },
+          {
+            "data": {
+              
+            },
+            "nodes": [
+              {
+                "data": {
+                  
+                },
+                "nodes": [
+                  {
+                    "data": {
+                      
+                    },
+                    "nodes": [
+                      {
+                        "data": {
+                          
+                        },
+                        "nodes": [
+                          {
+                            "marks": [
+                              
+                            ],
+                            "object": "text",
+                            "text": "Union"
+                          }
+                        ],
+                        "object": "block",
+                        "type": "paragraph"
+                      }
+                    ],
+                    "object": "block",
+                    "type": "td"
+                  },
+                  {
+                    "data": {
+                      
+                    },
+                    "nodes": [
+                      {
+                        "data": {
+                          
+                        },
+                        "nodes": [
+                          {
+                            "marks": [
+                              
+                            ],
+                            "object": "text",
+                            "text": "80"
+                          }
+                        ],
+                        "object": "block",
+                        "type": "paragraph"
+                      }
+                    ],
+                    "object": "block",
+                    "type": "td"
+                  },
+                  {
+                    "data": {
+                      
+                    },
+                    "nodes": [
+                      {
+                        "data": {
+                          
+                        },
+                        "nodes": [
+                          {
+                            "marks": [
+                              
+                            ],
+                            "object": "text",
+                            "text": "0"
+                          }
+                        ],
+                        "object": "block",
+                        "type": "paragraph"
+                      }
+                    ],
+                    "object": "block",
+                    "type": "td"
+                  }
+                ],
+                "object": "block",
+                "type": "tr"
+              },
+              {
+                "data": {
+                  
+                },
+                "nodes": [
+                  {
+                    "data": {
+                      
+                    },
+                    "nodes": [
+                      {
+                        "data": {
+                          
+                        },
+                        "nodes": [
+                          {
+                            "marks": [
+                              
+                            ],
+                            "object": "text",
+                            "text": "Confederate"
+                          }
+                        ],
+                        "object": "block",
+                        "type": "paragraph"
+                      }
+                    ],
+                    "object": "block",
+                    "type": "td"
+                  },
+                  {
+                    "data": {
+                      
+                    },
+                    "nodes": [
+                      {
+                        "data": {
+                          
+                        },
+                        "nodes": [
+                          {
+                            "marks": [
+                              
+                            ],
+                            "object": "text",
+                            "text": "500"
+                          }
+                        ],
+                        "object": "block",
+                        "type": "paragraph"
+                      }
+                    ],
+                    "object": "block",
+                    "type": "td"
+                  },
+                  {
+                    "data": {
+                      
+                    },
+                    "nodes": [
+                      {
+                        "data": {
+                          
+                        },
+                        "nodes": [
+                          {
+                            "marks": [
+                              
+                            ],
+                            "object": "text",
+                            "text": "0"
+                          }
+                        ],
+                        "object": "block",
+                        "type": "paragraph"
+                      }
+                    ],
+                    "object": "block",
+                    "type": "td"
+                  }
+                ],
+                "object": "block",
+                "type": "tr"
+              },
+              {
+                "data": {
+                  
+                },
+                "nodes": [
+                  {
+                    "data": {
+                      
+                    },
+                    "nodes": [
+                      {
+                        "data": {
+                          
+                        },
+                        "nodes": [
+                          {
+                            "marks": [
+                              {
+                                "data": {
+                                  
+                                },
+                                "object": "mark",
+                                "type": "italic"
+                              }
+                            ],
+                            "object": "text",
+                            "text": "Total"
+                          }
+                        ],
+                        "object": "block",
+                        "type": "paragraph"
+                      }
+                    ],
+                    "object": "block",
+                    "type": "td"
+                  },
+                  {
+                    "data": {
+                      
+                    },
+                    "nodes": [
+                      {
+                        "data": {
+                          
+                        },
+                        "nodes": [
+                          {
+                            "marks": [
+                              {
+                                "data": {
+                                  
+                                },
+                                "object": "mark",
+                                "type": "italic"
+                              }
+                            ],
+                            "object": "text",
+                            "text": "580"
+                          }
+                        ],
+                        "object": "block",
+                        "type": "paragraph"
+                      }
+                    ],
+                    "object": "block",
+                    "type": "td"
+                  },
+                  {
+                    "data": {
+                      
+                    },
+                    "nodes": [
+                      {
+                        "data": {
+                          
+                        },
+                        "nodes": [
+                          {
+                            "marks": [
+                              {
+                                "data": {
+                                  
+                                },
+                                "object": "mark",
+                                "type": "italic"
+                              }
+                            ],
+                            "object": "text",
+                            "text": "0"
+                          }
+                        ],
+                        "object": "block",
+                        "type": "paragraph"
+                      }
+                    ],
+                    "object": "block",
+                    "type": "td"
+                  }
+                ],
+                "object": "block",
+                "type": "tr"
+              }
+            ],
+            "object": "block",
+            "type": "tbody"
+          }
+        ],
+        "object": "block",
+        "type": "table"
+      },
+      {
+        "data": {
+          
+        },
+        "nodes": [
+          {
+            "marks": [
+              
+            ],
+            "object": "text",
+            "text": "Fort Sumter was located in the middle of the harbor of Charleston, South Carolina. Its garrison recently moved there to avoid incidents with local militias in the streets of the city. Lincoln told its commander, Maj. Anderson to hold on until fired upon. Confederate president Jefferson Davis ordered the surrender of the fort. Anderson gave a conditional reply that the Confederate government rejected, and Davis ordered General P. G. T. Beauregard to attack the fort before a relief expedition could arrive. He bombarded Fort Sumter on April 12\u201313, forcing its capitulation."
+          }
+        ],
+        "object": "block",
+        "type": "paragraph"
+      },
+      {
+        "data": {
+          "alt": "",
+          "caption": "",
+          "id": "",
+          "object": "image",
+          "src": "https:\/\/cdn.britannica.com\/40\/70740-050-EC81EE40\/Citizens-Charleston-bombardment-South-Carolina-Fort-Sumter-April-12-1861.jpg",
+          "tags": [
+            
+          ]
+        },
+        "nodes": [
+          {
+            "marks": [
+              
+            ],
+            "object": "text",
+            "text": ""
+          }
+        ],
+        "object": "block",
+        "type": "image"
+      },
+      {
+        "data": {
+          
+        },
+        "nodes": [
+          {
+            "marks": [
+              
+            ],
+            "object": "text",
+            "text": "The attack on Fort Sumter rallied the North to the defense of American nationalism. Historian Allan Nevins underscored the significance of the event:"
+          }
+        ],
+        "object": "block",
+        "type": "paragraph"
+      },
+      {
+        "data": {
+          
+        },
+        "nodes": [
+          {
+            "marks": [
+              
+            ],
+            "object": "text",
+            "text": "\"The thunderclap of Sumter produced a startling crystallization of Northern sentiment. ... Anger swept the land. From every side came news of mass meetings, speeches, resolutions, tenders of business support, the muster of companies and regiments, the determined action of governors and legislatures.\"[92]"
+          }
+        ],
+        "object": "block",
+        "type": "paragraph"
+      },
+      {
+        "data": {
+          
+        },
+        "nodes": [
+          {
+            "marks": [
+              
+            ],
+            "object": "text",
+            "text": "Union leaders incorrectly assumed that only a minority of Southerners were in favor of secession and that there were large numbers of southern Unionists that could be counted on. Had Northerners realized that most Southerners favored secession, they might have hesitated at attempting the enormous task of conquering a united South.[93]"
+          }
+        ],
+        "object": "block",
+        "type": "paragraph"
+      },
+      {
+        "data": {
+          
+        },
+        "nodes": [
+          {
+            "marks": [
+              
+            ],
+            "object": "text",
+            "text": "Lincoln called on all the states to send forces to recapture the fort and other federal properties. The scale of the rebellion appeared to be small, so he called for only 75,000 volunteers for 90 days.[94] The governor of Massachusetts had state regiments on trains headed south the next day. In western Missouri, local secessionists seized Liberty Arsenal.[95] On May 3, 1861, Lincoln called for an additional 42,000 volunteers for a period of three years.[96]"
+          }
+        ],
+        "object": "block",
+        "type": "paragraph"
+      },
+      {
+        "data": {
+          
+        },
+        "nodes": [
+          {
+            "marks": [
+              
+            ],
+            "object": "text",
+            "text": "Four states in the middle and upper South had repeatedly rejected Confederate overtures, but now Virginia, Tennessee, Arkansas, and North Carolina refused to send forces against their neighbors, declared their secession, and joined the Confederacy. To reward Virginia, the Confederate capital was moved to Richmond.[97]"
+          }
+        ],
+        "object": "block",
+        "type": "paragraph"
+      }
+    ]
+  }

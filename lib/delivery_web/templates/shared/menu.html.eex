@@ -8,7 +8,7 @@
   <div class="ui container">
     <a href="/" class="header item">
       <img class="logo" src="/images/torus.png">
-      Tokamak
+      Torus
     </a>
     <div class="ui simple dropdown item">
       Courses <i class="dropdown icon"></i>

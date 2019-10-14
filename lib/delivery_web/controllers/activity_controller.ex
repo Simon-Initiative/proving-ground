@@ -49,7 +49,7 @@ defmodule DeliveryWeb.ActivityController do
       {:ok, activity} ->
         conn
         |> put_flash(:info, "Activity created successfully.")
-        |> redirect(to: Routes.activity_path(conn, :show, activity_params["package_id"], activity))
+        |> redirect(to: Routes.page_path(conn, :show, activity_params["package_id"], activity))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset, package_id: activity_params["package_id"])

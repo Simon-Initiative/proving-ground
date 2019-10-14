@@ -4,6 +4,14 @@ defmodule DeliveryWeb.Utils.Markdown do
     to_markdown(nodes) <> "\n\n"
   end
 
+  def to_markdown(%{"object" => "block", "type" => "ordered-list", "nodes" => nodes}) do
+    to_markdown(nodes, "ordered") <> "\n\n"
+  end
+
+  def to_markdown(%{"object" => "block", "type" => "unordered-list", "nodes" => nodes}) do
+    to_markdown(nodes, "unordered") <> "\n\n"
+  end
+
   def to_markdown(%{"object" => "block", "type" => "heading-one", "nodes" => nodes}) do
     "# " <> to_markdown(nodes) <> "\n\n"
   end
@@ -52,6 +60,18 @@ defmodule DeliveryWeb.Utils.Markdown do
   def to_markdown(_) do
     IO.puts "empty"
     ""
+  end
+
+
+  def to_markdown(%{"object" => "block", "type" => "list-item", "nodes" => nodes}, type) do
+    to_markdown(nodes, type)
+  end
+
+  def to_markdown(%{"object" => "block", "type" => "list-item-child", "nodes" => nodes}, type) do
+    case type do
+      "ordered" -> "1." <> to_markdown(nodes) <> "\n"
+      _ -> "*" <> to_markdown(nodes) <> "\n"
+    end
   end
 
   def wrap_marks(text, marks) do

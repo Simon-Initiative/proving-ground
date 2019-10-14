@@ -1,7 +1,116 @@
 defmodule DeliveryWeb.Utils.HTML do
 
+  def label(text) do
+    """
+    <span style="text-transform: uppercase; color: lightgray;">#{text}</span>
+    """
+  end
+
   def to_html(%{"object" => "block", "type" => "paragraph", "nodes" => nodes}) do
     "<p>" <> to_html(nodes) <> "</p>\n"
+
+  end
+
+  def to_html(%{"object" => "block", "type" => "choice", "nodes" => nodes}) do
+    """
+    <div class="field">
+      <div class="ui radio checkbox">
+        <input type="radio" name="fruit" tabindex="0" class="hidden">
+        <label>#{to_html(nodes)}</label>
+      </div>
+    </div>
+    """
+  end
+
+  def to_html(%{"object" => "block", "type" => "choice_feedback", "nodes" => nodes}) do
+    to_html(nodes)
+  end
+
+  def to_html(%{"object" => "block", "type" => "stem", "nodes" => nodes}) do
+    to_html(nodes)
+  end
+
+  def to_html(%{"object" => "block", "type" => "list-item", "nodes" => nodes}) do
+    "<li>" <> to_html(nodes) <> "</li>\n"
+  end
+
+  def to_html(%{"object" => "block", "type" => "list-item-child", "nodes" => nodes}) do
+    to_html(nodes)
+  end
+
+  def to_html(%{"object" => "block", "type" => "ordered-list", "nodes" => nodes}) do
+    "<ol>" <> to_html(nodes) <> "</ol>\n"
+  end
+
+  def to_html(%{"object" => "block", "type" => "unordered-list", "nodes" => nodes}) do
+    "<ul>" <> to_html(nodes) <> "</ul>\n"
+  end
+
+  def to_html(%{"object" => "block", "type" => "example", "nodes" => nodes}) do
+    """
+    <div style="margin-left: 20px;
+                margin-right: 20px;
+                padding: 9px;
+                border: 1px solid #eeeeee;
+                border-left: 2px solid red;
+                position: relative;">
+      <div
+        style="position: absolute; top: 5px; right: 15px;"
+      >
+        #{label("Example")}
+      </div>
+      #{to_html(nodes)}
+    </div>
+    """
+  end
+
+
+  def to_html(%{"object" => "block", "type" => "multiple_choice", "nodes" => nodes}) do
+    """
+    <div style="margin-left: 30px;
+                margin-right: 10px;
+                padding: 15px;
+                border: 1px solid #eeeeee;
+                border-left: 2px solid darkblue;
+                position: relative;">
+      <div
+        style="position: absolute; top: 5px; right: 15px;"
+      >
+        #{label("Multiple Choice")}
+      </div>
+      #{stem(nodes)}
+      <div class="ui form">
+        <div class="grouped fields">
+          #{choices(nodes)}
+        </div>
+      </div>
+      <button class="ui button mini primary">Submit</button>
+    </div>
+    """
+  end
+
+  def to_html(%{"object" => "block", "type" => "math", "nodes" => nodes}) do
+    """
+    <div style="margin-left: 20px;
+                margin-right: 20px;
+                padding: 9px;
+                border: 1px solid #eeeeee;
+                border-left: 2px solid darkblue;
+                min-height: 60px;
+                font-family: Menlo, Monaco, Courier New, monospace;
+                position: relative;">
+      <div
+        style="position: absolute; top: 5px; right: 15px;"
+      >
+        #{label("Math")}
+      </div>
+      #{to_html(nodes)}
+    </div>
+    """
+  end
+
+  def to_html(%{"object" => "block", "type" => "math_line", "nodes" => nodes}) do
+    Map.get(nodes |> hd, "text")
   end
 
   def to_html(%{"object" => "block", "type" => "table", "nodes" => nodes}) do
@@ -87,7 +196,7 @@ defmodule DeliveryWeb.Utils.HTML do
   def to_html(%{"object" => "block",
     "data" => %{"src" => src},
     "type" => "youtube"}) do
-    IO.puts "p"
+
     """
     <iframe
       width="640"
@@ -124,35 +233,40 @@ defmodule DeliveryWeb.Utils.HTML do
   end
 
   def to_html(%{"object" => "text", "text" => text, "marks" => marks}) do
-    IO.puts "text-marks"
     wrap_marks(text, marks)
   end
 
   def to_html(%{"object" => "text", "text" => text}) do
-    IO.puts "text"
     text
   end
 
   def to_html(%{"object" => "block"}) do
-    IO.puts "block empty"
     ""
   end
 
   def to_html(nodes) when is_list(nodes) do
-    IO.puts "list"
     Enum.map(nodes, fn n -> to_html(n) end)
       |> Enum.join("\n")
   end
 
   def to_html(_) do
-    IO.puts "empty"
     ""
   end
 
+
+  def stem(nodes) do
+    Enum.filter(nodes, fn n -> Map.get(n, "type") == "stem" end)
+      |> hd
+      |> to_html()
+  end
+
+  def choices(nodes) do
+    Enum.filter(nodes, fn n -> Map.get(n, "type") == "choice_feedback" end)
+      |> Enum.map(fn c -> to_html(c) end)
+      |> Enum.join("\n")
+  end
+
   def wrap_marks(text, marks) do
-    IO.puts "wrap-marks"
-    IO.inspect text
-    IO.inspect marks
     map = %{
       "sub" => "sub",
       "sup" => "sup",

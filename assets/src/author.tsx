@@ -232,7 +232,6 @@ export default class Main extends React.Component<MainProps, MainState> {
                 <button onClick={addTable} type="button" className="ui button"><i className={'table icon'} /></button>
                 <button onClick={addExample} type="button" className="ui button"><i className={'balance scale icon'} /></button>
                 <button onClick={addQuestion} type="button" className="ui button"><i className={'question icon'} /></button>
-                <button onClick={addDelivery} type="button" className="ui button"><i className={'graduation cap icon'} /></button>
                 <button onClick={addOrdered} type="button" className="ui button"><i className={'list ol icon'} /></button>
                 <button onClick={addUnordered} type="button" className="ui button"><i className={'list ul icon'} /></button>
               </div>

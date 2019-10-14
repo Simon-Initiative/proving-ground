@@ -43,7 +43,7 @@ defmodule DeliveryWeb.Router do
   scope "/", DeliveryWeb do
     pipe_through :browser
 
-    get "/", RootController, :index
+
     get "/login", LoginController, :show
     post "/login", LoginController, :login
     get "/users/new", UserController, :new
@@ -54,6 +54,7 @@ defmodule DeliveryWeb.Router do
   scope "/", DeliveryWeb do
     pipe_through :protected
 
+    get "/", RootController, :index
     get "/packages", PackageController, :index
     get "/packages/:id/show", PackageController, :show
     get "/packages/:id/delete", PackageController, :delete

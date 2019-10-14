@@ -51,8 +51,8 @@ export function DeliveryQuestion(props) {
     : null;
 
   const submitOrReset = answered
-    ? <button onClick={() => setAnswer(null)} className="btn btn-primary">Reset</button>
-    : <button onClick={() => setAnswer(pendingAnswer)} className="btn btn-primary">Submit</button>
+    ? <button onClick={() => setAnswer(null)} className="ui button primary">Reset</button>
+    : <button onClick={() => setAnswer(pendingAnswer)} className="ui button primary">Submit</button>
 
   return (
     <div {...props.attributes} style={ exampleStyle }>

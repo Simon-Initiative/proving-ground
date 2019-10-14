@@ -3,7 +3,7 @@
     <h2 class="ui primary image header">
       <img src="/images/torus.png" class="image">
       <div class="content">
-        Welcome!
+        Welcome to Torus
       </div>
     </h2>
     <%= form_for @changeset, Routes.login_path(@conn, :login), [class: "ui large form"], fn _f -> %>
