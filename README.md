@@ -12,7 +12,7 @@ Have installed the following:
 
 ## Setup Instructions
 
-1. Start dockerized postgres via the included convenience script:
+1. Start dockerized postgres 12 via the included convenience script:
 ```
 $ ./db.sh
 ```
@@ -29,9 +29,13 @@ $ mix ecto.create
 ```
 $ mix ecto.migrate
 ```
-5. Start Phoenix server
+5. Seed the database with some test data.
+```
+$ mix run priv/repo/seeds.exs
+```
+6. Start Phoenix server
 ```
 $ mix phx.server
 ```
-
+7. Access the app at `localhost:4000`
 
