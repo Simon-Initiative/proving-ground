@@ -5,7 +5,6 @@
 
 <%= button "Hyperlinks", method: "get", to: Routes.qa_path(@conn, :check, @package.id, "links"), class: "ui button tiny" %>
 <%= button "Images", method: "get", to: Routes.qa_path(@conn, :check, @package.id, "images"), class: "ui button tiny" %>
-<%= button "Youtube", method: "get", to: Routes.qa_path(@conn, :check, @package.id, "youtube"), class: "ui button tiny" %>
 <%= button "Tables", method: "get", to: Routes.qa_path(@conn, :check, @package.id, "tables"), class: "ui button tiny" %>
 <%= button "Code", method: "get", to: Routes.qa_path(@conn, :check, @package.id, "code"), class: "ui button tiny" %>
 

@@ -52,7 +52,7 @@ defmodule DeliveryWeb.SearchLive do
         Delivery.Repo, "SELECT id, title, description FROM packages WHERE to_tsvector(title || ' ' || description) @@ to_tsquery($1) LIMIT 5;", [query])
 
     {:ok, %{rows: user_rows, num_rows: u_rows }} = Ecto.Adapters.SQL.query(
-        Delivery.Repo, "SELECT id, concat(first_name,' ',last_name) \"name\", email FROM users WHERE to_tsvector(first_name || ' ' || last_name || ' ' || email) @@ to_tsquery($1) LIMIT 5;", [query])
+        Delivery.Repo, "SELECT id, concat(first_name,' ',last_name) \"name\", email FROM users WHERE to_tsvector(first_name || ' ' || last_name) @@ to_tsquery($1) LIMIT 5;", [query])
 
     package_to_result = fn row -> %{ :link => Routes.package_path(DeliveryWeb.Endpoint, :show, hd(row)), :title => hd(tl(row)), :details => List.last(row) } end
     activity_to_result = fn row -> %{ :link => Routes.page_path(DeliveryWeb.Endpoint, :show, Enum.at(row, 1), hd(row)), :title => Enum.at(row, 2), :details => List.last(row) } end
@@ -60,7 +60,7 @@ defmodule DeliveryWeb.SearchLive do
 
     categories = [
       %{:name => "Packages", :results => Enum.map(package_rows, package_to_result), :count => p_rows },
-      %{:name => "Activities", :results => Enum.map(activity_rows, activity_to_result), :count => a_rows },
+      %{:name => "Pages", :results => Enum.map(activity_rows, activity_to_result), :count => a_rows },
       %{:name => "Users", :results => Enum.map(user_rows, user_to_result), :count => u_rows },
     ] |> Enum.filter(fn m -> m[:count] > 0 end)
 

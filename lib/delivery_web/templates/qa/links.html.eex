@@ -3,22 +3,28 @@
 <table class="ui celled compact table">
   <thead>
     <tr>
-      <th>Page</th><th>Element</th>
+      <th>Status</th><th>Page</th><th>Href</th><th>Rendered As</th>
     </tr>
   </thead>
   <tbody>
     <%= for result <- @results do %>
       <tr>
+        <td>
+          <%= if result.status == false do %>
+            <div class="ui red label">
+              Broken
+            </div>
+          <% end %>
+        </td>
         <td><%= link result.title, to: Routes.page_path(@conn, :show, @package.id, result.id) %>
           
         </td>
         <td>
+          <%= raw(Map.get(result.raw, "data") |> Map.get("href")) %>
+          
+        </td>
+        <td>
           <%= raw(result.element)%>
-          <%= if result.status == false do %>
-            <div class="ui left pointing red basic label">
-              This link seems broken!
-            </div>
-          <% end %>
         </td>
       </tr>
     <% end %>
