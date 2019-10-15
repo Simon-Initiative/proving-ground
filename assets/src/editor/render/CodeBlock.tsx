@@ -2,6 +2,7 @@ import * as React from 'react';
 import { mutate, getData, Code } from 'data/content/types';
 
 export function CodeBlock(props) {
+
   const { editor, node } = props;
   const code = getData<Code>(node.data);
   
@@ -41,7 +42,7 @@ export function CodeBlock(props) {
         style={{ position: 'absolute', bottom: '5px', right: '25px' }}
       >
         <select value={code.language} onChange={onChange}>
-          <option value="python">Python Sucks</option>
+          <option value="python">Python</option>
           <option value="css">CSS</option>
           <option value="js">JavaScript</option>
           <option value="html">HTML</option>

@@ -19,3 +19,6 @@
 <%= if @next != nil do %>
 <%= link "Next: " <> @next.title, to: Routes.course_path(@conn, :page, @section_id, @next.page_id) %>
 <% end %>
+<%= if @next == nil do %>
+<%= link "Next: Glossary", to: Routes.course_path(@conn, :glossary, @section_id) %>
+<% end %>

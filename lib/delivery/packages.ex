@@ -55,6 +55,30 @@ defmodule Delivery.Packages do
     |> Repo.insert()
   end
 
+
+  def get_glossary_terms(id) do
+    sql =
+      """
+      SELECT id, title, jsonb_path_query(content, '$.** ? (@.type == "definition")') FROM activities WHERE package_id = $1;
+      """
+
+    {:ok, %{rows: results }} = Ecto.Adapters.SQL.query(
+        Delivery.Repo, sql, [id])
+
+    results = Enum.map(results, fn r -> %{
+      id: Enum.at(r, 0),
+      title: Enum.at(r, 1),
+      term: Enum.at(r, 2) |> Map.get("nodes") |> hd |> Map.get("text"),
+      definition: Enum.at(r, 2) |> Map.get("data") |> Map.get("definition"),
+      }
+    end)
+
+    mapped_results = Enum.reduce(results, %{}, fn e, m -> Map.put(m, Map.get(e, :term), e) end)
+
+    Map.keys(mapped_results) |> Enum.map(fn e -> Map.get(mapped_results, e) end)
+  end
+
+
   @doc """
   Updates a package.
 

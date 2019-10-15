@@ -11,5 +11,11 @@
                 </div>
             </div>
         <% end %>
+        <div class="item">
+            <i class="large book alternate middle aligned icon"></i>
+            <div class="content">
+                <div class="header"><%= link "Glossary", to: Routes.course_path(@conn, :glossary, @section_id) %></div>
+            </div>
+        </div>
     </div>
 </div>

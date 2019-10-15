@@ -3,7 +3,7 @@ import * as Immutable from 'immutable';
 import { Editor, Block } from 'slate';
 import { CodeBlock, CodeBlockLine } from './CodeBlock';
 import { MathBlock, MathBlockLine } from './MathBlock';
-import { InlineData, InlineStyle, BlockStyle, BlockData, Code, getData } from 'data/content/types';
+import { InlineData, InlineStyle, BlockStyle, BlockData, Code, getData, Definition } from 'data/content/types';
 import { Image } from './Image';
 import { MultipleChoice, Choice, Feedback, Stem } from './MultipleChoice';
 import YouTube from './YouTube';
@@ -169,13 +169,18 @@ export function renderInline(extras, props, editor: Editor, next) {
   };
 
   const blue = { color: 'blue' };
+  const green = { color: 'green' };
 
   switch (node.type) {
     case 'link': {
       return <span style={blue} {...attributes}>{children}</span>;
     }
     case 'definition': {
-      return <span style={blue} {...attributes}>{children}</span>;
+      return <span 
+      class="definition" 
+      data-title="Definition" 
+      data-content={getData<Definition>(node.data).definition} 
+      style={green} {...attributes}>{children}</span>;
     }
 
     default: {

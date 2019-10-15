@@ -74,7 +74,9 @@ defmodule DeliveryWeb.Router do
     get "/packages/:package_id/activities/:activity_id/publish", ActivityController, :publish
 
     get "/course/:section_id", CourseController, :index
+    get "/course/:section_id/glossary", CourseController, :glossary
     get "/course/:section_id/:page_id", CourseController, :page
+
 
     get "/packages/:package_id/activities/:id/edit", PageController, :show
 

@@ -76,7 +76,7 @@ export interface Cite {
 
 export interface Definition {
   object: 'definition';
-  content: string;
+  definition: string;
 };
 
 export interface Input {

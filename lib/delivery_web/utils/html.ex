@@ -17,6 +17,12 @@ defmodule DeliveryWeb.Utils.HTML do
     """
   end
 
+  def to_html(%{"object" => "inline", "data" => %{"definition" => definition}, "type" => "definition", "nodes" => nodes}) do
+    """
+    <span class="definition" style="color: green;" data-title="Definition" data-content="#{definition}">#{to_html(nodes)}</span>
+    """
+  end
+
   def to_html(%{"object" => "block", "type" => "choice", "nodes" => nodes}) do
     """
     <div class="field">
@@ -216,12 +222,13 @@ defmodule DeliveryWeb.Utils.HTML do
 
     """
     <iframe
+      id="#{src}"
       width="640"
       height="476"
       src="https://www.youtube.com/embed/#{src}"
       frameBorder="0"
       style="display: block; margin-left: auto; margin-right: auto;"
-    />
+    ></iframe>
     """
   end
 

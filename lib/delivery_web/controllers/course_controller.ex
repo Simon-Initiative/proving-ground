@@ -3,6 +3,7 @@ defmodule DeliveryWeb.CourseController do
 
   alias Delivery.Sections
   alias Delivery.Activities
+  alias Delivery.Packages
 
   def index(conn, %{ "section_id" => section_id }) do
 
@@ -13,10 +14,12 @@ defmodule DeliveryWeb.CourseController do
   end
 
   def next_page(pages, current_id) do
+
     case Enum.drop_while(pages, fn p -> p.page_id != String.to_integer(current_id) end) |> tl do
       [] -> nil
       [next|_] -> next
     end
+
   end
 
   def page(conn, %{ "section_id" => section_id, "page_id" => page_id }) do
@@ -30,5 +33,12 @@ defmodule DeliveryWeb.CourseController do
     render(conn, "page.html", next: next, title: page.title, content: translated_content, section_id: section_id, activity_id: page_id)
   end
 
+  def glossary(conn, %{ "section_id" => section_id }) do
+
+    section = Sections.get_section!(section_id)
+    terms = Packages.get_glossary_terms(section.package_id)
+
+    render(conn, "glossary.html", terms: terms)
+  end
 
 end

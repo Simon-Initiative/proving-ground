@@ -1,0 +1,17 @@
+
+<h3 class="ui header">Glossary</h3>
+
+<div class="ui segment"> 
+
+  <div class="ui large divide list">
+  <%= for p <- @terms do %>
+    <div class="item">
+      <div class="content">
+        <a class="header"><%= p.term %></a>
+        <div class="description"><%= p.definition %></div>
+      </div>
+    </div>
+  <% end %>
+  </div>
+  
+</div>

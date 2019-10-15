@@ -37,6 +37,14 @@ function wrapLink(editor, href) {
 
   editor.moveToEnd()
 }
+function wrapDefinition(editor, definition) {
+  editor.wrapInline({
+    type: 'definition',
+    data: { definition },
+  })
+
+  editor.moveToEnd()
+}
 
 /**
  * A change helper to standardize unwrapping links.
@@ -46,6 +54,10 @@ function wrapLink(editor, href) {
 
 function unwrapLink(editor) {
   editor.unwrapInline('link')
+}
+
+function unwrapDefinition(editor) {
+  editor.unwrapInline('definition')
 }
   
 export default class Main extends React.Component<MainProps, MainState> {
@@ -168,7 +180,7 @@ export default class Main extends React.Component<MainProps, MainState> {
         }
   
         editor.command(wrapLink, href);
-        
+
       } else {
         const href = window.prompt('Enter the URL of the link:')
   
@@ -187,6 +199,27 @@ export default class Main extends React.Component<MainProps, MainState> {
           .moveFocusBackward(text.length)
           .command(wrapLink, href)
       }
+    };
+
+    const onClickDefinition = event => {
+      event.preventDefault()
+  
+      const { editor } = this
+      const { value } = editor
+      const has = hasLinks();
+  
+      if (has) {
+        editor.command(unwrapDefinition)
+      } else if (value.selection.isExpanded) {
+        const href = window.prompt('Enter the definition:')
+  
+        if (href == null) {
+          return
+        }
+  
+        editor.command(wrapDefinition, href);
+
+      } 
     };
   
 
@@ -290,6 +323,7 @@ export default class Main extends React.Component<MainProps, MainState> {
             <div className="ui" style={ { position: 'fixed' } }>
               <div className="ui icon small basic vertical buttons" role="group" aria-label="First group">
                 <button onClick={onClickLink} type="button" className="ui button"><i className={'linkify icon'} /></button>
+                <button onClick={onClickDefinition} type="button" className="ui button"><i className={'book icon'} /></button>
                 <button onClick={addCode} type="button" className="ui button"><i className={'code icon'} /></button>
                 <button onClick={addMath} type="button" className="ui button"><i className={'calculator icon'} /></button>
                 <button onClick={addImage} type="button" className="ui button"><i className={'image outline icon'} /></button>
