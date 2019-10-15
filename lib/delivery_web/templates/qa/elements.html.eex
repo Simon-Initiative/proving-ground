@@ -1,0 +1,21 @@
+<%= render DeliveryWeb.QAView, "header.html", assigns %>
+
+<table class="ui celled compact table">
+  <thead>
+    <tr>
+      <th>Page</th><th>Element</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for result <- @results do %>
+      <tr>
+        <td><%= link result.title, to: Routes.page_path(@conn, :show, @package.id, result.id) %>
+          
+        </td>
+        <td>
+          <%= raw(result.element)%>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

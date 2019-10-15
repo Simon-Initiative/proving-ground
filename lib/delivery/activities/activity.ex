@@ -24,7 +24,7 @@ defmodule Delivery.Activities.Activity do
   def changeset(activity, attrs) do
     activity
     |> cast(attrs, [:package_id, :is_draft, :friendly, :type, :timed, :require_completion, :grading_strategy, :tags, :title, :draft_title, :content, :draft_content])
-    |> validate_required([:friendly, :type, :timed, :require_completion, :title, :content])
+    |> validate_required([:friendly, :timed, :require_completion, :title, :content])
   end
 
 end

@@ -101,6 +101,6 @@ defmodule DeliveryWeb.ActivityController do
 
     conn
     |> put_flash(:info, "Activity deleted successfully.")
-    |> redirect(to: Routes.activity_path(conn, :index, package_id))
+    |> redirect(to: Routes.package_path(conn, :show, package_id))
   end
 end

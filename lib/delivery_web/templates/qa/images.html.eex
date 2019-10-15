@@ -1,0 +1,26 @@
+<%= render DeliveryWeb.QAView, "header.html", assigns %>
+
+<table class="ui celled compact table">
+  <thead>
+    <tr>
+      <th>Image</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for result <- @results do %>
+      <tr>
+        <td>
+          <div><b>Page:</b> <%= link result.title, to: Routes.page_path(@conn, :show, @package.id, result.id) %></div>
+          <div><b>Alt text:</b> <%= Map.get(result.raw, "alt")%> 
+            <%= if !Map.has_key?(result.raw, "alt") do %>
+            <div class="ui left pointing red basic label">
+              Missing alt text!
+            </div>
+          <% end %>
+          </div>
+          <%= raw(result.element)%>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

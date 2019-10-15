@@ -3,7 +3,6 @@
   <thead>
     <tr>
       <th class="twelve wide">Title</th>
-      <th class="two wide">Type</th>
       <th class="two wide"></th>
     </tr>
   </thead>
@@ -15,7 +14,6 @@
           <a class="ui tiny yellow label">Draft</a>
         <% end %>
       </td>
-      <td><%= activity.type %></td>
       
       <td>
         <% maybeDisabled = if activity.is_draft do "disabled" else "" end %>

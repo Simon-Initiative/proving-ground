@@ -1,4 +1,4 @@
-<h3>Edit Activity</h3>
+<h3>Edit Page Details</h3>
 
 <%= form_for @changeset, @action, [class: "ui form"], fn f -> %>
   <%= if @changeset.action do %>
@@ -9,7 +9,6 @@
 
   <%= input f, :title %>
   <%= input f, :friendly %>
-  <%= input f, :type %>
   <%= input f, :timed %>
   <%= input f, :require_completion %>
   <%= input f, :grading_strategy %>
