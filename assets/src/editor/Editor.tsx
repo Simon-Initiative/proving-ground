@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import * as Immutable from 'immutable';
 import { Maybe } from 'tsmonad';
 import { Editor as Slate, getEventTransfer } from 'slate-react';
@@ -31,6 +32,52 @@ function getContent(token) {
   }
 }
 
+const MarkButton = ({ editor, type, icon }) => {
+  const { value } = editor
+  const isActive = value.activeMarks.some(mark => mark.type === type)
+  const activeStyle = isActive 
+    ? { color: "blue" } : {};
+
+  return (
+    <button onMouseDown={event => {
+      event.preventDefault()
+      editor.toggleMark(type)
+    }}
+    style={activeStyle}
+    className="ui button"><i className={`${icon} icon`}></i></button>
+  );
+}
+
+const HoverMenu = React.forwardRef((e, ref) => {
+  const editor = (e as any).editor;
+  const root = window.document.getElementById('root')
+
+  const style = {
+    padding: '8px 7px 6px',
+    position: 'absolute',
+    zIndex: 1,
+    top: '-10000px',
+    left: '-10000px',
+    marginTop: '-6px',
+    opacity: 0,
+    backgroundColor: '#222',
+    borderRadius: '4px',
+    transition: 'opacity 0.75s',
+  } as any;
+
+  return ReactDOM.createPortal(
+    <div 
+      style={style}
+      className="ui small basic icon buttons"
+      ref={ref}>
+
+      <MarkButton editor={editor} type="bold" icon="format_bold" />
+      <MarkButton editor={editor} type="italic" icon="format_italic" />
+      <MarkButton editor={editor} type="underlined" icon="format_underlined" />
+      <MarkButton editor={editor} type="code" icon="code" />
+    </div>
+  )
+})
 
 export class Editor extends React.Component<EditorProps, EditorState> {
 
@@ -47,8 +94,60 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
   }
 
-  componentDidMount() {
+  menuRef = React.createRef()
+
+  /**
+   * On update, update the menu.
+   */
+
+  componentDidMount = () => {
     this.props.onInit(this.editor);
+    this.updateMenu()
+  }
+
+  componentDidUpdate = () => {
+    this.updateMenu()
+  }
+
+  /**
+   * Update the menu's absolute position.
+   */
+
+  updateMenu = () => {
+    let menu = this.menuRef.current;
+    if (!menu) return;
+
+    menu = menu as any;
+
+    const { value } = this.state;
+    const { fragment, selection } = value;
+
+    if (selection.isBlurred || selection.isCollapsed || fragment.text === '') {
+      (menu as any).removeAttribute('style');
+      return;
+    }
+
+    const native = window.getSelection();
+    const range = native.getRangeAt(0);
+    const rect = (range as any).getBoundingClientRect();
+    (menu as any).style.opacity = 1;
+    (menu as any).style.top =
+      (rect as any).top + (window as any).pageYOffset - (menu as any).offsetHeight + 'px';
+
+    (menu as any).style.left = `${(rect as any).left +
+      window.pageXOffset -
+      (menu as any).offsetWidth / 2 +
+      (rect as any).width / 2}px`
+  }
+
+  renderEditor = (props, editor, next) => {
+    const children = next()
+    return (
+      <React.Fragment>
+        {children}
+        <HoverMenu ref={this.menuRef} editor={editor} />
+      </React.Fragment>
+    )
   }
 
   onChange = ({ value }) => {
@@ -348,6 +447,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
           decorateNode={this.decorateNode}
           renderBlock={renderBlock}
           renderMark={renderMark}
+          renderEditor={this.renderEditor}
           renderInline={renderInline.bind(this, extras)}
         />
       </div>
