@@ -15,6 +15,7 @@ export interface EditorProps {
   onSelectInline: (inline: Maybe<Inline>) => void;
   onLink: () => void;
   onDefinition: () => void;
+  onSnippet: () => void;
   orderedIds: Immutable.Map<string, number>;
   onEdit: (obj: Object) => void;
   model: Object;
@@ -67,6 +68,7 @@ const HoverMenu = React.forwardRef((e, ref) => {
   const editor = (e as any).editor;
   const onLink = (e as any).onLink;
   const onDefinition = (e as any).onDefinition;
+  const onSnippet = (e as any).onSnippet;
   const root = window.document.getElementById('app')
 
   const style = {
@@ -91,6 +93,7 @@ const HoverMenu = React.forwardRef((e, ref) => {
         <MarkButton editor={editor} type="code" icon="code" />
         <ActionButton onClick={onLink} editor={editor} icon="linkify" />
         <ActionButton onClick={onDefinition} editor={editor} icon="book" />
+        <ActionButton onClick={onSnippet} editor={editor} icon="save outline" />
         
       </div>
     </div>, root
@@ -154,17 +157,12 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     (menu as any).style.position = 'relative';
     (menu as any).style.top =
       (rect as any).top + (window as any).pageYOffset - 150 + 'px';
-
-
-    console.log("offsetWidth: " + (menu as any).offsetHeight);
-    console.log("rect: " + (rect as any).top);
-    console.log("pageY: " + (window as any).pageYOffset);
     
     const left = (rect as any).left +
     window.pageXOffset -
     (menu as any).offsetWidth / 2 +
     (rect as any).width / 2
-    - 120;
+    - 150;
 
     (menu as any).style.left = `${left}px`
   }
@@ -175,6 +173,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       editor: editor,
       onLink: this.props.onLink,
       onDefinition: this.props.onDefinition,
+      onSnippet: this.props.onSnippet,
     };
     return (
       <React.Fragment>

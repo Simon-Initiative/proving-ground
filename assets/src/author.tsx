@@ -220,66 +220,31 @@ export default class Main extends React.Component<MainProps, MainState> {
     );
   }
 
-  renderSnippets() {
 
-    const createSnippetHandler = (e) => {
-      e.preventDefault()
-      if (!this.editor.value.selection.isCollapsed) {
-        const name = window.prompt('Enter the name of this snippet:');
-        if (!name) return;
-        const { anchor, focus } = this.editor.value.selection;
-        const nodes = this.editor.value.document.getFragmentAtRange({ anchor, focus });
-        const content = { nodes };
-        const id = guid();
-        const snippet = { name, content, id };
-        createSnippet(snippet);
+  createSnippetHandler = () => {
+    
+    if (!this.editor.value.selection.isCollapsed) {
+      const name = window.prompt('Enter the name of this snippet:');
+      if (!name) return;
+      const { anchor, focus } = this.editor.value.selection;
+      const nodes = this.editor.value.document.getFragmentAtRange({ anchor, focus });
+      const content = { nodes };
+      const id = guid();
+      const snippet = { name, content, id };
+      createSnippet(snippet);
 
-        this.state.snippets.lift(s => {
-          this.setState({
-            snippets: Maybe.just([snippet, ...s])
-          });
+      this.state.snippets.lift(s => {
+        this.setState({
+          snippets: Maybe.just([snippet, ...s])
         });
-      }
-    };
-
-    const insertSnippet = (e) => {
-      e.preventDefault();
-
-      this.state.snippets.lift(snippets => {
-        const s = snippets
-          .filter(s => s.id == this.snippetId)[0];
-        const fragment = Document.fromJSON((s.content as any).nodes);
-        this.editor.insertFragment(fragment);
       });
-      
-    };
+    }
+  };
 
-    const mapper = s => <option key={s.id} value={s.id}>{s.title}</option>
-
-
-    const options = this.state.snippets.
-      caseOf({
-        just: (sn => sn.map(mapper)) as any,
-        nothing: () => <option>Loading...</option>
-      });
-
-    return (
-      <div style={ { marginTop: '100px' }}>
-        <div><b>Library</b></div>
-          <div>
-          <select
-            onChange={e => this.snippetId = e.target.value}
-            style={ { width: '200px' } } className="form-control form-control-sm" id="inputGroupSelect03">
-            {options}
-          </select>
-          </div>
-          <div className="ui icon small basic buttons" role="group" aria-label="First group">
-            <button onClick={insertSnippet} type="button" className="ui button"><i className={'ui icon add'} /></button>
-            <button onClick={createSnippetHandler} type="button" className="ui button"><i className={'ui icon save'} /></button>
-          </div>
-      </div>
-    );
-  }
+  insertSnippet = (s) => {
+    const fragment = Document.fromJSON((s.content as any).nodes);
+    this.editor.insertFragment(fragment);
+  };
 
   renderToolbar2() {
 
@@ -375,6 +340,11 @@ export default class Main extends React.Component<MainProps, MainState> {
     }
 
 
+    const snippets = this.state.snippets.caseOf({
+    just: s => s.map(sn => <a className="item" onClick={this.insertSnippet.bind(this, sn)}>{sn.name}</a>),
+      nothing: () => [],
+    });
+
     return (
       <div className="ui" style={ { marginLeft: '140px', position: 'fixed' } }>
       <div className="ui secondary mini vertical menu">
@@ -417,13 +387,9 @@ export default class Main extends React.Component<MainProps, MainState> {
         </div>
         <div className="ui dropdown item">
           <i className="dropdown icon"></i>
-          Snippets
+          Library
           <div className="menu">
-            <a className="item"><i className="plus icon"></i>Create new</a>
-            <div className="divider"></div>
-            <a className="item">Small</a>
-            <a className="item">Medium</a>
-            <a className="item">Large</a>
+            {snippets}
           </div>
         </div>
         <div className="ui dropdown item">
@@ -471,6 +437,7 @@ export default class Main extends React.Component<MainProps, MainState> {
             <Editor 
               onLink={this.onClickLink}
               onDefinition={this.onClickDefinition}
+              onSnippet={this.createSnippetHandler}
               onInit={(e) => this.editor = e}
               onSelectInline={() => {}}
               onEdit={this.onEdit}
