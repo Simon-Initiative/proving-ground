@@ -2,7 +2,6 @@ defmodule DeliveryWeb.QAController do
   use DeliveryWeb, :controller
 
   alias Delivery.Packages
-  alias Delivery.Activities
   alias DeliveryWeb.Utils.HTML
   alias Delivery.QA.Hyperlink
 

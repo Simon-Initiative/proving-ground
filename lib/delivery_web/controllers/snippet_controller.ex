@@ -48,9 +48,6 @@ defmodule DeliveryWeb.SnippetController do
     snippet = Library.get_snippet!(id)
     content = DeliveryWeb.Utils.HTML.to_html(Map.get(snippet.content, "nodes") |> Map.get("nodes"))
 
-    IO.inspect snippet
-    IO.inspect content
-
     render(conn, "show.html", snippet: snippet, content: content)
   end
 

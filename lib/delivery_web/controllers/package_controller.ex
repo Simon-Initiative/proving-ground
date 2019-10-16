@@ -3,8 +3,6 @@ defmodule DeliveryWeb.PackageController do
 
   alias Delivery.Packages
   alias Delivery.Activities
-  alias DeliveryWeb.Utils.HTML
-  alias Delivery.QA.Hyperlink
 
   def index(conn, _params) do
     packages = Packages.list_packages()

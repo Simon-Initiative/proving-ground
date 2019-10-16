@@ -1,7 +1,5 @@
 defmodule Delivery.QA.Hyperlink do
 
-  import HTTPoison
-
   alias Delivery.Utils.Parallel
 
   def validate_links(links) when is_list(links) do
