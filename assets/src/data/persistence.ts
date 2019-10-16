@@ -113,8 +113,8 @@ export function createSnippet(snippet: Snippet): Promise<any> {
   
   const url = `/api/snippets`;
   const method = 'POST';
-  const { title, content } = snippet;
-  const body = JSON.stringify({ snippet: { title, content }});
+  const { name, content } = snippet;
+  const body = JSON.stringify({ snippet: { name, content }});
   const headers = {
     'Content-Type': 'application/json',
   };

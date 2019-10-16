@@ -16,7 +16,14 @@
         <div class="header">Packages</div>
         <%= link "View all", to: "/packages", class: "item" <> user_disabled %>
         <%= link "Create new", to: "/packages/new", class: "item" <> user_disabled %>
-        <div class="header">Sections</div>
+        <div class="header">Library</div>
+        <%= link "Snippets", to: "/snippets", class: "item" <> user_disabled %>
+      </div>
+    </div>
+
+    <div class="ui simple dropdown item">
+      Section <i class="dropdown icon"></i>
+      <div class="menu">
         <%= link "View yours", to: "/sections", class: "item" <> user_disabled %>
         <%= link "Create new", to: "/sections/new", class: "item" <> user_disabled %>
       </div>

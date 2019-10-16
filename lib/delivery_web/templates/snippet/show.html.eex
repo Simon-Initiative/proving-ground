@@ -1,0 +1,13 @@
+<div class="ui attached message">
+  <div style="float: right;">
+    <%= link "Delete", to: Routes.snippet_path(@conn, :delete, @snippet), method: :delete, class: "ui button red mini", data: [confirm: "Are you sure?"] %>  
+  </div>
+  <div class="header">
+    Library snippet 
+  </div>
+  <%= @snippet.name %>
+</div>
+
+<div class="ui form attached fluid segment">
+    <%= raw(@content) %>
+</div>

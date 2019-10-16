@@ -1,0 +1,18 @@
+<h3>Library</h3>
+
+<div class="ui divider"></div>
+
+<table class="ui celled compact table">
+  <thead>
+    <tr>
+      <th>Name</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for snippet <- @snippets do %>
+    <tr>
+      <td><%= link snippet.name, to: Routes.snippet_path(@conn, :show, snippet) %></td>
+    </tr>
+<% end %>
+  </tbody>
+</table>

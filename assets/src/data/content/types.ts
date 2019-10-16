@@ -173,7 +173,7 @@ export interface Custom extends Taggable, Identifiable {
 
 export interface Snippet {
   id?: string;
-  title: string;
+  name: string;
   content: Object;
 }
 

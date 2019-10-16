@@ -62,6 +62,8 @@ defmodule DeliveryWeb.Router do
     live "/packages/new", PackageLive.New
     live "/packages/:id/edit", PackageLive.Edit
 
+    resources "/snippets", SnippetController
+
     get "/qa/:id", QAController, :index
     get "/qa/:id/:check", QAController, :check
 
@@ -102,5 +104,7 @@ defmodule DeliveryWeb.Router do
     get "/packages/:package_id/activities/:activity_id", ActivityController, :read_api
     get "/packages/:package_id/activities/:activity_id/edit", ActivityController, :read_api
 
+    get "/snippets", SnippetController, :read_all
+    post "/snippets", SnippetController, :write
   end
 end

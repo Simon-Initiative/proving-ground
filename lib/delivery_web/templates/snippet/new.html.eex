@@ -1,0 +1,5 @@
+<h1>New Snippet</h1>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.snippet_path(@conn, :create)) %>
+
+<span><%= link "Back", to: Routes.snippet_path(@conn, :index) %></span>

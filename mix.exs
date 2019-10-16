@@ -46,7 +46,6 @@ defmodule Delivery.MixProject do
       {:floki, ">= 0.0.0", only: :test},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:mint, ">= 0.4.0"},
       {:plug_cowboy, "~> 2.0"}
     ]
   end
