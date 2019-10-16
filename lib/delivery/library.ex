@@ -7,6 +7,7 @@ defmodule Delivery.Library do
   alias Delivery.Repo
 
   alias Delivery.Library.Snippet
+  alias Delivery.Library.Sound
 
   @doc """
   Returns the list of snippets.
@@ -20,6 +21,11 @@ defmodule Delivery.Library do
   def list_snippets do
     Repo.all(Snippet)
   end
+
+  def list_sounds do
+    Repo.all(from u in Sound, select: %{name: u.name, id: u.id})
+  end
+
 
   @doc """
   Gets a single snippet.
@@ -37,6 +43,8 @@ defmodule Delivery.Library do
   """
   def get_snippet!(id), do: Repo.get!(Snippet, id)
 
+  def get_sound!(id), do: Repo.get!(Sound, id)
+
   @doc """
   Creates a snippet.
 
@@ -52,6 +60,12 @@ defmodule Delivery.Library do
   def create_snippet(attrs \\ %{}) do
     %Snippet{}
     |> Snippet.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_sound(attrs \\ %{}) do
+    %Sound{}
+    |> Sound.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -73,6 +87,12 @@ defmodule Delivery.Library do
     |> Repo.update()
   end
 
+  def update_sound(%Sound{} = sound, attrs) do
+    sound
+    |> Sound.changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Deletes a Snippet.
 
@@ -89,6 +109,10 @@ defmodule Delivery.Library do
     Repo.delete(snippet)
   end
 
+  def delete_sound(%Sound{} = sound) do
+    Repo.delete(sound)
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking snippet changes.
 
@@ -100,5 +124,9 @@ defmodule Delivery.Library do
   """
   def change_snippet(%Snippet{} = snippet) do
     Snippet.changeset(snippet, %{})
+  end
+
+  def change_sound(%Sound{} = sound) do
+    Sound.changeset(sound, %{})
   end
 end

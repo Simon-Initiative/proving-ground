@@ -1,0 +1,120 @@
+    <h3>Sound clips</h3>
+   
+  
+<h3>Audio clips</h3>
+
+<div class="ui divider"></div>
+
+    <p>Record new clip:</p>
+    <p><button id="record" class="ui button" disabled>Record</button> 
+    <button class="ui button" id="stop" disabled>Stop</button>
+    <button class="ui button primary" id="save" disabled>Save</button></p>
+
+    <p><audio id="audio" controls></audio></p>
+
+  <table class="ui celled compact table">
+    <thead>
+      <tr>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+  <%= for s <- @sounds do %>
+      <tr>
+        <td><%= link s.name, to: Routes.sound_path(@conn, :loaded, s.id) %></td>
+      </tr>
+  <% end %>
+    </tbody>
+  </table>
+
+
+  <script>
+
+    var recordButton, stopButton, recorder;
+
+    var data = null;
+
+    window.onload = function () {
+      recordButton = document.getElementById('record');
+      stopButton = document.getElementById('stop');
+      saveButton = document.getElementById('save');
+
+      // get audio stream from user's mic
+      navigator.mediaDevices.getUserMedia({
+        audio: true
+      })
+      .then(function (stream) {
+        recordButton.disabled = false;
+        recordButton.addEventListener('click', startRecording);
+        stopButton.addEventListener('click', stopRecording);
+        saveButton.addEventListener('click', save);
+        recorder = new MediaRecorder(stream);
+
+        // listen to dataavailable, which gets triggered whenever we have
+        // an audio blob available
+        recorder.addEventListener('dataavailable', onRecordingReady);
+      });
+    };
+
+    function save(){
+
+      recordButton.disabled = true;
+      stopButton.disabled = false;
+      
+        // create a blob here for testing
+        
+        //var blob = yourAudioBlobCapturedFromWebAudioAPI;// for example   
+        var reader = new FileReader();
+        // this function is triggered once a call to readAsDataURL returns
+        reader.onload = function(event){
+            var fd = new FormData();
+            fd.append('name', 'testing');
+            fd.append('content', event.target.result);
+            $.ajax({
+                type: 'POST',
+                url: '/api/sound',
+                data: fd,
+                processData: false,
+                contentType: false
+            }).done(function(data) {
+                // print the output from the upload.php script
+                console.log(data);
+            });
+        };      
+        // trigger the read from the reader...
+        reader.readAsDataURL(data);
+
+    }
+
+    function startRecording() {
+      recordButton.disabled = true;
+      stopButton.disabled = false;
+      saveButton.disabled = true;
+
+      recorder.start();
+    }
+
+    function stopRecording() {
+      recordButton.disabled = false;
+      stopButton.disabled = true;
+      saveButton.disabled = false;
+
+      // Stopping the recorder will eventually trigger the `dataavailable` event and we can complete the recording process
+      recorder.stop();
+    }
+
+    function onRecordingReady(e) {
+      var audio = document.getElementById('audio');
+      // e.data contains a blob representing the recording
+      audio.src = URL.createObjectURL(e.data);
+
+      data = e.data; 
+      audio.play();
+    }
+
+    <%= if @loaded do %>
+      document.getElementById('audio').src = "<%= @clip.content %>";
+      document.getElementById('audio').play();
+      
+    <% end %>
+  </script>

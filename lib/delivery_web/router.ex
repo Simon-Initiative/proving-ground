@@ -90,6 +90,10 @@ defmodule DeliveryWeb.Router do
 
     get "/logout", LoginController, :logout
 
+    get "/sound", SoundController, :index
+    get "/sound/:id", SoundController, :loaded
+
+
     live "/search", SearchLive
     live "/notification/:activity_id", NotificationLive
   end
@@ -106,5 +110,7 @@ defmodule DeliveryWeb.Router do
 
     get "/snippets", SnippetController, :read_all
     post "/snippets", SnippetController, :write
+    post "/sound", SoundController, :write
+
   end
 end
