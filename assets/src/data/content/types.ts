@@ -59,7 +59,7 @@ export function mutate<BlockData>(obj: BlockData, changes: Object) : BlockData {
 
 export interface Link {
   object: 'link';
-  src: string;
+  href: string;
   target: string;
 };
 

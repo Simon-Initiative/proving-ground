@@ -1,8 +1,6 @@
 defmodule DeliveryWeb.NotificationLive do
   use Phoenix.LiveView
 
-  alias DeliveryWeb.Router.Helpers, as: Routes
-
   def render(assigns) do
     ~L"""
     <%= if assigns.update_available and !assigns.dismissed do %>

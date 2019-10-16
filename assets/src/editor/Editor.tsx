@@ -13,6 +13,8 @@ import Prism from 'prismjs';
 export interface EditorProps {
   onInit: (editor) => void;
   onSelectInline: (inline: Maybe<Inline>) => void;
+  onLink: () => void;
+  onDefinition: () => void;
   orderedIds: Immutable.Map<string, number>;
   onEdit: (obj: Object) => void;
   model: Object;
@@ -36,7 +38,7 @@ const MarkButton = ({ editor, type, icon }) => {
   const { value } = editor
   const isActive = value.activeMarks.some(mark => mark.type === type)
   const activeStyle = isActive 
-    ? { color: "blue" } : {};
+    ? { color: "blue" } : { };
 
   return (
     <button onMouseDown={event => {
@@ -44,40 +46,57 @@ const MarkButton = ({ editor, type, icon }) => {
       editor.toggleMark(type)
     }}
     style={activeStyle}
-    className="ui button"><i className={`${icon} icon`}></i></button>
+    className="ui button secondary"><i className={`${icon} icon`}></i></button>
+  );
+}
+
+
+const ActionButton = ({ editor, icon, onClick }) => {
+  const { value } = editor
+  
+  return (
+    <button onMouseDown={event => {
+      event.preventDefault();
+      onClick();
+    }}
+    className="ui button secondary"><i className={`${icon} icon`}></i></button>
   );
 }
 
 const HoverMenu = React.forwardRef((e, ref) => {
   const editor = (e as any).editor;
-  const root = window.document.getElementById('root')
+  const onLink = (e as any).onLink;
+  const onDefinition = (e as any).onDefinition;
+  const root = window.document.getElementById('app')
 
   const style = {
-    padding: '8px 7px 6px',
     position: 'absolute',
     zIndex: 1,
-    top: '-10000px',
-    left: '-10000px',
+    top: '0px',
+    left: '0px',
     marginTop: '-6px',
-    opacity: 0,
-    backgroundColor: '#222',
     borderRadius: '4px',
     transition: 'opacity 0.75s',
   } as any;
 
   return ReactDOM.createPortal(
-    <div 
-      style={style}
-      className="ui small basic icon buttons"
-      ref={ref}>
+    <div ref={(ref as any)} style={ { opacity: 0, position: 'relative' }}>
+      <div 
+        style={style}
+        className="ui small icon buttons"
+        ref={(ref as any)}>
 
-      <MarkButton editor={editor} type="bold" icon="format_bold" />
-      <MarkButton editor={editor} type="italic" icon="format_italic" />
-      <MarkButton editor={editor} type="underlined" icon="format_underlined" />
-      <MarkButton editor={editor} type="code" icon="code" />
-    </div>
+        <MarkButton editor={editor} type="bold" icon="bold" />
+        <MarkButton editor={editor} type="italic" icon="italic" />
+        <MarkButton editor={editor} type="code" icon="code" />
+        <ActionButton onClick={onLink} editor={editor} icon="linkify" />
+        <ActionButton onClick={onDefinition} editor={editor} icon="book" />
+        
+      </div>
+    </div>, root
   )
 })
+
 
 export class Editor extends React.Component<EditorProps, EditorState> {
 
@@ -106,6 +125,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   componentDidUpdate = () => {
+    console.log('did update')
     this.updateMenu()
   }
 
@@ -131,21 +151,35 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     const range = native.getRangeAt(0);
     const rect = (range as any).getBoundingClientRect();
     (menu as any).style.opacity = 1;
+    (menu as any).style.position = 'relative';
     (menu as any).style.top =
-      (rect as any).top + (window as any).pageYOffset - (menu as any).offsetHeight + 'px';
+      (rect as any).top + (window as any).pageYOffset - 150 + 'px';
 
-    (menu as any).style.left = `${(rect as any).left +
-      window.pageXOffset -
-      (menu as any).offsetWidth / 2 +
-      (rect as any).width / 2}px`
+
+    console.log("offsetWidth: " + (menu as any).offsetHeight);
+    console.log("rect: " + (rect as any).top);
+    console.log("pageY: " + (window as any).pageYOffset);
+    
+    const left = (rect as any).left +
+    window.pageXOffset -
+    (menu as any).offsetWidth / 2 +
+    (rect as any).width / 2
+    - 120;
+
+    (menu as any).style.left = `${left}px`
   }
 
   renderEditor = (props, editor, next) => {
     const children = next()
+    const passed = {
+      editor: editor,
+      onLink: this.props.onLink,
+      onDefinition: this.props.onDefinition,
+    };
     return (
       <React.Fragment>
         {children}
-        <HoverMenu ref={this.menuRef} editor={editor} />
+        <HoverMenu ref={this.menuRef} {...passed}  />
       </React.Fragment>
     )
   }
@@ -252,17 +286,11 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   getType = chars => {
     switch (chars) {
       case '#':
-        return 'heading-one'
-      case '##':
-        return 'heading-two'
-      case '###':
         return 'heading-three'
-      case '####':
+      case '##':
         return 'heading-four'
-      case '#####':
+      case '###':
         return 'heading-five'
-      case '######':
-        return 'heading-six'
       default:
         return null
     }

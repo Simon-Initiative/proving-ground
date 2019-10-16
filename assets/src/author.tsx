@@ -78,6 +78,76 @@ export default class Main extends React.Component<MainProps, MainState> {
     };
   }
 
+
+  hasLinks = () => {
+    const { value } = this.editor;
+    return value.inlines.some(inline => inline.type === 'link')
+  }
+
+
+  hasDefinition = () => {
+    const { value } = this.editor;
+    return value.inlines.some(inline => inline.type === 'definition')
+  }
+
+
+  onClickLink = () => {
+    
+    const { editor } = this
+    const { value } = editor
+    const has = this.hasLinks();
+
+    if (has) {
+      editor.command(unwrapLink)
+    } else if (value.selection.isExpanded) {
+      const href = window.prompt('Enter the URL of the link:')
+
+      if (href == null) {
+        return
+      }
+
+      editor.command(wrapLink, href);
+
+    } else {
+      const href = window.prompt('Enter the URL of the link:')
+
+      if (href == null) {
+        return
+      }
+
+      const text = window.prompt('Enter the text for the link:')
+
+      if (text == null) {
+        return
+      }
+
+      editor
+        .insertText(text)
+        .moveFocusBackward(text.length)
+        .command(wrapLink, href)
+    }
+  };
+
+  onClickDefinition = () => {
+    
+    const { editor } = this
+    const { value } = editor
+    const has = this.hasDefinition();
+
+    if (has) {
+      editor.command(unwrapDefinition)
+    } else if (value.selection.isExpanded) {
+      const href = window.prompt('Enter the definition:')
+
+      if (href == null) {
+        return
+      }
+
+      editor.command(wrapDefinition, href);
+
+    } 
+  };
+
   getHeaders(nodes) {
 
     const n = nodes
@@ -218,69 +288,6 @@ export default class Main extends React.Component<MainProps, MainState> {
       this.editor.insertBlock(block);
     };
 
-    const hasLinks = () => {
-      const { value } = this.editor;
-      return value.inlines.some(inline => inline.type === 'link')
-    }
-  
-    const onClickLink = event => {
-      event.preventDefault()
-  
-      const { editor } = this
-      const { value } = editor
-      const has = hasLinks();
-  
-      if (has) {
-        editor.command(unwrapLink)
-      } else if (value.selection.isExpanded) {
-        const href = window.prompt('Enter the URL of the link:')
-  
-        if (href == null) {
-          return
-        }
-  
-        editor.command(wrapLink, href);
-
-      } else {
-        const href = window.prompt('Enter the URL of the link:')
-  
-        if (href == null) {
-          return
-        }
-  
-        const text = window.prompt('Enter the text for the link:')
-  
-        if (text == null) {
-          return
-        }
-  
-        editor
-          .insertText(text)
-          .moveFocusBackward(text.length)
-          .command(wrapLink, href)
-      }
-    };
-
-    const onClickDefinition = event => {
-      event.preventDefault()
-  
-      const { editor } = this
-      const { value } = editor
-      const has = hasLinks();
-  
-      if (has) {
-        editor.command(unwrapDefinition)
-      } else if (value.selection.isExpanded) {
-        const href = window.prompt('Enter the definition:')
-  
-        if (href == null) {
-          return
-        }
-  
-        editor.command(wrapDefinition, href);
-
-      } 
-    };
   
 
     const addCode = add.bind(this, create<Code>(
@@ -447,7 +454,7 @@ export default class Main extends React.Component<MainProps, MainState> {
     
     return (
       
-      <div>
+      <div id="root">
         <h3>{title}</h3>
         <div className="ui segment">
         
@@ -462,6 +469,8 @@ export default class Main extends React.Component<MainProps, MainState> {
 
           <div id="editor">
             <Editor 
+              onLink={this.onClickLink}
+              onDefinition={this.onClickDefinition}
               onInit={(e) => this.editor = e}
               onSelectInline={() => {}}
               onEdit={this.onEdit}
