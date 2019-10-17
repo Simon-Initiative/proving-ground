@@ -85,6 +85,33 @@
     });
     </script>
 
+      <%= if get_flash(@conn, :info) do %>
+        <div id="flash" class="ui floating positive compact message transition hidden" style="position: absolute; margin-right: 30px; top: 80px; right: -20px; width: 250px;">
+          <%= get_flash(@conn, :info) %>
+        </div>
+        <script>
+
+        setTimeout(() => {
+          $('#flash').transition('slide left');
+          setTimeout(() => $('#flash').transition('fade'), 2000);
+        }, 300)
+          
+        </script>
+      <% end %>
+
+      <%= if get_flash(@conn, :error) do %>
+        <div id="flash" class="ui floating negative compact message transition hidden" style="position: absolute; margin-right: 30px; top: 80px; right: -20px; width: 250px;">
+          <%= get_flash(@conn, :error) %>
+        </div>
+        <script>
+
+        setTimeout(() => {
+          $('#flash').transition('slide left');
+          setTimeout(() => $('#flash').transition('fade'), 2000);
+        }, 300)
+          
+        </script>
+      <% end %>
   </body>
 
 

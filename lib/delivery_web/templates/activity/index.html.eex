@@ -11,7 +11,7 @@
     <tr>
       <td><%= link activity.title, to: Routes.page_path(@conn, :show, @package.id, activity) %>
         <%= if activity.is_draft do %>
-          <a class="ui tiny yellow label">Draft</a>
+          <%= button "Draft", method: "get", to: Routes.activity_path(@conn, :publish, @package.id, activity), class: "ui mini yellow button" %>
         <% end %>
       </td>
       

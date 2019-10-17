@@ -402,15 +402,7 @@ export default class Main extends React.Component<MainProps, MainState> {
           </div>
         </div>
       </div>
-      <div style={ { marginTop: '40px' } }>
       
-        <div>
-        <button style={ { width: '105px' } } onClick={this.onDone} className="ui button mini primary"><i className="save icon"></i> Done</button>
-        </div>
-        <div style={ { marginTop: '10px' } }>
-        <button style={ { width: '105px' } } onClick={this.onPublish} className="ui button mini"><i className="globe icon"></i> Publish</button>
-        </div>
-      </div>
       </div>
     );
   }

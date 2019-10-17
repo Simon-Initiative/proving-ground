@@ -3,7 +3,6 @@ defmodule DeliveryWeb.SnippetController do
 
   alias Delivery.Library
   alias Delivery.Library.Snippet
-  alias DeliveryWeb.Utils.HTML
 
   def index(conn, _params) do
     snippets = Library.list_snippets()
