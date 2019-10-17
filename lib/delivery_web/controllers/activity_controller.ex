@@ -25,6 +25,7 @@ defmodule DeliveryWeb.ActivityController do
     end
 
     conn
+      |> put_flash(:info, "All drafts published!")
       |> redirect(to: Routes.package_path(conn, :show, package_id))
   end
 
@@ -33,6 +34,7 @@ defmodule DeliveryWeb.ActivityController do
     DeliveryWeb.Endpoint.broadcast!("notification:" <> activity_id, "publish", %{user: get_session(conn, :user)})
 
     conn
+      |> put_flash(:info, "Draft published!")
       |> redirect(to: Routes.package_path(conn, :show, package_id))
   end
 
@@ -48,7 +50,7 @@ defmodule DeliveryWeb.ActivityController do
     case Activities.create_activity(activity_params) do
       {:ok, activity} ->
         conn
-        |> put_flash(:info, "Activity created successfully.")
+        |> put_flash(:info, "Page created successfully.")
         |> redirect(to: Routes.page_path(conn, :show, activity_params["package_id"], activity))
 
       {:error, %Ecto.Changeset{} = changeset} ->
