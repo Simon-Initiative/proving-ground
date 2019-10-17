@@ -98,7 +98,7 @@
                 contentType: false
             }).done(function(data) {
                 // print the output from the upload.php script
-                console.log(data);
+                window.location.href = "/sound";
             });
         };      
         // trigger the read from the reader...

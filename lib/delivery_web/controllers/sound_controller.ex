@@ -20,12 +20,13 @@ defmodule DeliveryWeb.SoundController do
     IO.inspect params
 
     case Library.create_sound(params) do
-      {:ok, _snippet} ->
+      {:ok, _sound} ->
         conn
-        |> redirect(to: Routes.sound_path(conn, :index))
+        |> json(%{ "result" => "success"})
 
       _ ->
-        redirect(conn, to: Routes.sound_path(conn, :index))
+        conn
+        |> json(%{ "result" => "failure"})
     end
   end
 
