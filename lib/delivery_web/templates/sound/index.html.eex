@@ -1,16 +1,29 @@
-    <h3>Sound clips</h3>
-   
   
 <h3>Audio clips</h3>
 
 <div class="ui divider"></div>
 
-    <p>Record new clip:</p>
-    <p><button id="record" class="ui button" disabled>Record</button> 
-    <button class="ui button" id="stop" disabled>Stop</button>
-    <button class="ui button primary" id="save" disabled>Save</button></p>
-
-    <p><audio id="audio" controls></audio></p>
+    <div class="ui form">
+      <div class="fields">
+        <div class="inline field">
+          <label>Create new clip:</label>
+          <input id="name" type="text" placeholder="Name of the clip">
+        </div>
+        <div class="ui icon buttons" >
+          <button class="ui button" id="record">
+            <i class="microphone icon"></i>
+          </button>
+          <button class="ui button" id="stop" disabled>
+            <i class="stop icon"></i>
+          </button>
+          <button class="ui button" id="save" disabled>
+            <i class="save icon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <audio style="display: none;" id="audio" controls></audio>
 
   <table class="ui celled compact table">
     <thead>
@@ -19,11 +32,11 @@
       </tr>
     </thead>
     <tbody>
-  <%= for s <- @sounds do %>
+    <%= for s <- @sounds do %>
       <tr>
         <td><%= link s.name, to: Routes.sound_path(@conn, :loaded, s.id) %></td>
       </tr>
-  <% end %>
+    <% end %>
     </tbody>
   </table>
 
@@ -33,6 +46,7 @@
     var recordButton, stopButton, recorder;
 
     var data = null;
+    var steam = null;
 
     window.onload = function () {
       recordButton = document.getElementById('record');
@@ -43,18 +57,24 @@
       navigator.mediaDevices.getUserMedia({
         audio: true
       })
-      .then(function (stream) {
+      .then(function (s) {
+
         recordButton.disabled = false;
         recordButton.addEventListener('click', startRecording);
         stopButton.addEventListener('click', stopRecording);
         saveButton.addEventListener('click', save);
-        recorder = new MediaRecorder(stream);
+        stream = s;
+        init();
+      });
+    };
+
+    function init() {
+       recorder = new MediaRecorder(stream);
 
         // listen to dataavailable, which gets triggered whenever we have
         // an audio blob available
         recorder.addEventListener('dataavailable', onRecordingReady);
-      });
-    };
+    }
 
     function save(){
 
@@ -68,7 +88,7 @@
         // this function is triggered once a call to readAsDataURL returns
         reader.onload = function(event){
             var fd = new FormData();
-            fd.append('name', 'testing');
+            fd.append('name', document.getElementById('name').value);
             fd.append('content', event.target.result);
             $.ajax({
                 type: 'POST',
@@ -87,7 +107,11 @@
     }
 
     function startRecording() {
+
+      init();
+
       recordButton.disabled = true;
+      recordButton.style = "color: red;";
       stopButton.disabled = false;
       saveButton.disabled = true;
 
@@ -96,11 +120,13 @@
 
     function stopRecording() {
       recordButton.disabled = false;
+      recordButton.style = "";
       stopButton.disabled = true;
       saveButton.disabled = false;
 
       // Stopping the recorder will eventually trigger the `dataavailable` event and we can complete the recording process
       recorder.stop();
+      
     }
 
     function onRecordingReady(e) {
