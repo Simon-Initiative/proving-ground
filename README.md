@@ -19,7 +19,7 @@ $ ./db.sh
 2. Install client and server dependencies:
 ```
 $ cd assets && npm install
-$ mix deps.get
+$ cd ../ && mix deps.get
 ```
 3. Create database
 ```
