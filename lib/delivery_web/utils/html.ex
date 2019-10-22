@@ -1,5 +1,4 @@
 defmodule DeliveryWeb.Utils.HTML do
-
   def label(text) do
     """
     <span style="text-transform: uppercase; color: lightgray;">#{text}</span>
@@ -8,23 +7,35 @@ defmodule DeliveryWeb.Utils.HTML do
 
   def to_html(context, %{"object" => "block", "type" => "paragraph", "nodes" => nodes}) do
     "<p>" <> to_html(context, nodes) <> "</p>\n"
-
   end
 
   def to_html(context, %{"object" => "block", "type" => "variant", "nodes" => nodes}) do
+    IO.puts("variant")
+    IO.inspect(nodes)
     to_html(context, nodes)
-
   end
 
-  def to_html(context, %{"object" => "inline", "data" => %{"href" => href}, "type" => "link", "nodes" => nodes}) do
+  def to_html(context, %{
+        "object" => "inline",
+        "data" => %{"href" => href},
+        "type" => "link",
+        "nodes" => nodes
+      }) do
     """
     <a href="#{href}">#{to_html(context, nodes)}</a>
     """
   end
 
-  def to_html(context, %{"object" => "inline", "data" => %{"definition" => definition}, "type" => "definition", "nodes" => nodes}) do
+  def to_html(context, %{
+        "object" => "inline",
+        "data" => %{"definition" => definition},
+        "type" => "definition",
+        "nodes" => nodes
+      }) do
     """
-    <span class="definition" style="color: green;" data-title="Definition" data-content="#{definition}">#{to_html(context, nodes)}</span>
+    <span class="definition" style="color: green;" data-title="Definition" data-content="#{
+      definition
+    }">#{to_html(context, nodes)}</span>
     """
   end
 
@@ -63,19 +74,22 @@ defmodule DeliveryWeb.Utils.HTML do
     "<ul>" <> to_html(context, nodes) <> "</ul>\n"
   end
 
-  def to_html(%{:preview => false, :user => user},
-    %{"object" => "block", "type" => "example", "nodes" => nodes}) do
-
+  def to_html(
+        %{:preview => false, :user => user},
+        %{"object" => "block", "type" => "example", "nodes" => nodes}
+      ) do
     to_html(%{:preview => false, :user => user}, Enum.at(nodes, rem(user.id, 2)))
   end
 
-  def to_html(%{:preview => true, :user => user},
-    %{"object" => "block", "type" => "example", "nodes" => nodes}) do
-
+  def to_html(
+        %{:preview => true, :user => user},
+        %{"object" => "block", "type" => "example", "nodes" => nodes}
+      ) do
     a = to_html(%{:preview => true, :user => user}, Enum.at(nodes, 0))
     b = to_html(%{:preview => true, :user => user}, Enum.at(nodes, 1))
+
     """
-    <table class="ui table">
+    <table class="ui table celled striped">
       <tbody>
         <tr><td>Variant A</td><td>#{a}</td></tr>
         <tr><td>Variant B</td><td>#{b}</td></tr>
@@ -84,8 +98,9 @@ defmodule DeliveryWeb.Utils.HTML do
     """
   end
 
-
   def to_html(context, %{"object" => "block", "type" => "multiple_choice", "nodes" => nodes}) do
+    IO.puts("MC")
+
     """
     <div style="margin-left: 30px;
                 margin-right: 10px;
@@ -181,27 +196,31 @@ defmodule DeliveryWeb.Utils.HTML do
     """
   end
 
-  def to_html(_context, %{"object" => "block",
-    "data" => %{"src" => src, "height" => height, "width" => width},
-    "type" => "image"}) do
-    IO.puts "html image"
+  def to_html(_context, %{
+        "object" => "block",
+        "data" => %{"src" => src, "height" => height, "width" => width},
+        "type" => "image"
+      }) do
+    IO.puts("html image")
+
     """
-    <img style="display: block; max-height: 500px; margin-left: auto; margin-right: auto;" src="#{src}" height=#{height} width=#{width}/>
+    <img style="display: block; max-height: 500px; margin-left: auto; margin-right: auto;" src="#{
+      src
+    }" height=#{height} width=#{width}/>
     """
   end
 
-  def to_html(_context, %{"object" => "block",
-    "data" => %{"src" => src },
-    "type" => "image"}) do
-    IO.puts "html image"
+  def to_html(_context, %{"object" => "block", "data" => %{"src" => src}, "type" => "image"}) do
+    IO.puts("html image")
+
     """
-    <img style="display: block; max-height: 500px; margin-left: auto; margin-right: auto;" src="#{src}"/>
+    <img style="display: block; max-height: 500px; margin-left: auto; margin-right: auto;" src="#{
+      src
+    }"/>
     """
   end
 
-  def to_html(context, %{"object" => "block",
-    "type" => "code", "nodes" => nodes}) do
-
+  def to_html(context, %{"object" => "block", "type" => "code", "nodes" => nodes}) do
     """
     <div class="ui segment"
       style="font-family: Menlo, Monaco, Courier New, monospace;
@@ -217,17 +236,13 @@ defmodule DeliveryWeb.Utils.HTML do
     """
   end
 
-  def to_html(context, %{"object" => "block",
-    "type" => "code_line", "nodes" => nodes}) do
+  def to_html(context, %{"object" => "block", "type" => "code_line", "nodes" => nodes}) do
     """
     <div>#{to_html(context, nodes)}</div>
     """
   end
 
-  def to_html(_context, %{"object" => "block",
-    "data" => %{"src" => src},
-    "type" => "youtube"}) do
-
+  def to_html(_context, %{"object" => "block", "data" => %{"src" => src}, "type" => "youtube"}) do
     """
     <iframe
       id="#{src}"
@@ -273,30 +288,32 @@ defmodule DeliveryWeb.Utils.HTML do
   end
 
   def to_html(_context, %{"object" => "block", "type" => type}) do
-    IO.puts "unsupported block: " <> type
+    IO.puts("unsupported block: " <> type)
     ""
   end
 
   def to_html(context, nodes) when is_list(nodes) do
     Enum.map(nodes, fn n -> to_html(context, n) end)
-      |> Enum.join("\n")
+    |> Enum.join("\n")
   end
 
   def to_html(_, _) do
-    IO.puts "html other"
+    IO.puts("html other")
     ""
   end
 
   def stem(context, nodes) do
-    item = Enum.filter(nodes, fn n -> Map.get(n, "type") == "stem" end)
+    item =
+      Enum.filter(nodes, fn n -> Map.get(n, "type") == "stem" end)
       |> hd
+
     to_html(context, item)
   end
 
   def choices(context, nodes) do
     Enum.filter(nodes, fn n -> Map.get(n, "type") == "choice_feedback" end)
-      |> Enum.map(fn c -> to_html(context, c) end)
-      |> Enum.join("\n")
+    |> Enum.map(fn c -> to_html(context, c) end)
+    |> Enum.join("\n")
   end
 
   def wrap_marks(text, marks) do
@@ -310,11 +327,13 @@ defmodule DeliveryWeb.Utils.HTML do
       "strikethrough" => "strike",
       "mark" => "mark"
     }
-    Enum.reverse(marks)
-      |> Enum.reduce(text,
-        fn %{"type" => m}, t ->
-          "<" <> Map.get(map, m) <> ">" <> t <> "</" <> Map.get(map, m) <> ">"
-        end)
-  end
 
+    Enum.reverse(marks)
+    |> Enum.reduce(
+      text,
+      fn %{"type" => m}, t ->
+        "<" <> Map.get(map, m) <> ">" <> t <> "</" <> Map.get(map, m) <> ">"
+      end
+    )
+  end
 end

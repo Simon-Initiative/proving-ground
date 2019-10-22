@@ -1,6 +1,6 @@
 import { Block, Editor } from 'slate';
 
-const normalize = (editor : Editor, error) => {
+const normalize = (editor: Editor, error) => {
   console.log('other error: ' + error.code);
   console.log(error.node.type);
   if (error.code === 'child_type_invalid') {
@@ -40,15 +40,15 @@ export const schema = {
     nodes: [
       {
         match: [
-          { type: 'heading-one' }, 
-          { type: 'heading-two' }, 
-          { type: 'heading-three' }, 
-          { type: 'heading-four' }, 
-          { type: 'heading-five' }, 
-          { type: 'heading-six' }, 
-          { type: 'paragraph' }, 
-          { type: 'image' }, 
-          { type: 'code' }, 
+          { type: 'heading-one' },
+          { type: 'heading-two' },
+          { type: 'heading-three' },
+          { type: 'heading-four' },
+          { type: 'heading-five' },
+          { type: 'heading-six' },
+          { type: 'paragraph' },
+          { type: 'image' },
+          { type: 'code' },
           { type: 'math' },
           { type: 'youtube' },
           { type: 'ordered-list' },
@@ -64,7 +64,7 @@ export const schema = {
   },
   blocks: {
     paragraph: {
-      
+
     },
     table: {
       nodes: [
@@ -97,14 +97,14 @@ export const schema = {
     td: {
       nodes: [
         {
-          match: [{ type: 'paragraph' },{ type: 'image' }],
+          match: [{ type: 'paragraph' }, { type: 'image' }],
         },
       ],
     },
     th: {
       nodes: [
         {
-          match: [{ type: 'paragraph' },{ type: 'image' }],
+          match: [{ type: 'paragraph' }, { type: 'image' }],
         },
       ],
     },
@@ -126,7 +126,7 @@ export const schema = {
           max: 3,
         }
       ],
-      normalize: (editor : Editor, error) => {
+      normalize: (editor: Editor, error) => {
         console.log('mc error: ' + error.code);
       },
     },
@@ -143,7 +143,7 @@ export const schema = {
           max: 1,
         },
       ],
-      normalize: (editor : Editor, error) => {
+      normalize: (editor: Editor, error) => {
         console.log('choice_feedback error: ' + error.code);
       },
     },
@@ -158,7 +158,25 @@ export const schema = {
         },
       ],
     },
-    variant: standardContent,
+    variant: {
+      last: { type: 'paragraph' },
+      nodes: [
+        {
+          match: [
+            { type: 'paragraph' },
+            { type: 'image' },
+            { type: 'youtube' },
+            { type: 'code' },
+            { type: 'math' },
+            { type: 'table' },
+            { type: 'multiple_choice' },
+            { type: 'ordered-list' },
+            { type: 'unordered-list' },
+          ],
+        }
+      ],
+      normalize
+    },
     code: {
       nodes: [
         {
@@ -172,7 +190,7 @@ export const schema = {
       nodes: [
         {
           match: { object: 'text' },
-          
+
         },
       ],
     },
