@@ -1,6 +1,7 @@
 <div class="ui message">
   <div style="float: right;">
-    <%= button("QA Mode", to: Routes.qa_path(@conn, :index, @package), method: "get", class: "ui button mini")  %>  
+    <%= button("Experiments", to: Routes.qa_path(@conn, :experiments, @package), method: "get", class: "ui button mini")  %>  
+    <%= button("QA", to: Routes.qa_path(@conn, :index, @package), method: "get", class: "ui button mini")  %>  
     <%= button("Edit", to: Routes.live_path(@conn, PackageLive.Edit, @package), method: "get", class: "ui button mini")  %>  
   </div>
   <div class="header">

@@ -66,6 +66,7 @@ defmodule DeliveryWeb.Router do
 
     get "/qa/:id", QAController, :index
     get "/qa/:id/:check", QAController, :check
+    get "/experiments/:id", QAController, :experiments
 
     resources "/sections", SectionController
     post "/sections/:section_id/enrollment", SectionController, :add_enrollment

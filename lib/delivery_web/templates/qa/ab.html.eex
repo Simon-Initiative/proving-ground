@@ -1,0 +1,24 @@
+<h3>My Experiments</h3>
+<p><%= @package.title %></p>
+
+<div class="ui divider"></div>
+<table class="ui celled compact table">
+  <thead>
+    <tr>
+      <th>Page</th><th>Experiment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for result <- @results do %>
+      <tr>
+        
+        <td><%= link result.title, to: Routes.page_path(@conn, :show, @package.id, result.id) %>
+          
+        </td>
+        <td>
+          <%= raw(result.element)%>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

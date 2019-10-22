@@ -151,7 +151,14 @@ export const schema = {
     choice: standardContent,
     feedback: standardContent,
     hint: standardContent,
-    example: standardContent,
+    example: {
+      nodes: [
+        {
+          match: [{ type: 'variant' }],
+        },
+      ],
+    },
+    variant: standardContent,
     code: {
       nodes: [
         {

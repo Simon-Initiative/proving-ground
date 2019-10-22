@@ -331,9 +331,10 @@ export default class Main extends React.Component<MainProps, MainState> {
 
     const addExample = () => {
 
+      const variant = (text) => Block.create({ type: 'variant', nodes: [p(text)]});
       const p = (text) => Block.create({ type: 'paragraph', nodes: [{ object: 'text', text}]});
       const nodes = 
-        [ p('') ];
+        [ variant(''), variant('') ];
 
       const block = Block.create({ data: {}, type: 'example', nodes });
       this.editor.insertBlock(block);
@@ -396,9 +397,9 @@ export default class Main extends React.Component<MainProps, MainState> {
           More
           <i className="dropdown icon"></i>
           <div className="menu">
-            <a className="item" onClick={addExample}><i className="balance scale icon"></i> Example</a>
             <a className="item" onClick={addCode}><i className="code icon"></i> Code Block</a>
             <a className="item" onClick={addMath}><i className="calculator icon"></i> Math</a>
+            <a className="item" onClick={addExample}><i className="flask icon"></i> A/B Test</a>
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ defmodule DeliveryWeb.QAController do
   alias DeliveryWeb.Utils.HTML
   alias Delivery.QA.Hyperlink
 
-  def query(id, item) do
+  def query(conn, id, item) do
     sql =
       """
       SELECT id, title, jsonb_path_query(content, '$.** ? (@.type == "#{item}")') FROM activities WHERE package_id = $1;
@@ -16,24 +16,32 @@ defmodule DeliveryWeb.QAController do
 
     results = Enum.take_every(results, 2)
 
-    Enum.map(results, fn r -> %{ status: true, id: Enum.at(r, 0), title: Enum.at(r, 1), raw: Enum.at(r, 2), element: Enum.at(r, 2) |> HTML.to_html()} end)
+    context = %{ :user => get_session(conn, :user), :preview => true}
+    Enum.map(results, fn r -> %{ status: true, id: Enum.at(r, 0), title: Enum.at(r, 1), raw: Enum.at(r, 2), element: HTML.to_html(context, Enum.at(r, 2))} end)
   end
 
   def links(conn, package) do
-    results = query(package.id, "link")
+    results = query(conn, package.id, "link")
       |> Hyperlink.validate_links
 
     render(conn, "links.html", package: package, results: results)
   end
 
+  def experiments(conn, %{"id" => id }) do
+    package = Packages.get_package!(id)
+    results = query(conn, package.id, "example")
+
+    render(conn, "ab.html", package: package, results: results)
+  end
+
   def images(conn, package) do
-    results = query(package.id, "image")
+    results = query(conn, package.id, "image")
 
     render(conn, "images.html", package: package, results: results)
   end
 
   def element(conn, package, el) do
-    results = query(package.id, el)
+    results = query(conn, package.id, el)
 
     render(conn, "elements.html", package: package, results: results)
   end

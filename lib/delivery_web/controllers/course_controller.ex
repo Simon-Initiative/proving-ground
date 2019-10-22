@@ -28,7 +28,8 @@ defmodule DeliveryWeb.CourseController do
     next = Sections.get_pages_for_course(section_id)
       |> next_page(page_id)
 
-    translated_content = DeliveryWeb.Utils.HTML.to_html(Map.get(page.content, "nodes"))
+    context = %{ :user => get_session(conn, :user), :preview => false}
+    translated_content = DeliveryWeb.Utils.HTML.to_html(context, Map.get(page.content, "nodes"))
 
     render(conn, "page.html", next: next, title: page.title, content: translated_content, section_id: section_id, activity_id: page_id)
   end
