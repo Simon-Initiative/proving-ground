@@ -7,19 +7,17 @@ defmodule Delivery.Content.PressBooksTest do
   alias Delivery.Content.Inline
   alias Delivery.Ingestion.Pressbooks
 
-
   describe "pressbooks" do
-
     def input_fixture() do
       html = """
-      <html>
-      <body>
-        <div class="chapter standard"><div>one</div></div>
-        <div class="chapter standard"><div>two</div></div>
-        <div class="chapter standard"><div>three</div></div>
-      </body>
-      </html>
-    """
+        <html>
+        <body>
+          <div class="chapter standard"><div>one</div></div>
+          <div class="chapter standard"><div>two</div></div>
+          <div class="chapter standard"><div>three</div></div>
+        </body>
+        </html>
+      """
     end
 
     def read_from_file(file) do
@@ -29,11 +27,12 @@ defmodule Delivery.Content.PressBooksTest do
     test "reducing all" do
       input = read_from_file("./test/delivery/content/amlit.html")
 
-      case Pressbooks.segment(input) do
-        {:ok, segments} -> hd(segments) |> Pressbooks.parse()
-      end
+      segments =
+        case Pressbooks.segment(input) do
+          {:ok, segments} -> segments
+        end
 
+      Enum.map(segments, fn s -> Pressbooks.parse(s) end)
     end
-
   end
 end
