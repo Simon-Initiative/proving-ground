@@ -3,15 +3,15 @@ defmodule DeliveryWeb.Utils.XML do
   @behaviour Renderer
 
   def p(next, _) do
-    ["<p>", next.(), "</p>"]
+    ["<p>", next.(), "</p>\n"]
   end
 
   def table(next, _) do
-    ["<table>", next.(), "</table>"]
+    ["<table>", next.(), "</table>\n"]
   end
 
   def caption(next, _) do
-    ["<caption>", next.(), "</caption>"]
+    ["<caption>", next.(), "</caption>\n"]
   end
 
   def thead(next, _) do
@@ -27,39 +27,39 @@ defmodule DeliveryWeb.Utils.XML do
   end
 
   def tr(next, _) do
-    ["<tr>", next.(), "</tr>"]
+    ["<tr>", next.(), "</tr>\n"]
   end
 
   def td(next, _) do
-    ["<td>", next.(), "</td>"]
+    ["<td>", next.(), "</td>\n"]
   end
 
   def th(next, _) do
-    ["<th>", next.(), "</th>"]
+    ["<th>", next.(), "</th>\n"]
   end
 
   def image(_, %{data: %{"src" => src}}) do
-    ["<image src=\"", src, "\"/>"]
+    ["<image src=\"", src, "\"/>\n"]
   end
 
   def youtube(_, %{data: %{"src" => src}}) do
-    ["<youtube src=\"", src, "\"/>"]
+    ["<youtube src=\"", src, "\"/>\n"]
   end
 
   def ul(next, _) do
-    ["<ul>", next.(), "</ul>"]
+    ["<ul>", next.(), "</ul>\n"]
   end
 
   def ol(next, _) do
-    ["<ol>", next.(), "</ol>"]
+    ["<ol>", next.(), "</ol>\n"]
   end
 
   def li(next, _) do
-    ["<li>", next.(), "</li>"]
+    ["<li>", next.(), "</li>\n"]
   end
 
   def header(next) do
-    ["<section><title>", next.(), "</title><body><p></p></body></section>"]
+    ["<section><title>", next.(), "</title><body><p></p></body></section>\n"]
   end
 
   def h1(next, _) do
@@ -87,15 +87,15 @@ defmodule DeliveryWeb.Utils.XML do
   end
 
   def audio(_, %{data: %{"src" => src}}) do
-    ["<audio src=\"", src, "\"/>"]
+    ["<audio src=\"", src, "\"/>\n"]
   end
 
   def blockquote(next, _) do
-    ["<quote>", next.(), "</quote>"]
+    ["<quote>", next.(), "</quote>\n"]
   end
 
-  def codeblock(next, _) do
-    ["<codeblock>", next.(), "</codeblock>"]
+  def codeblock(next, %{data: %{"syntax" => syntax}}) do
+    ["<codeblock syntax=\"#{syntax}\">", next.(), "</codeblock>\n"]
   end
 
   def codeline(_, %{nodes: nodes}) do
@@ -103,11 +103,11 @@ defmodule DeliveryWeb.Utils.XML do
   end
 
   def a(next, %{data: %{"href" => href}}) do
-    ["<link href=\"#{href}\">", next.(), "</link>"]
+    ["<link href=\"#{escape_xml(href)}\">", next.(), "</link>\n"]
   end
 
   def definition(next, _) do
-    ["<extra>", next.(), "</extra>"]
+    ["<extra>", next.(), "</extra>\n"]
   end
 
   def text(%{text: text, marks: marks}) do
@@ -124,9 +124,9 @@ defmodule DeliveryWeb.Utils.XML do
 
   def document(next, %{data: %{id: id, title: title}}) do
     [
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
-      "<!DOCTYPE workbook_page PUBLIC \"-//Carnegie Mellon University//DTD Workbook Page MathML 3.8//EN\" \"http://oli.web.cmu.edu/dtd/oli_workbook_page_mathml_3_8.dtd\">",
-      "<workbook_page id=\"#{id}\"><head><title>#{title}</title></head><body>",
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n",
+      "<!DOCTYPE workbook_page PUBLIC \"-//Carnegie Mellon University//DTD Workbook Page MathML 3.8//EN\" \"http://oli.web.cmu.edu/dtd/oli_workbook_page_mathml_3_8.dtd\">\n",
+      "<workbook_page id=\"#{id}\"><head><title>#{title}</title></head><body>\n",
       next.(),
       "</body></workbook_page>"
     ]

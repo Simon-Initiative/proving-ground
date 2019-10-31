@@ -15,18 +15,94 @@ defmodule Delivery.Ingestion.Pressbooks do
      |> Floki.find("div[class=\"chapter standard\"]")}
   end
 
-  def parse({"div", _attributes, children}) do
-    {_, _, chapter} = Enum.at(children, 1)
+  def get_attr_by_key(items, key, def) do
+    case Enum.find(items, {nil, def}, fn {k, _} -> k == key end) do
+      {_, value} -> value
+    end
+  end
+
+  def get_div_by_class(items, class) do
+    case Enum.find(items, nil, fn {_, a, _} -> get_attr_by_key(a, "class", "") == class end) do
+      {_, _, c} -> c
+      nil -> []
+    end
+  end
+
+  def parse({"div", attributes, children}) do
+
+    id = get_attr_by_key(attributes, "id", "unknown")
+    title = get_attr_by_key(attributes, "title", "unknown")
+
+    content_nodes = get_div_by_class(children, "ugc chapter-ugc")
+      |> Enum.map(fn n -> handle(n) end)
+    licensing_nodes = get_div_by_class(children, "licensing")
+      |> Enum.map(fn n -> handle(n) end)
 
     %Document{
-      data: %{id: "id", title: "test title"},
-      nodes: Enum.map(chapter, fn c -> handle(c) end)
+      data: %{id: id, title: title},
+      nodes: content_nodes ++ licensing_nodes
     }
     |> clean()
   end
 
-  def clean(doc) do
+  def clean(%Document{} = doc) do
+
+    nodes = List.flatten(doc.nodes)
+      |> Enum.map(fn n ->
+        case n do
+          n when is_binary(n) -> %Block{nodes: [%Text{text: n}], type: "paragraph"}
+          %{object: "text"} -> %Block{nodes: [n], type: "paragraph"}
+          nil -> %Block{nodes: [%Text{text: ""}], type: "paragraph"}
+          n -> n
+        end
+      end)
+
+    %Document{
+      data: %{id: "id", title: "test title"},
+      nodes: Enum.map(nodes, fn c -> clean(c) end)
+    }
   end
+
+  def clean(%Block{} = block) do
+
+    no_markup = fn b ->
+      %{ b | marks: []}
+    end
+
+    collapse = fn b ->
+      Enum.map(b.nodes, fn n -> clean(n) end)
+    end
+
+    check = fn b ->
+      cond do
+        is_binary(b)  -> %Text{text: b}
+        b.object == "block" and b.type == "paragraph" and block.type == "paragraph" -> collapse.(b)
+        b.object == "block" and b.type == "paragraph" and block.type == "blockquote" -> collapse.(b)
+        block.type == "codeblock" and b.object == "text" and length(b.marks) > 0 -> no_markup.(b)
+
+        true -> clean(b)
+      end
+    end
+
+    nodes = List.flatten(block.nodes)
+
+    %Block{
+      type: block.type,
+      data: block.data,
+      nodes: Enum.reduce(nodes, [],
+      fn c, acc ->
+        case check.(c) do
+          item when is_list(item) -> acc ++ item
+          scalar -> acc ++ [scalar]
+        end
+    end)
+    }
+  end
+
+  def clean(other) do
+    other
+  end
+
 
   def extract_id(attributes) do
     case attributes do
@@ -40,8 +116,6 @@ defmodule Delivery.Ingestion.Pressbooks do
   end
 
   def handle({"div", _attributes, children}) do
-    IO.puts("div")
-    IO.inspect(children)
 
     case children do
       [{"ul", _, c}] ->
@@ -80,6 +154,9 @@ defmodule Delivery.Ingestion.Pressbooks do
       [{"div", _, c} | rest] ->
         Enum.map(c ++ rest, fn c -> handle(c) end)
 
+      [{"p", _, _} | _] ->
+        Enum.map(children, fn c -> handle(c) end)
+
       c ->
         %Block{type: "paragraph", nodes: Enum.map(c, fn c -> handle(c) end)}
     end
@@ -104,6 +181,7 @@ defmodule Delivery.Ingestion.Pressbooks do
   def handle({"pre", _, children}) do
     %Block{
       type: "codeblock",
+      data: %{"syntax" => "text"},
       nodes: Enum.map(children, fn c -> handle(c) end)
     }
   end
@@ -280,11 +358,29 @@ defmodule Delivery.Ingestion.Pressbooks do
     }
   end
 
+
+  def handle({"script", _, _}) do
+    %Text{
+      text: "script removed",
+    }
+  end
+
+
+  def handle({"textarea", _, _}) do
+    %Text{
+      text: "textarea removed",
+    }
+  end
+
   def handle({"em", _, [text]}) when is_binary(text) do
     %Text{
       text: text,
       marks: [%Mark{type: "italic"}]
     }
+  end
+
+  def handle({"em", _, [{"a", _, _} = inline]}) do
+    handle(inline)
   end
 
   def handle({"em", _, [item]}) when is_tuple(item) do
@@ -357,6 +453,7 @@ defmodule Delivery.Ingestion.Pressbooks do
       text: text
     }
   end
+
 
   def handle(unsupported) do
     IO.puts("Unsupported")

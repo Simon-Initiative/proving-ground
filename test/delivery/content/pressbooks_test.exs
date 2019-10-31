@@ -17,6 +17,7 @@ defmodule Delivery.Content.PressBooksTest do
   end
 
   def pressbook_to_workbook({segment, index}) do
+
     parsed = Pressbooks.parse(segment)
 
     File.write!(@out_path <> "/#{index}.json", Poison.encode!(parsed))
@@ -33,7 +34,7 @@ defmodule Delivery.Content.PressBooksTest do
   end
 
   test "converting all" do
-    input = read_from_file("./test/delivery/content/amlit.html")
+    input = read_from_file("./test/delivery/content/bio.html")
 
     segments =
       case Pressbooks.segment(input) do
