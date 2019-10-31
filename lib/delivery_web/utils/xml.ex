@@ -132,6 +132,41 @@ defmodule DeliveryWeb.Utils.XML do
     ]
   end
 
+  def organization(next, %{id: id, title: title}) do
+    [
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n",
+      "<!DOCTYPE organization PUBLIC \"-//Carnegie Mellon University//DTD Content Organization Simple 2.3//EN\" \"http://oli.web.cmu.edu/dtd/oli_content_organization_simple_2_3.dtd\">\n",
+      "<organization id=\"#{id}\" version=\"1.0\">\n",
+      "<title>#{title}</title>\n",
+      "<description>organization description</description>\n",
+      "<audience>Audience</audience>\n",
+      "<labels sequence=\"Sequence\" unit=\"Unit\" module=\"Module\" section=\"Section\"/>\n",
+      "<sequences>\n",
+      "<sequence id=\"main_sequence\" category=\"content\" audience=\"all\">\n",
+      "<title>Main Sequence</title>\n",
+      next.(),
+      "</sequence>\n",
+      "</sequences></organization>\n"
+    ]
+  end
+
+  def module(next, %{id: id, title: title}) do
+    [
+      "<module id=\"#{id}\">\n",
+      "<title>#{title}</title>\n",
+      next.(),
+      "</module>\n"
+    ]
+  end
+
+  def reference(_, %{id: id}) do
+    [
+      "<item id=\"ref_#{id}\" scoring_mode=\"default\">\n",
+      "<resourceref idref=\"#{id}\"/>\n",
+      "</item>\n"
+    ]
+  end
+
   def wrap_marks(text, marks) do
     map = %{
       "sub" => "sub",

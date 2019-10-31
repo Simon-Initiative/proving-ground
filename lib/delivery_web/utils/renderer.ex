@@ -3,6 +3,9 @@ defmodule DeliveryWeb.Utils.Renderer do
   alias Delivery.Content.Block
   alias Delivery.Content.Inline
   alias Delivery.Content.Text
+  alias Delivery.Content.Organization
+  alias Delivery.Content.Module
+  alias Delivery.Content.Reference
 
   @type next :: (() -> String.t())
   @type nodes :: [%{}]
@@ -10,6 +13,9 @@ defmodule DeliveryWeb.Utils.Renderer do
   @type marks :: []
 
   @callback document(next, %Document{}) :: [any()]
+  @callback organization(next, %Organization{}) :: [any()]
+  @callback module(next, %Module{}) :: [any()]
+  @callback reference(next, %Reference{}) :: [any()]
 
   @callback p(next, %Block{}) :: [any()]
   @callback table(next, %Block{}) :: [any()]
@@ -42,6 +48,21 @@ defmodule DeliveryWeb.Utils.Renderer do
   def render(%Document{nodes: nodes} = doc, impl) do
     next = fn -> render(nodes, impl) end
     impl.document(next, doc)
+  end
+
+  def render(%Organization{nodes: nodes} = doc, impl) do
+    next = fn -> render(nodes, impl) end
+    impl.organization(next, doc)
+  end
+
+  def render(%Module{nodes: nodes} = doc, impl) do
+    next = fn -> render(nodes, impl) end
+    impl.module(next, doc)
+  end
+
+  def render(%Reference{} = ref, impl) do
+    next = fn -> "" end
+    impl.reference(next, ref)
   end
 
   def render(%Block{type: type, nodes: nodes} = block, impl) do

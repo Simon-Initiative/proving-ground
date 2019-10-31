@@ -12,37 +12,56 @@ defmodule Delivery.Content.PressBooksTest do
 
   @out_path "./test/delivery/content/test_out"
 
+
   def read_from_file(file) do
     File.read!(file)
   end
 
   def pressbook_to_workbook({segment, index}) do
 
-    parsed = Pressbooks.parse(segment)
+    parsed = Pressbooks.page(segment)
+    id = Map.get(parsed.data, :id)
+    xml = Renderer.render(parsed, XML)
 
-    File.write!(@out_path <> "/#{index}.json", Poison.encode!(parsed))
+    # File.write!(@out_path <> "/content/x-oli-workbook_page/#{index}.json", Poison.encode!(parsed))
+    File.write!(@out_path <> "/content/x-oli-workbook_page/#{id}.xml", xml)
+  end
+
+  def to_org(org) do
+
+    parsed = Pressbooks.organization(org)
+
+    # File.write!(@out_path <> "/organizations/default/organization.json", Poison.encode!(parsed))
 
     xml = Renderer.render(parsed, XML)
 
-    File.write!(@out_path <> "/#{index}.xml", xml)
+    File.write!(@out_path <> "/organizations/default/organization.xml", xml)
   end
 
   setup do
     File.rm_rf(@out_path)
     File.mkdir(@out_path)
+    File.mkdir(@out_path <> "/content")
+    File.mkdir(@out_path <> "/content/x-oli-workbook_page")
+    File.mkdir(@out_path <> "/organizations")
+    File.mkdir(@out_path <> "/organizations/default")
+
+
     []
   end
 
   test "converting all" do
-    input = read_from_file("./test/delivery/content/bio.html")
+    input = read_from_file("./test/delivery/content/amlit.html")
 
-    segments =
+    {pages, toc} =
       case Pressbooks.segment(input) do
-        {:ok, segments} -> segments
+        {:ok, %{pages: pages, toc: toc}} -> {pages, toc}
       end
 
-    Enum.with_index(segments)
+    Enum.with_index(pages)
     |> Enum.map(fn s -> pressbook_to_workbook(s) end)
+
+    to_org(toc)
 
     # IO.inspect(Enum.at(segments, 37))
 

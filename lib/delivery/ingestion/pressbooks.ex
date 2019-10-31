@@ -6,13 +6,21 @@ defmodule Delivery.Ingestion.Pressbooks do
   alias Delivery.Content.Text
   alias Delivery.Content.Inline
   alias Delivery.Content.Mark
+  alias Delivery.Content.Module
+  alias Delivery.Content.Reference
+  alias Delivery.Content.Organization
+
 
   @behaviour Ingest
 
   def segment(input) do
-    {:ok,
-     Floki.parse(input)
-     |> Floki.find("div[class=\"chapter standard\"]")}
+
+    parsed = Floki.parse(input)
+
+    {:ok, %{
+      pages: parsed |> Floki.find("div[class=\"chapter standard\"]"),
+      toc: parsed |> Floki.find("div[id=\"toc\"]") |> hd
+    }}
   end
 
   def get_attr_by_key(items, key, def) do
@@ -28,7 +36,32 @@ defmodule Delivery.Ingestion.Pressbooks do
     end
   end
 
-  def parse({"div", attributes, children}) do
+  def organization(root) do
+    modules = Floki.find(root, "li")
+    |> Enum.reduce([], fn item, acc ->
+
+      parsed = case item do
+        {"li", [{"class", "part"}], [{"a", [{"href", "#" <> id}], [title] }]} -> %Module{id: id, title: title}
+        {"li", [{"class", "chapter standard"}], [{"a", [{"href", "#" <> id}], _ }]} -> %Reference{id: id}
+        _ -> :ignore
+      end
+
+      case parsed do
+        :ignore -> acc
+        %Module{} = m -> [m] ++ acc
+        %Reference{} = r -> case acc do
+          [hd|rest] -> [%{hd | nodes: hd.nodes ++ [r]}] ++ rest
+        end
+      end
+
+    end
+    )
+    |> Enum.reverse()
+
+    %Organization{nodes: modules}
+  end
+
+  def page({"div", attributes, children}) do
 
     id = get_attr_by_key(attributes, "id", "unknown")
     title = get_attr_by_key(attributes, "title", "unknown")
@@ -58,7 +91,7 @@ defmodule Delivery.Ingestion.Pressbooks do
       end)
 
     %Document{
-      data: %{id: "id", title: "test title"},
+      data: doc.data,
       nodes: Enum.map(nodes, fn c -> clean(c) end)
     }
   end
