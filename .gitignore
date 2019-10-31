@@ -1,4 +1,5 @@
 # Custom ignores
+test_out/
 .elixir_ls/
 .vscode
 *~

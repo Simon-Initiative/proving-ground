@@ -18,7 +18,14 @@ defmodule Delivery.Ingestion.Pressbooks do
   def parse({"div", _attributes, children}) do
     {_, _, chapter} = Enum.at(children, 1)
 
-    %Document{nodes: Enum.map(chapter, fn c -> handle(c) end)}
+    %Document{
+      data: %{id: "id", title: "test title"},
+      nodes: Enum.map(chapter, fn c -> handle(c) end)
+    }
+    |> clean()
+  end
+
+  def clean(doc) do
   end
 
   def extract_id(attributes) do
@@ -33,10 +40,48 @@ defmodule Delivery.Ingestion.Pressbooks do
   end
 
   def handle({"div", _attributes, children}) do
+    IO.puts("div")
+    IO.inspect(children)
+
     case children do
-      [{"ul", _, c}] -> %Block{type: "unordered-list", nodes: Enum.map(c, fn c -> handle(c) end)}
-      [{"ol", _, c}] -> %Block{type: "ordered-list", nodes: Enum.map(c, fn c -> handle(c) end)}
-      c -> %Block{type: "paragraph", nodes: Enum.map(c, fn c -> handle(c) end)}
+      [{"ul", _, c}] ->
+        %Block{type: "unordered-list", nodes: Enum.map(c, fn c -> handle(c) end)}
+
+      [{"ol", _, c}] ->
+        %Block{type: "ordered-list", nodes: Enum.map(c, fn c -> handle(c) end)}
+
+      [{"h1", _, _} | _] ->
+        Enum.map(children, fn c -> handle(c) end)
+
+      [{"h2", _, _} | _] ->
+        Enum.map(children, fn c -> handle(c) end)
+
+      [{"h3", _, _} | _] ->
+        Enum.map(children, fn c -> handle(c) end)
+
+      [{"h4", _, _} | _] ->
+        Enum.map(children, fn c -> handle(c) end)
+
+      [{"h5", _, _} | _] ->
+        Enum.map(children, fn c -> handle(c) end)
+
+      [{"h6", _, _} | _] ->
+        Enum.map(children, fn c -> handle(c) end)
+
+      [{"div", _, [{"div", _, [{"div", _, c}]}]}] ->
+        Enum.map(c, fn c -> handle(c) end)
+
+      [{"div", _, [{"div", _, c} | more]} | rest] ->
+        Enum.map(c ++ more ++ rest, fn c -> handle(c) end)
+
+      [{"div", [{"class", "textbox tryit"}], c}] ->
+        %Block{type: "paragraph", nodes: Enum.map(c, fn c -> handle(c) end)}
+
+      [{"div", _, c} | rest] ->
+        Enum.map(c ++ rest, fn c -> handle(c) end)
+
+      c ->
+        %Block{type: "paragraph", nodes: Enum.map(c, fn c -> handle(c) end)}
     end
   end
 
@@ -45,6 +90,28 @@ defmodule Delivery.Ingestion.Pressbooks do
       type: "paragraph",
       data: extract_id(attributes),
       nodes: Enum.map(children, fn c -> handle(c) end)
+    }
+  end
+
+  def handle({"small", _, [child]}) do
+    handle(child)
+  end
+
+  def handle({"cite", _, [child]}) do
+    handle(child)
+  end
+
+  def handle({"pre", _, children}) do
+    %Block{
+      type: "codeblock",
+      nodes: Enum.map(children, fn c -> handle(c) end)
+    }
+  end
+
+  def handle({"hr", _, _}) do
+    %Block{
+      type: "paragraph",
+      nodes: []
     }
   end
 
@@ -131,6 +198,22 @@ defmodule Delivery.Ingestion.Pressbooks do
     }
   end
 
+  def handle({"tfoot", attributes, children}) do
+    %Block{
+      type: "tfoot",
+      data: extract(attributes),
+      nodes: Enum.map(children, fn c -> handle(c) end)
+    }
+  end
+
+  def handle({"caption", attributes, children}) do
+    %Block{
+      type: "caption",
+      data: extract(attributes),
+      nodes: Enum.map(children, fn c -> handle(c) end)
+    }
+  end
+
   def handle({"tr", attributes, children}) do
     %Block{
       type: "tr",
@@ -157,9 +240,27 @@ defmodule Delivery.Ingestion.Pressbooks do
 
   def handle({"img", attributes, children}) do
     %Block{
-      type: "img",
+      type: "image",
       data: extract(attributes),
       nodes: Enum.map(children, fn c -> handle(c) end)
+    }
+  end
+
+  def handle({"blockquote", attributes, [{"p", _, c}]}) do
+    %Block{
+      type: "blockquote",
+      data: extract(attributes),
+      nodes: Enum.map(c, fn c -> handle(c) end)
+    }
+  end
+
+  def handle({"blockquote", attributes, [{"p", _, _} | _tail] = children}) do
+    nodes = Enum.flat_map(children, fn {_, _, c} -> c end)
+
+    %Block{
+      type: "blockquote",
+      data: extract(attributes),
+      nodes: Enum.map(nodes, fn c -> handle(c) end)
     }
   end
 
@@ -179,17 +280,19 @@ defmodule Delivery.Ingestion.Pressbooks do
     }
   end
 
-  def handle({"em", [{"class", "emphasis"}], [text]}) do
+  def handle({"em", _, [text]}) when is_binary(text) do
     %Text{
       text: text,
       marks: [%Mark{type: "italic"}]
     }
   end
 
-  def handle({"em", _, [text]}) do
+  def handle({"em", _, [item]}) when is_tuple(item) do
+    inner = handle(item)
+
     %Text{
-      text: text,
-      marks: [%Mark{type: "bold"}]
+      text: inner.text,
+      marks: [%Mark{type: "italic"}] ++ inner.marks
     }
   end
 

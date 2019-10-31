@@ -13,13 +13,17 @@ defmodule DeliveryWeb.Utils.Renderer do
 
   @callback p(next, %Block{}) :: [any()]
   @callback table(next, %Block{}) :: [any()]
+  @callback caption(next, %Block{}) :: [any()]
   @callback tbody(next, %Block{}) :: [any()]
   @callback thead(next, %Block{}) :: [any()]
+  @callback tfoot(next, %Block{}) :: [any()]
   @callback tr(next, %Block{}) :: [any()]
   @callback td(next, %Block{}) :: [any()]
   @callback th(next, %Block{}) :: [any()]
   @callback image(next, %Block{}) :: [any()]
   @callback youtube(next, %Block{}) :: [any()]
+  @callback codeblock(next, %Block{}) :: [any()]
+  @callback codeline(next, %Block{}) :: [any()]
   @callback ul(next, %Block{}) :: [any()]
   @callback ol(next, %Block{}) :: [any()]
   @callback li(next, %Block{}) :: [any()]
@@ -35,19 +39,21 @@ defmodule DeliveryWeb.Utils.Renderer do
   @callback definition(next, %Inline{}) :: [any()]
   @callback text(%Text{}) :: [any()]
 
-  def render(impl, %Document{nodes: nodes} = doc) do
-    next = fn -> render(impl, nodes) end
+  def render(%Document{nodes: nodes} = doc, impl) do
+    next = fn -> render(nodes, impl) end
     impl.document(next, doc)
   end
 
-  def render(impl, %Block{type: type, nodes: nodes} = block) do
-    next = fn -> render(impl, nodes) end
+  def render(%Block{type: type, nodes: nodes} = block, impl) do
+    next = fn -> render(nodes, impl) end
 
     case type do
       "paragraph" -> impl.p(next, block)
       "table" -> impl.table(next, block)
+      "caption" -> impl.caption(next, block)
       "thead" -> impl.thead(next, block)
       "tbody" -> impl.tbody(next, block)
+      "tfoot" -> impl.tfoot(next, block)
       "tr" -> impl.tr(next, block)
       "td" -> impl.td(next, block)
       "th" -> impl.th(next, block)
@@ -56,6 +62,8 @@ defmodule DeliveryWeb.Utils.Renderer do
       "unordered-list" -> impl.ul(next, block)
       "ordered-list" -> impl.ol(next, block)
       "list-item" -> impl.li(next, block)
+      "codeblock" -> impl.codeblock(next, block)
+      "codeline" -> impl.codeline(next, block)
       "heading-one" -> impl.h1(next, block)
       "heading-two" -> impl.h2(next, block)
       "heading-three" -> impl.h3(next, block)
@@ -67,20 +75,24 @@ defmodule DeliveryWeb.Utils.Renderer do
     end
   end
 
-  def render(impl, %Inline{type: type, nodes: nodes} = inline) do
-    next = fn -> render(impl, nodes) end
+  def render(%Inline{type: type, nodes: nodes} = inline, impl) do
+    next = fn -> render(nodes, impl) end
 
     case type do
-      "a" -> impl.a(next, inline)
+      "link" -> impl.a(next, inline)
       "definition" -> impl.definition(next, inline)
     end
   end
 
-  def render(impl, %Text{} = text) do
+  def render(%Text{} = text, impl) do
     impl.text(text)
   end
 
-  def render(impl, nodes) when is_list(nodes) do
-    Enum.map(nodes, fn n -> render(impl, n) end)
+  def render(text, impl) when is_binary(text) do
+    impl.text(%Text{text: text})
+  end
+
+  def render(nodes, impl) when is_list(nodes) do
+    Enum.map(nodes, fn n -> render(n, impl) end)
   end
 end

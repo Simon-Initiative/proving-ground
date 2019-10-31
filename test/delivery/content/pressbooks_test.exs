@@ -7,32 +7,45 @@ defmodule Delivery.Content.PressBooksTest do
   alias Delivery.Content.Inline
   alias Delivery.Ingestion.Pressbooks
 
-  describe "pressbooks" do
-    def input_fixture() do
-      html = """
-        <html>
-        <body>
-          <div class="chapter standard"><div>one</div></div>
-          <div class="chapter standard"><div>two</div></div>
-          <div class="chapter standard"><div>three</div></div>
-        </body>
-        </html>
-      """
-    end
+  alias DeliveryWeb.Utils.Renderer
+  alias DeliveryWeb.Utils.XML
 
-    def read_from_file(file) do
-      File.read!(file)
-    end
+  @out_path "./test/delivery/content/test_out"
 
-    test "reducing all" do
-      input = read_from_file("./test/delivery/content/amlit.html")
+  def read_from_file(file) do
+    File.read!(file)
+  end
 
-      segments =
-        case Pressbooks.segment(input) do
-          {:ok, segments} -> segments
-        end
+  def pressbook_to_workbook({segment, index}) do
+    parsed = Pressbooks.parse(segment)
 
-      Enum.map(segments, fn s -> Pressbooks.parse(s) end)
-    end
+    File.write!(@out_path <> "/#{index}.json", Poison.encode!(parsed))
+
+    xml = Renderer.render(parsed, XML)
+
+    File.write!(@out_path <> "/#{index}.xml", xml)
+  end
+
+  setup do
+    File.rm_rf(@out_path)
+    File.mkdir(@out_path)
+    []
+  end
+
+  test "converting all" do
+    input = read_from_file("./test/delivery/content/amlit.html")
+
+    segments =
+      case Pressbooks.segment(input) do
+        {:ok, segments} -> segments
+      end
+
+    Enum.with_index(segments)
+    |> Enum.map(fn s -> pressbook_to_workbook(s) end)
+
+    # IO.inspect(Enum.at(segments, 37))
+
+    # s = Enum.at(segments, 37)
+    # pressbook_to_workbook({s, 37})
   end
 end
