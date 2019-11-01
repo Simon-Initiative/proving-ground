@@ -1,5 +1,5 @@
 defmodule Delivery.Ingestion.Pressbooks do
-  alias Delivery.Ingestion.Ingest
+  alias Delivery.Content.Reader
 
   alias Delivery.Content.Document
   alias Delivery.Content.Block
@@ -10,17 +10,16 @@ defmodule Delivery.Ingestion.Pressbooks do
   alias Delivery.Content.Reference
   alias Delivery.Content.Organization
 
-
-  @behaviour Ingest
+  @behaviour Reader
 
   def segment(input) do
-
     parsed = Floki.parse(input)
 
-    {:ok, %{
-      pages: parsed |> Floki.find("div[class=\"chapter standard\"]"),
-      toc: parsed |> Floki.find("div[id=\"toc\"]") |> hd
-    }}
+    {:ok,
+     %{
+       pages: parsed |> Floki.find("div[class=\"chapter standard\"]"),
+       toc: parsed |> Floki.find("div[id=\"toc\"]") |> hd
+     }}
   end
 
   def get_attr_by_key(items, key, def) do
@@ -37,38 +36,49 @@ defmodule Delivery.Ingestion.Pressbooks do
   end
 
   def organization(root) do
-    modules = Floki.find(root, "li")
-    |> Enum.reduce([], fn item, acc ->
+    modules =
+      Floki.find(root, "li")
+      |> Enum.reduce([], fn item, acc ->
+        parsed =
+          case item do
+            {"li", [{"class", "part"}], [{"a", [{"href", "#" <> id}], [title]}]} ->
+              %Module{id: id, title: title}
 
-      parsed = case item do
-        {"li", [{"class", "part"}], [{"a", [{"href", "#" <> id}], [title] }]} -> %Module{id: id, title: title}
-        {"li", [{"class", "chapter standard"}], [{"a", [{"href", "#" <> id}], _ }]} -> %Reference{id: id}
-        _ -> :ignore
-      end
+            {"li", [{"class", "chapter standard"}], [{"a", [{"href", "#" <> id}], _}]} ->
+              %Reference{id: id}
 
-      case parsed do
-        :ignore -> acc
-        %Module{} = m -> [m] ++ acc
-        %Reference{} = r -> case acc do
-          [hd|rest] -> [%{hd | nodes: hd.nodes ++ [r]}] ++ rest
+            _ ->
+              :ignore
+          end
+
+        case parsed do
+          :ignore ->
+            acc
+
+          %Module{} = m ->
+            [m] ++ acc
+
+          %Reference{} = r ->
+            case acc do
+              [hd | rest] -> [%{hd | nodes: hd.nodes ++ [r]}] ++ rest
+            end
         end
-      end
-
-    end
-    )
-    |> Enum.reverse()
+      end)
+      |> Enum.reverse()
 
     %Organization{nodes: modules}
   end
 
   def page({"div", attributes, children}) do
-
     id = get_attr_by_key(attributes, "id", "unknown")
     title = get_attr_by_key(attributes, "title", "unknown")
 
-    content_nodes = get_div_by_class(children, "ugc chapter-ugc")
+    content_nodes =
+      get_div_by_class(children, "ugc chapter-ugc")
       |> Enum.map(fn n -> handle(n) end)
-    licensing_nodes = get_div_by_class(children, "licensing")
+
+    licensing_nodes =
+      get_div_by_class(children, "licensing")
       |> Enum.map(fn n -> handle(n) end)
 
     %Document{
@@ -79,8 +89,8 @@ defmodule Delivery.Ingestion.Pressbooks do
   end
 
   def clean(%Document{} = doc) do
-
-    nodes = List.flatten(doc.nodes)
+    nodes =
+      List.flatten(doc.nodes)
       |> Enum.map(fn n ->
         case n do
           n when is_binary(n) -> %Block{nodes: [%Text{text: n}], type: "paragraph"}
@@ -97,9 +107,8 @@ defmodule Delivery.Ingestion.Pressbooks do
   end
 
   def clean(%Block{} = block) do
-
     no_markup = fn b ->
-      %{ b | marks: []}
+      %{b | marks: []}
     end
 
     collapse = fn b ->
@@ -108,12 +117,20 @@ defmodule Delivery.Ingestion.Pressbooks do
 
     check = fn b ->
       cond do
-        is_binary(b)  -> %Text{text: b}
-        b.object == "block" and b.type == "paragraph" and block.type == "paragraph" -> collapse.(b)
-        b.object == "block" and b.type == "paragraph" and block.type == "blockquote" -> collapse.(b)
-        block.type == "codeblock" and b.object == "text" and length(b.marks) > 0 -> no_markup.(b)
+        is_binary(b) ->
+          %Text{text: b}
 
-        true -> clean(b)
+        b.object == "block" and b.type == "paragraph" and block.type == "paragraph" ->
+          collapse.(b)
+
+        b.object == "block" and b.type == "paragraph" and block.type == "blockquote" ->
+          collapse.(b)
+
+        block.type == "codeblock" and b.object == "text" and length(b.marks) > 0 ->
+          no_markup.(b)
+
+        true ->
+          clean(b)
       end
     end
 
@@ -122,20 +139,19 @@ defmodule Delivery.Ingestion.Pressbooks do
     %Block{
       type: block.type,
       data: block.data,
-      nodes: Enum.reduce(nodes, [],
-      fn c, acc ->
-        case check.(c) do
-          item when is_list(item) -> acc ++ item
-          scalar -> acc ++ [scalar]
-        end
-    end)
+      nodes:
+        Enum.reduce(nodes, [], fn c, acc ->
+          case check.(c) do
+            item when is_list(item) -> acc ++ item
+            scalar -> acc ++ [scalar]
+          end
+        end)
     }
   end
 
   def clean(other) do
     other
   end
-
 
   def extract_id(attributes) do
     case attributes do
@@ -149,7 +165,6 @@ defmodule Delivery.Ingestion.Pressbooks do
   end
 
   def handle({"div", _attributes, children}) do
-
     case children do
       [{"ul", _, c}] ->
         %Block{type: "unordered-list", nodes: Enum.map(c, fn c -> handle(c) end)}
@@ -391,17 +406,15 @@ defmodule Delivery.Ingestion.Pressbooks do
     }
   end
 
-
   def handle({"script", _, _}) do
     %Text{
-      text: "script removed",
+      text: "script removed"
     }
   end
 
-
   def handle({"textarea", _, _}) do
     %Text{
-      text: "textarea removed",
+      text: "textarea removed"
     }
   end
 
@@ -486,7 +499,6 @@ defmodule Delivery.Ingestion.Pressbooks do
       text: text
     }
   end
-
 
   def handle(unsupported) do
     IO.puts("Unsupported")
