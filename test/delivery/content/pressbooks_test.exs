@@ -17,9 +17,9 @@ defmodule Delivery.Content.PressBooksTest do
     File.read!(file)
   end
 
-  def pressbook_to_workbook({segment, index}) do
+  def pressbook_to_workbook(segment, id) do
     parsed = Pressbooks.page(segment)
-    id = Map.get(parsed.data, :id)
+    # id = Map.get(parsed.data, :id)
     xml = Writer.render(%Context{}, parsed, XML)
 
     # File.write!(@out_path <> "/content/x-oli-workbook_page/#{index}.json", Poison.encode!(parsed))
@@ -48,17 +48,16 @@ defmodule Delivery.Content.PressBooksTest do
   end
 
   test "converting all" do
-    input = read_from_file("./test/delivery/content/amlit.html")
+    input = read_from_file("./test/delivery/content/prog.html")
+    root = Floki.parse(input)
+    %{nodes: pages} = Pressbooks.sections(root)
+    IO.inspect pages
+    segments = Enum.map(pages, fn r -> Floki.find(root, "div[id=\"#{r.id}\"]") end)
+    IO.inspect(segments)
+    # segments
+    # |> Enum.map(fn s -> pressbook_to_workbook(s) end)
 
-    {pages, toc} =
-      case Pressbooks.segment(input) do
-        {:ok, %{pages: pages, toc: toc}} -> {pages, toc}
-      end
-
-    Enum.with_index(pages)
-    |> Enum.map(fn s -> pressbook_to_workbook(s) end)
-
-    to_org(toc)
+    # to_org(toc)
 
   end
 end

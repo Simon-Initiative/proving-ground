@@ -69,6 +69,22 @@ defmodule Delivery.Content.Readers.Pressbooks do
     %Organization{nodes: modules}
   end
 
+  def sections(root) do
+    sections =
+      Floki.find(root, "li[class=\"section\"]")
+      |> Enum.map(fn item ->
+          case item do
+            {"li", _, [{"a", [{"href", "#" <> id}], _}]} ->
+              %Reference{id: id}
+            _ ->
+              :ignore
+          end
+      end)
+
+    %Organization{nodes: sections}
+  end
+
+
   def page({"div", attributes, children}) do
     id = get_attr_by_key(attributes, "id", "unknown")
     title = get_attr_by_key(attributes, "title", "unknown")
