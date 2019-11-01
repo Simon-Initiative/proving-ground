@@ -1,4 +1,4 @@
-defmodule Delivery.Content.Reader do
+defmodule Delivery.Content.Readers.Reader do
   alias Delivery.Content.Document
   alias Delivery.Content.Organization
 

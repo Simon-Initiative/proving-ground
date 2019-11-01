@@ -1,5 +1,5 @@
-defmodule Delivery.Ingestion.Pressbooks do
-  alias Delivery.Content.Reader
+defmodule Delivery.Content.Readers.Pressbooks do
+  alias Delivery.Content.Readers.Reader
 
   alias Delivery.Content.Document
   alias Delivery.Content.Block

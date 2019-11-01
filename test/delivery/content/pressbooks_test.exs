@@ -5,35 +5,32 @@ defmodule Delivery.Content.PressBooksTest do
   alias Delivery.Content.Block
   alias Delivery.Content.Text
   alias Delivery.Content.Inline
-  alias Delivery.Ingestion.Pressbooks
+  alias Delivery.Content.Readers.Pressbooks
 
-  alias DeliveryWeb.Utils.Renderer
-  alias DeliveryWeb.Utils.XML
+  alias Delivery.Content.Writers.Writer
+  alias Delivery.Content.Writers.XML
 
   @out_path "./test/delivery/content/test_out"
-
 
   def read_from_file(file) do
     File.read!(file)
   end
 
   def pressbook_to_workbook({segment, index}) do
-
     parsed = Pressbooks.page(segment)
     id = Map.get(parsed.data, :id)
-    xml = Renderer.render(parsed, XML)
+    xml = Writer.render(parsed, XML)
 
     # File.write!(@out_path <> "/content/x-oli-workbook_page/#{index}.json", Poison.encode!(parsed))
     File.write!(@out_path <> "/content/x-oli-workbook_page/#{id}.xml", xml)
   end
 
   def to_org(org) do
-
     parsed = Pressbooks.organization(org)
 
     # File.write!(@out_path <> "/organizations/default/organization.json", Poison.encode!(parsed))
 
-    xml = Renderer.render(parsed, XML)
+    xml = Writer.render(parsed, XML)
 
     File.write!(@out_path <> "/organizations/default/organization.xml", xml)
   end
@@ -45,7 +42,6 @@ defmodule Delivery.Content.PressBooksTest do
     File.mkdir(@out_path <> "/content/x-oli-workbook_page")
     File.mkdir(@out_path <> "/organizations")
     File.mkdir(@out_path <> "/organizations/default")
-
 
     []
   end
