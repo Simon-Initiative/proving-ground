@@ -1,6 +1,6 @@
-defmodule DeliveryWeb.Utils.XML do
-  alias DeliveryWeb.Utils.Renderer
-  @behaviour Renderer
+defmodule Delivery.Content.Writers.XML do
+  alias Delivery.Content.Writers.Writer
+  @behaviour Writer
 
   def p(next, _) do
     ["<p>", next.(), "</p>\n"]

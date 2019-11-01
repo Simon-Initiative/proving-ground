@@ -1,4 +1,4 @@
-defmodule DeliveryWeb.Utils.Renderer do
+defmodule Delivery.Content.Writers.Writer do
   alias Delivery.Content.Document
   alias Delivery.Content.Block
   alias Delivery.Content.Inline
