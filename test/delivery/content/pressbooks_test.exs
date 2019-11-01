@@ -8,6 +8,7 @@ defmodule Delivery.Content.PressBooksTest do
   alias Delivery.Content.Readers.Pressbooks
 
   alias Delivery.Content.Writers.Writer
+  alias Delivery.Content.Writers.Context
   alias Delivery.Content.Writers.XML
 
   @out_path "./test/delivery/content/test_out"
@@ -19,7 +20,7 @@ defmodule Delivery.Content.PressBooksTest do
   def pressbook_to_workbook({segment, index}) do
     parsed = Pressbooks.page(segment)
     id = Map.get(parsed.data, :id)
-    xml = Writer.render(parsed, XML)
+    xml = Writer.render(%Context{}, parsed, XML)
 
     # File.write!(@out_path <> "/content/x-oli-workbook_page/#{index}.json", Poison.encode!(parsed))
     File.write!(@out_path <> "/content/x-oli-workbook_page/#{id}.xml", xml)
@@ -30,7 +31,7 @@ defmodule Delivery.Content.PressBooksTest do
 
     # File.write!(@out_path <> "/organizations/default/organization.json", Poison.encode!(parsed))
 
-    xml = Writer.render(parsed, XML)
+    xml = Writer.render(%Context{}, parsed, XML)
 
     File.write!(@out_path <> "/organizations/default/organization.xml", xml)
   end
@@ -59,9 +60,5 @@ defmodule Delivery.Content.PressBooksTest do
 
     to_org(toc)
 
-    # IO.inspect(Enum.at(segments, 37))
-
-    # s = Enum.at(segments, 37)
-    # pressbook_to_workbook({s, 37})
   end
 end

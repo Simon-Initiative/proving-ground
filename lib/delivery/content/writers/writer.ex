@@ -7,113 +7,115 @@ defmodule Delivery.Content.Writers.Writer do
   alias Delivery.Content.Module
   alias Delivery.Content.Reference
 
+  alias Delivery.Content.Writers.Context
+
   @type next :: (() -> String.t())
   @type nodes :: [%{}]
   @type data :: %{}
   @type marks :: []
 
-  @callback document(next, %Document{}) :: [any()]
-  @callback organization(next, %Organization{}) :: [any()]
-  @callback module(next, %Module{}) :: [any()]
-  @callback reference(next, %Reference{}) :: [any()]
+  @callback document(%Context{}, next, %Document{}) :: [any()]
+  @callback organization(%Context{}, next, %Organization{}) :: [any()]
+  @callback module(%Context{}, next, %Module{}) :: [any()]
+  @callback reference(%Context{}, next, %Reference{}) :: [any()]
 
-  @callback p(next, %Block{}) :: [any()]
-  @callback table(next, %Block{}) :: [any()]
-  @callback caption(next, %Block{}) :: [any()]
-  @callback tbody(next, %Block{}) :: [any()]
-  @callback thead(next, %Block{}) :: [any()]
-  @callback tfoot(next, %Block{}) :: [any()]
-  @callback tr(next, %Block{}) :: [any()]
-  @callback td(next, %Block{}) :: [any()]
-  @callback th(next, %Block{}) :: [any()]
-  @callback image(next, %Block{}) :: [any()]
-  @callback youtube(next, %Block{}) :: [any()]
-  @callback codeblock(next, %Block{}) :: [any()]
-  @callback codeline(next, %Block{}) :: [any()]
-  @callback ul(next, %Block{}) :: [any()]
-  @callback ol(next, %Block{}) :: [any()]
-  @callback li(next, %Block{}) :: [any()]
-  @callback h1(next, %Block{}) :: [any()]
-  @callback h2(next, %Block{}) :: [any()]
-  @callback h3(next, %Block{}) :: [any()]
-  @callback h4(next, %Block{}) :: [any()]
-  @callback h5(next, %Block{}) :: [any()]
-  @callback h6(next, %Block{}) :: [any()]
-  @callback blockquote(next, %Block{}) :: [any()]
-  @callback audio(next, %Block{}) :: [any()]
-  @callback a(next, %Inline{}) :: [any()]
-  @callback definition(next, %Inline{}) :: [any()]
-  @callback text(%Text{}) :: [any()]
+  @callback p(%Context{}, next, %Block{}) :: [any()]
+  @callback table(%Context{}, next, %Block{}) :: [any()]
+  @callback caption(%Context{}, next, %Block{}) :: [any()]
+  @callback tbody(%Context{}, next, %Block{}) :: [any()]
+  @callback thead(%Context{}, next, %Block{}) :: [any()]
+  @callback tfoot(%Context{}, next, %Block{}) :: [any()]
+  @callback tr(%Context{}, next, %Block{}) :: [any()]
+  @callback td(%Context{}, next, %Block{}) :: [any()]
+  @callback th(%Context{}, next, %Block{}) :: [any()]
+  @callback image(%Context{}, next, %Block{}) :: [any()]
+  @callback youtube(%Context{}, next, %Block{}) :: [any()]
+  @callback codeblock(%Context{}, next, %Block{}) :: [any()]
+  @callback codeline(%Context{}, next, %Block{}) :: [any()]
+  @callback ul(%Context{}, next, %Block{}) :: [any()]
+  @callback ol(%Context{}, next, %Block{}) :: [any()]
+  @callback li(%Context{}, next, %Block{}) :: [any()]
+  @callback h1(%Context{}, next, %Block{}) :: [any()]
+  @callback h2(%Context{}, next, %Block{}) :: [any()]
+  @callback h3(%Context{}, next, %Block{}) :: [any()]
+  @callback h4(%Context{}, next, %Block{}) :: [any()]
+  @callback h5(%Context{}, next, %Block{}) :: [any()]
+  @callback h6(%Context{}, next, %Block{}) :: [any()]
+  @callback blockquote(%Context{}, next, %Block{}) :: [any()]
+  @callback audio(%Context{}, next, %Block{}) :: [any()]
+  @callback a(%Context{}, next, %Inline{}) :: [any()]
+  @callback definition(%Context{}, next, %Inline{}) :: [any()]
+  @callback text(%Context{}, %Text{}) :: [any()]
 
-  def render(%Document{nodes: nodes} = doc, impl) do
-    next = fn -> render(nodes, impl) end
-    impl.document(next, doc)
+  def render(%Context{} = context, %Document{nodes: nodes} = doc, impl) do
+    next = fn -> render(context, nodes, impl) end
+    impl.document(context, next, doc)
   end
 
-  def render(%Organization{nodes: nodes} = doc, impl) do
-    next = fn -> render(nodes, impl) end
-    impl.organization(next, doc)
+  def render(%Context{} = context, %Organization{nodes: nodes} = doc, impl) do
+    next = fn -> render(context, nodes, impl) end
+    impl.organization(context, next, doc)
   end
 
-  def render(%Module{nodes: nodes} = doc, impl) do
-    next = fn -> render(nodes, impl) end
-    impl.module(next, doc)
+  def render(%Context{} = context, %Module{nodes: nodes} = doc, impl) do
+    next = fn -> render(context, nodes, impl) end
+    impl.module(context, next, doc)
   end
 
-  def render(%Reference{} = ref, impl) do
+  def render(%Context{} = context, %Reference{} = ref, impl) do
     next = fn -> "" end
-    impl.reference(next, ref)
+    impl.reference(context, next, ref)
   end
 
-  def render(%Block{type: type, nodes: nodes} = block, impl) do
-    next = fn -> render(nodes, impl) end
+  def render(%Context{} = context, %Block{type: type, nodes: nodes} = block, impl) do
+    next = fn -> render(context, nodes, impl) end
 
     case type do
-      "paragraph" -> impl.p(next, block)
-      "table" -> impl.table(next, block)
-      "caption" -> impl.caption(next, block)
-      "thead" -> impl.thead(next, block)
-      "tbody" -> impl.tbody(next, block)
-      "tfoot" -> impl.tfoot(next, block)
-      "tr" -> impl.tr(next, block)
-      "td" -> impl.td(next, block)
-      "th" -> impl.th(next, block)
-      "image" -> impl.image(next, block)
-      "youtube" -> impl.youtube(next, block)
-      "unordered-list" -> impl.ul(next, block)
-      "ordered-list" -> impl.ol(next, block)
-      "list-item" -> impl.li(next, block)
-      "codeblock" -> impl.codeblock(next, block)
-      "codeline" -> impl.codeline(next, block)
-      "heading-one" -> impl.h1(next, block)
-      "heading-two" -> impl.h2(next, block)
-      "heading-three" -> impl.h3(next, block)
-      "heading-four" -> impl.h4(next, block)
-      "heading-five" -> impl.h5(next, block)
-      "heading-six" -> impl.h6(next, block)
-      "blockquote" -> impl.blockquote(next, block)
-      "audio" -> impl.audio(next, block)
+      "paragraph" -> impl.p(context, next, block)
+      "table" -> impl.table(context, next, block)
+      "caption" -> impl.caption(context, next, block)
+      "thead" -> impl.thead(context, next, block)
+      "tbody" -> impl.tbody(context, next, block)
+      "tfoot" -> impl.tfoot(context, next, block)
+      "tr" -> impl.tr(context, next, block)
+      "td" -> impl.td(context, next, block)
+      "th" -> impl.th(context, next, block)
+      "image" -> impl.image(context, next, block)
+      "youtube" -> impl.youtube(context, next, block)
+      "unordered-list" -> impl.ul(context, next, block)
+      "ordered-list" -> impl.ol(context, next, block)
+      "list-item" -> impl.li(context, next, block)
+      "codeblock" -> impl.codeblock(context, next, block)
+      "codeline" -> impl.codeline(context, next, block)
+      "heading-one" -> impl.h1(context, next, block)
+      "heading-two" -> impl.h2(context, next, block)
+      "heading-three" -> impl.h3(context, next, block)
+      "heading-four" -> impl.h4(context, next, block)
+      "heading-five" -> impl.h5(context, next, block)
+      "heading-six" -> impl.h6(context, next, block)
+      "blockquote" -> impl.blockquote(context, next, block)
+      "audio" -> impl.audio(context, next, block)
     end
   end
 
-  def render(%Inline{type: type, nodes: nodes} = inline, impl) do
-    next = fn -> render(nodes, impl) end
+  def render(%Context{} = context, %Inline{type: type, nodes: nodes} = inline, impl) do
+    next = fn -> render(context, nodes, impl) end
 
     case type do
-      "link" -> impl.a(next, inline)
-      "definition" -> impl.definition(next, inline)
+      "link" -> impl.a(context, next, inline)
+      "definition" -> impl.definition(context, next, inline)
     end
   end
 
-  def render(%Text{} = text, impl) do
-    impl.text(text)
+  def render(%Context{} = context, %Text{} = text, impl) do
+    impl.text(context, text)
   end
 
-  def render(text, impl) when is_binary(text) do
-    impl.text(%Text{text: text})
+  def render(%Context{} = context, text, impl) when is_binary(text) do
+    impl.text(context, %Text{text: text})
   end
 
-  def render(nodes, impl) when is_list(nodes) do
-    Enum.map(nodes, fn n -> render(n, impl) end)
+  def render(%Context{} = context, nodes, impl) when is_list(nodes) do
+    Enum.map(nodes, fn n -> render(context, n, impl) end)
   end
 end
