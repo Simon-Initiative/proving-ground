@@ -40,12 +40,30 @@ defmodule Delivery.Content.Writers.HTML do
     ["<th>", next.(), "</th>\n"]
   end
 
-  def image(%Context{} = _context, _, %{data: %{"src" => src}}) do
-    ["<image src=\"", src, "\"/>\n"]
+  def image(%Context{} = _context, _, %{data: data}) do
+
+    src = Map.get(data, "src")
+    height_width = case data do
+      %{"height" => height, "width" => width} -> ["height=#{height} width=#{width}"]
+      _ -> []
+    end
+
+    ["<img "]
+    ++ height_width
+    ++ [" style=\"display: block; max-height: 500px; margin-left: auto; margin-right: auto;\" src=\"", src, "\"/>\n"]
   end
 
   def youtube(%Context{} = _context, _, %{data: %{"src" => src}}) do
-    ["<youtube src=\"", src, "\"/>\n"]
+    ["""
+    <iframe
+      id="#{src}"
+      width="640"
+      height="476"
+      src="https://www.youtube.com/embed/#{src}"
+      frameBorder="0"
+      style="display: block; margin-left: auto; margin-right: auto;"
+    ></iframe>
+    """]
   end
 
   def ul(%Context{} = _context, next, _) do
@@ -55,37 +73,32 @@ defmodule Delivery.Content.Writers.HTML do
   def ol(%Context{} = _context, next, _) do
     ["<ol>", next.(), "</ol>\n"]
   end
-
   def li(%Context{} = _context, next, _) do
     ["<li>", next.(), "</li>\n"]
   end
 
-  def header(%Context{} = _context, next) do
-    ["<section><title>", next.(), "</title><body><p></p></body></section>\n"]
+  def h1(%Context{} = _context, next, _) do
+    ["<h1>", next.(), "</h1>\n"]
   end
 
-  def h1(%Context{} = context, next, _) do
-    header(context, next)
+  def h2(%Context{} = _context, next, _) do
+    ["<h2>", next.(), "</h2>\n"]
   end
 
-  def h2(%Context{} = context, next, _) do
-    header(context, next)
+  def h3(%Context{} = _context, next, _) do
+    ["<h3>", next.(), "</h3>\n"]
   end
 
-  def h3(%Context{} = context, next, _) do
-    header(context, next)
+  def h4(%Context{} = _context, next, _) do
+    ["<h4>", next.(), "</h4>\n"]
   end
 
-  def h4(%Context{} = context, next, _) do
-    header(context, next)
+  def h5(%Context{} = _context, next, _) do
+    ["<h5>", next.(), "</h5>\n"]
   end
 
-  def h5(%Context{} = context, next, _) do
-    header(context, next)
-  end
-
-  def h6(%Context{} = context, next, _) do
-    header(context, next)
+  def h6(%Context{} = _context, next, _) do
+    ["<h6>", next.(), "</h6>\n"]
   end
 
   def audio(%Context{} = _context, _, %{data: %{"src" => src}}) do
