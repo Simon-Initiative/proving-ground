@@ -12,6 +12,8 @@ defmodule Delivery.Content.Readers.Pressbooks do
 
   @behaviour Reader
 
+
+  @spec segment(binary) :: {:ok, %{pages: [any()], toc: any()}} | {:error, String.t()}
   def segment(input) do
     parsed = Floki.parse(input)
 
@@ -105,6 +107,7 @@ defmodule Delivery.Content.Readers.Pressbooks do
   end
 
   def clean(%Document{} = doc) do
+
     nodes =
       List.flatten(doc.nodes)
       |> Enum.map(fn n ->
