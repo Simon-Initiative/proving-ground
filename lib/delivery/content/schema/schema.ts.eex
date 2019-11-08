@@ -15,7 +15,7 @@ export const schema = {
   },
   blocks: {
     <%= for b <- blocks do %>
-        <%= b.name %>: {
+        <%= String.downcase(b.name) %>: {
         nodes: [{ match: [
             <%= for c <- b.children do %>
                 { type: '<%= c %>'},

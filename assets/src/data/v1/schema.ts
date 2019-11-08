@@ -19,7 +19,7 @@ export const schema = {
   },
   blocks: {
     
-        Li: {
+        li: {
         nodes: [{ match: [
             
                 { type: 'paragraph'},
@@ -27,7 +27,7 @@ export const schema = {
         ]}]
     },
     
-        Ul: {
+        ul: {
         nodes: [{ match: [
             
                 { type: 'li'},
@@ -35,13 +35,13 @@ export const schema = {
         ]}]
     },
     
-        Image: {
+        image: {
         nodes: [{ match: [
             
         ]}]
     },
     
-        Paragraph: {
+        paragraph: {
         nodes: [{ match: [
             
                 { type: 'text'},
