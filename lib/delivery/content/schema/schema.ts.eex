@@ -1,0 +1,27 @@
+import { Block, Editor } from 'slate';
+
+export const schema = {
+  document: {
+    last: { type: 'paragraph' },
+    nodes: [
+      {
+        match: [
+          <%= for type <- top_level do %>
+            { type: '<%= type %>' },
+          <% end %>
+        ],
+      },
+    ],
+  },
+  blocks: {
+    <%= for b <- blocks do %>
+        <%= b.name %>: {
+        nodes: [{ match: [
+            <%= for c <- b.children do %>
+                { type: '<%= c %>'},
+            <% end %>
+        ]}]
+    },
+    <% end %>
+  },
+}

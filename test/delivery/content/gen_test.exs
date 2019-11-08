@@ -9,10 +9,10 @@ defmodule Delivery.Content.GenTest do
   alias Delivery.Content.Schema.V1
   alias Delivery.Content.Schema.V1.Paragraph
 
-
   test "converting all" do
+    V1.as_schema()
     V1.as_typescript()
     test = %Paragraph{id: "yes"}
-    IO.inspect test
+    IO.inspect(test)
   end
 end

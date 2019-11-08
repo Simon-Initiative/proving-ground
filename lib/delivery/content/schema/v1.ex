@@ -1,10 +1,11 @@
 defmodule Delivery.Content.Schema.V1 do
-
   use Delivery.Content.Schema.Generator
+
+  @top_level ~w(paragaph, image, ul)
 
   block "paragraph" do
     field :id, :string, :required
-    contains [:text]
+    children([:text])
   end
 
   block "image" do
@@ -16,12 +17,11 @@ defmodule Delivery.Content.Schema.V1 do
 
   block "ul" do
     field :id, :string, :required
-    contains ["li"]
+    children(["li"])
   end
 
   block "li" do
     field :id, :string, :required
-    contains ["paragraph"]
+    children(["paragraph"])
   end
-
 end

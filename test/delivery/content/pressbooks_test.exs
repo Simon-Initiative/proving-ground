@@ -48,14 +48,14 @@ defmodule Delivery.Content.PressBooksTest do
   end
 
   test "converting all" do
-    input = read_from_file("./test/delivery/content/amlit.html")
+    input = read_from_file("./test/delivery/content/bio.html")
 
     {:ok, %{pages: pages, toc: toc}} = Pressbooks.segment(input)
     IO.inspect(Enum.at(pages, 0))
+
     Enum.map(pages, fn r -> r end)
     |> Enum.map(fn s -> pressbook_to_workbook(s) end)
 
     to_org(toc)
-
   end
 end

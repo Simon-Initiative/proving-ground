@@ -3,6 +3,6 @@ import * as F from 'data/types/frozen.ts';
 export interface <%= name %> extends F.Freezable {
 
   <%= for field <- fields do %>
-  readonly <%= field.name %>: <%= field.type %>
+  readonly <%= field.name %><%= if field.required do "" else "?" end %>: <%= field.type %>
   <% end %>
 };
