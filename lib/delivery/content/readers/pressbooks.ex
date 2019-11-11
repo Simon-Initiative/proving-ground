@@ -12,7 +12,6 @@ defmodule Delivery.Content.Readers.Pressbooks do
 
   @behaviour Reader
 
-
   @spec segment(binary) :: {:ok, %{pages: [any()], toc: any()}} | {:error, String.t()}
   def segment(input) do
     parsed = Floki.parse(input)
@@ -75,21 +74,26 @@ defmodule Delivery.Content.Readers.Pressbooks do
     sections =
       Floki.find(root, "li[class=\"section\"]")
       |> Enum.map(fn item ->
-          case item do
-            {"li", _, [{"a", [{"href", "#" <> id}], _}]} ->
-              %Reference{id: id}
-            _ ->
-              :ignore
-          end
+        case item do
+          {"li", _, [{"a", [{"href", "#" <> id}], _}]} ->
+            %Reference{id: id}
+
+          _ ->
+            :ignore
+        end
       end)
 
     %Organization{nodes: sections}
   end
 
-
-  def page({"div", attributes, children}) do
+  def page({"div", attributes, children} = item) do
     id = get_attr_by_key(attributes, "id", "unknown")
-    title = get_attr_by_key(attributes, "title", "unknown")
+
+    title =
+      case get_attr_by_key(attributes, "title", "unknown") do
+        "unknown" -> Floki.find(item, ".chapter-title") |> Floki.text()
+        title -> title
+      end
 
     content_nodes =
       get_div_by_class(children, "ugc chapter-ugc")
@@ -107,7 +111,6 @@ defmodule Delivery.Content.Readers.Pressbooks do
   end
 
   def clean(%Document{} = doc) do
-
     nodes =
       List.flatten(doc.nodes)
       |> Enum.map(fn n ->
