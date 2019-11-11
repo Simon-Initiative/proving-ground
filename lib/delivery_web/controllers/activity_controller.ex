@@ -16,37 +16,38 @@ defmodule DeliveryWeb.ActivityController do
   end
 
   def publish_all(conn, %{"package_id" => package_id}) do
-
     drafts = Activities.get_draft_activities(package_id)
     Activities.publish_all(package_id)
 
     for %{:id => id} <- drafts do
-      DeliveryWeb.Endpoint.broadcast!("notification:" <> Integer.to_string(id), "publish", %{user: get_session(conn, :user)})
+      DeliveryWeb.Endpoint.broadcast!("notification:" <> Integer.to_string(id), "publish", %{
+        user: get_session(conn, :user)
+      })
     end
 
     conn
-      |> put_flash(:info, "All drafts published!")
-      |> redirect(to: Routes.package_path(conn, :show, package_id))
+    |> put_flash(:info, "All drafts published!")
+    |> redirect(to: Routes.package_path(conn, :show, package_id))
   end
 
   def publish(conn, %{"package_id" => package_id, "activity_id" => activity_id}) do
     Activities.publish(activity_id)
-    DeliveryWeb.Endpoint.broadcast!("notification:" <> activity_id, "publish", %{user: get_session(conn, :user)})
+
+    DeliveryWeb.Endpoint.broadcast!("notification:" <> activity_id, "publish", %{
+      user: get_session(conn, :user)
+    })
 
     conn
-      |> put_flash(:info, "Draft published!")
-      |> redirect(to: Routes.package_path(conn, :show, package_id))
+    |> put_flash(:info, "Draft published!")
+    |> redirect(to: Routes.package_path(conn, :show, package_id))
   end
 
-
   def new(conn, %{"package_id" => package_id}) do
-
-    changeset = Activities.change_activity(%Activity{ type: "page", package_id: package_id })
+    changeset = Activities.change_activity(%Activity{type: "page", package_id: package_id})
     render(conn, "new.html", changeset: changeset, package_id: package_id)
   end
 
-  def create(conn, %{"activity" => activity_params }) do
-
+  def create(conn, %{"activity" => activity_params}) do
     case Activities.create_activity(activity_params) do
       {:ok, activity} ->
         conn
@@ -74,7 +75,6 @@ defmodule DeliveryWeb.ActivityController do
       "markdown" -> text(conn, Markdown.to_markdown(Map.get(activity.content, "nodes")))
       _ -> json(conn, activity)
     end
-
   end
 
   def edit(conn, %{"id" => id, "package_id" => package_id}) do

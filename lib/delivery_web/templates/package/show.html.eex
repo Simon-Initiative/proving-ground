@@ -20,6 +20,11 @@
   </div>
 
   <div class="header">
+    Objectives
+  </div>
+  <%= render DeliveryWeb.ObjectiveView, "index.html", assigns %>
+
+  <div class="header">
     Pages
   </div>
   <%= render DeliveryWeb.ActivityView, "index.html", assigns %>

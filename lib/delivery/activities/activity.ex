@@ -3,7 +3,8 @@ defmodule Delivery.Activities.Activity do
   import Ecto.Changeset
 
   @derive {Poison.Encoder, only: [:content, :draft_content]}
-  @derive {Jason.Encoder, only: [:id, :friendly, :type, :title, :content, :timed, :require_completion]}
+  @derive {Jason.Encoder,
+           only: [:id, :friendly, :type, :title, :content, :timed, :require_completion]}
   schema "activities" do
     field :content, :map
     field :draft_content, :map
@@ -17,14 +18,27 @@ defmodule Delivery.Activities.Activity do
     field :type, :string
     field :is_draft, :boolean
     belongs_to :package, Delivery.Packages.Package, foreign_key: :package_id
+    many_to_many :objectives, Delivery.Objectives.Objective, join_through: "activity_objective"
     timestamps()
   end
 
   @doc false
   def changeset(activity, attrs) do
     activity
-    |> cast(attrs, [:package_id, :is_draft, :friendly, :type, :timed, :require_completion, :grading_strategy, :tags, :title, :draft_title, :content, :draft_content])
+    |> cast(attrs, [
+      :package_id,
+      :is_draft,
+      :friendly,
+      :type,
+      :timed,
+      :require_completion,
+      :grading_strategy,
+      :tags,
+      :title,
+      :draft_title,
+      :content,
+      :draft_content
+    ])
     |> validate_required([:friendly, :timed, :require_completion, :title, :content])
   end
-
 end
