@@ -120,6 +120,10 @@ defmodule Delivery.Content.Writers.XML do
     ["<link href=\"#{escape_xml(href)}\">", next.(), "</link>\n"]
   end
 
+  def a(%Context{} = _context, next, _) do
+    next.()
+  end
+
   def definition(%Context{} = _context, next, _) do
     ["<extra>", next.(), "</extra>\n"]
   end

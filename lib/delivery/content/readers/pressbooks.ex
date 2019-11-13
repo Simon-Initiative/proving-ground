@@ -468,7 +468,7 @@ defmodule Delivery.Content.Readers.Pressbooks do
 
   def handle({"em", _, [text]}) when is_binary(text) do
     %Text{
-      text: text,
+      text: latex(text),
       marks: [%Mark{type: "italic"}]
     }
   end
@@ -484,7 +484,7 @@ defmodule Delivery.Content.Readers.Pressbooks do
       "" -> %Text{text: " "}
       m -> if Map.has_key?(m, :text) do
         %Text{
-          text: m.text,
+          text: latex(m.text),
           marks: [%Mark{type: "italic"}] ++ m.marks
         }
       else
@@ -563,7 +563,7 @@ defmodule Delivery.Content.Readers.Pressbooks do
 
   def handle(text) when is_binary(text) do
     %Text{
-      text: text
+      text: latex(text)
     }
   end
 
@@ -579,7 +579,7 @@ defmodule Delivery.Content.Readers.Pressbooks do
   end
 
   def span({_, _, text}) when is_binary(text) do
-    text
+    latex(text)
   end
 
   def span(list) when is_list(list) do
@@ -588,7 +588,11 @@ defmodule Delivery.Content.Readers.Pressbooks do
   end
 
   def span(text) when is_binary(text) do
-    text
+    latex(text)
+  end
+
+  def latex(text) do
+    String.replace(text, "[latex]", "\\(", global: true) |> String.replace("[/latex]", "\\)", global: true)
   end
 
   def determine_type(input) do
