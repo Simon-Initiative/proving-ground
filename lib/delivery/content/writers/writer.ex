@@ -33,6 +33,9 @@ defmodule Delivery.Content.Writers.Writer do
   @callback codeblock(%Context{}, next, %Block{}) :: [any()]
   @callback codeline(%Context{}, next, %Block{}) :: [any()]
   @callback ul(%Context{}, next, %Block{}) :: [any()]
+  @callback dl(%Context{}, next, %Block{}) :: [any()]
+  @callback dt(%Context{}, next, %Block{}) :: [any()]
+  @callback dd(%Context{}, next, %Block{}) :: [any()]
   @callback ol(%Context{}, next, %Block{}) :: [any()]
   @callback li(%Context{}, next, %Block{}) :: [any()]
   @callback h1(%Context{}, next, %Block{}) :: [any()]
@@ -84,6 +87,9 @@ defmodule Delivery.Content.Writers.Writer do
       "youtube" -> impl.youtube(context, next, block)
       "unordered-list" -> impl.ul(context, next, block)
       "ordered-list" -> impl.ol(context, next, block)
+      "dl" -> impl.dl(context, next, block)
+      "dt" -> impl.dt(context, next, block)
+      "dd" -> impl.dd(context, next, block)
       "list-item" -> impl.li(context, next, block)
       "codeblock" -> impl.codeblock(context, next, block)
       "codeline" -> impl.codeline(context, next, block)

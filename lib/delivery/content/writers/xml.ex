@@ -41,7 +41,7 @@ defmodule Delivery.Content.Writers.XML do
   end
 
   def image(%Context{} = _context, _, %{data: %{"src" => src}}) do
-    ["<image src=\"", src, "\"/>\n"]
+    ["<image src=\"", escape_xml(src), "\"/>\n"]
   end
 
   def youtube(%Context{} = _context, _, %{data: %{"src" => src}}) do
@@ -54,6 +54,18 @@ defmodule Delivery.Content.Writers.XML do
 
   def ol(%Context{} = _context, next, _) do
     ["<ol>", next.(), "</ol>\n"]
+  end
+
+  def dl(%Context{} = _context, next, _) do
+    ["<dl>", next.(), "</dl>\n"]
+  end
+
+  def dt(%Context{} = _context, next, _) do
+    ["<dt>", next.(), "</dt>\n"]
+  end
+
+  def dd(%Context{} = _context, next, _) do
+    ["<dd>", next.(), "</dd>\n"]
   end
 
   def li(%Context{} = _context, next, _) do
@@ -170,7 +182,17 @@ defmodule Delivery.Content.Writers.XML do
   end
 
   def wrap_marks(text, marks) do
-    map = %{
+    begin = %{
+      "sub" => "sub",
+      "sup" => "sup",
+      "bold" => "em",
+      "underline" => "",
+      "code" => "code",
+      "italic" => "em style=\"italic\"",
+      "strikethrough" => "em style=\"line-through\"",
+      "mark" => "em style=\"highlight\"",
+    }
+    ending = %{
       "sub" => "sub",
       "sup" => "sup",
       "bold" => "em",
@@ -178,14 +200,14 @@ defmodule Delivery.Content.Writers.XML do
       "code" => "code",
       "italic" => "em",
       "strikethrough" => "em",
-      "mark" => "em"
+      "mark" => "em",
     }
 
     Enum.reverse(marks)
     |> Enum.reduce(
       text,
       fn %{type: m}, t ->
-        "<" <> Map.get(map, m) <> ">" <> t <> "</" <> Map.get(map, m) <> ">"
+        "<" <> Map.get(begin, m) <> ">" <> t <> "</" <> Map.get(ending, m) <> ">"
       end
     )
   end
