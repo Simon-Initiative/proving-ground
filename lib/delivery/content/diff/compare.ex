@@ -23,6 +23,23 @@ defmodule Delivery.Content.Compare do
     |> Enum.reduce(map, fn {b, index}, acc -> flatten(b, acc, id, index) end)
   end
 
+  def reorderings(a, b) do
+
+    nodes_a = Enum.filter(a.block.nodes, fn n -> n.object == "block" end) |> Enum.map(fn b -> b.data.id end)
+    nodes_b = Enum.filter(b.block.nodes, fn n -> n.object == "block" end) |> Enum.map(fn b -> b.data.id end)
+
+    set_a = MapSet.new(nodes_a)
+    set_b = MapSet.new(nodes_b)
+
+    same = MapSet.intersection(set_a, set_b)
+
+    a = nodes_a |> Enum.filter(fn id -> MapSet.member?(same, id) end)
+    b = nodes_b |> Enum.filter(fn id -> MapSet.member?(same, id) end)
+
+    Enum.zip(a, b)
+    |> Enum.filter(fn {a, b} -> a != b end)
+    |> Enum.map(fn {_, b} -> b end)
+  end
 
   def compare(%Document{} = a, %Document{} = b) do
 
@@ -35,23 +52,24 @@ defmodule Delivery.Content.Compare do
     changed = MapSet.intersection(keys_a, keys_b)
       |> Enum.filter(fn id -> Map.get(sum_a, id).hash != Map.get(sum_b, id).hash end)
 
-    added_a = MapSet.difference(keys_a, keys_b) |> Enum.to_list
-    added_b = MapSet.difference(keys_b, keys_a) |> Enum.to_list
+    added = MapSet.difference(keys_a, keys_b) |> Enum.to_list
+    removed = MapSet.difference(keys_b, keys_a) |> Enum.to_list
 
-    moved = fn keys, map1, map2 ->
-      Enum.filter(keys, fn id ->
-        a = Map.get(map1, id)
-        b = Map.get(map2, id, a)
-        a.parent_id != b.parent_id or a.index != b.index
+    moved = Enum.filter(keys_a, fn id ->
+        a = Map.get(sum_a, id)
+        b = Map.get(sum_b, id, a)
+        a.parent_id != b.parent_id
       end)
-    end
 
-    moved_a = moved.(keys_a, sum_a, sum_b)
-    moved_b = moved.(keys_b, sum_b, sum_a)
+    reordered = Enum.reduce(keys_b, [], fn id, arr ->
+      block_b = Map.get(sum_b, id)
+      block_a = Map.get(sum_a, id)
+      case block_a do
+        nil -> arr
+        _ -> arr ++ reorderings(block_a, block_b)
+      end
+    end)
 
-    {
-      %Diff{added: added_a, removed: added_b, changed: changed, moved: moved_a},
-      %Diff{added: added_b, removed: added_a, changed: changed, moved: moved_b}
-    }
+    %Diff{added: added, removed: removed, changed: changed, moved: moved, reordered: reordered}
   end
 end

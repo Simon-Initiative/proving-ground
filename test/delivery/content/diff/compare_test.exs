@@ -38,10 +38,9 @@ defmodule Delivery.Content.Diff.CompareTest do
       p("4", "And some more")
     ]}
 
-    {a, b} = Compare.compare(doc_a, doc_b)
+    a = Compare.compare(doc_a, doc_b)
 
     assert a == %Diff{changed: ["3"], moved: [], added: ["2"], removed: ["4"]}
-    assert b == %Diff{changed: ["3"], moved: [], added: ["4"], removed: ["2"]}
 
   end
 
@@ -58,10 +57,9 @@ defmodule Delivery.Content.Diff.CompareTest do
       example("B", [image("1", "happy.jpg")])
     ]}
 
-    {a, b} = Compare.compare(doc_a, doc_b)
+    a = Compare.compare(doc_a, doc_b)
 
     assert a == %Diff{changed: [], moved: ["1"], added: [], removed: []}
-    assert b == %Diff{changed: [], moved: ["1"], added: [], removed: []}
 
   end
 
@@ -82,10 +80,9 @@ defmodule Delivery.Content.Diff.CompareTest do
       example("B", [])
     ]}
 
-    {a, b} = Compare.compare(doc_a, doc_b)
+    a = Compare.compare(doc_a, doc_b)
 
-    assert a == %Diff{changed: [], moved: ["1", "2"], added: [], removed: []}
-    assert b == %Diff{changed: [], moved: ["1", "2"], added: [], removed: []}
+    assert a == %Diff{changed: [], reordered: ["2", "1"], added: [], removed: [], moved: []}
 
   end
 
