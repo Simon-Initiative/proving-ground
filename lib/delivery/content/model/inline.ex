@@ -3,7 +3,7 @@ defmodule Delivery.Content.Inline do
 end
 
 
-defimpl ContentSerialize, for: Inline do
+defimpl ContentSerialize, for: Delivery.Content.Inline do
   def iodata(inline) do
     Enum.map(Map.keys(inline.data), fn k -> [k, Map.get(inline.data, k)] end)
     ++ Enum.map(inline.nodes, &ContentSerialize.iodata/1)

@@ -3,15 +3,15 @@ defmodule Delivery.Content.Block do
 
 end
 
-defimpl ContentHash, for: Block do
+defimpl ContentHash, for: Delivery.Content.Block do
   def hash(block) do
 
     data =
-      Enum.map(Map.keys(block.data), fn k -> [k, Map.get(block.data, k)] end)
+      Enum.map(Map.keys(block.data), fn k -> [Atom.to_string(k), Map.get(block.data, k)] end)
       ++ (
         Enum.filter(block.nodes, fn b -> b.object !== "block" end)
         |> Enum.map(&ContentSerialize.iodata/1))
 
-    :crypto.hash(:sha1, data)
+    :crypto.hash(:sha256, data)
   end
 end

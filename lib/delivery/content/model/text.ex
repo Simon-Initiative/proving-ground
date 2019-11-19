@@ -3,7 +3,7 @@ defmodule Delivery.Content.Text do
 end
 
 
-defimpl ContentSerialize, for: Text do
+defimpl ContentSerialize, for: Delivery.Content.Text do
   def iodata(text) do
     [text.text] ++ text.marks
   end
