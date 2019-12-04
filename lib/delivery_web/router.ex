@@ -36,6 +36,14 @@ defmodule DeliveryWeb.Router do
     plug :redirect_to_login
   end
 
+  pipeline :lti_layout do
+    plug :put_layout, {DeliveryWeb.LayoutView, :lti}
+  end
+
+  pipeline :www_url_form do
+    plug Plug.Parsers, parsers: [:urlencoded]
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -43,12 +51,10 @@ defmodule DeliveryWeb.Router do
   scope "/", DeliveryWeb do
     pipe_through :browser
 
-
     get "/login", LoginController, :show
     post "/login", LoginController, :login
     get "/users/new", UserController, :new
     post "/users", UserController, :create
-
   end
 
   scope "/", DeliveryWeb do
@@ -113,5 +119,12 @@ defmodule DeliveryWeb.Router do
     post "/snippets", SnippetController, :write
     post "/sound", SoundController, :write
 
+  end
+
+  scope "/lti", DeliveryWeb do
+    pipe_through [:lti_layout, :www_url_form]
+
+    post "/basic_launch", LTIController, :basic_launch
+    resources "/institutions", InstitutionController
   end
 end
