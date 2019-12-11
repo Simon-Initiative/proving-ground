@@ -53,7 +53,7 @@ defmodule Delivery.Content.PressBooksTest do
   end
 
   test "converting all" do
-    input = read_from_file("./test/delivery/content/univ-physics.html")
+    input = read_from_file("./test/delivery/content/college-physics.html")
 
     {:ok, %{pages: pages, toc: toc}} = Pressbooks.segment(input)
     IO.inspect(Enum.at(pages, 0))
