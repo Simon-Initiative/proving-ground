@@ -22,7 +22,7 @@ module.exports = (env, options) => ({
   },
   resolve: {
     
-    extensions: ['.ts', '.tsx', '.js', '.jss'],
+    extensions: ['.ts', '.tsx', '.js', '.jss', '.jsx'],
     // Add webpack aliases for top level imports
     alias: {
         actions: path.resolve(__dirname, 'src/actions'),
@@ -40,6 +40,13 @@ module.exports = (env, options) => ({
     rules: [
       {
         test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader'
+        }
+      },
+      {
+        test: /\.jsx$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader'
