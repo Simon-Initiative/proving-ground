@@ -1,10 +1,10 @@
 import * as Immutable from 'immutable';
 import { InlineData, InlineStyle, BlockStyle } from 'data/content/types';
-import { Editor, Inline, Text, Value, Block, Document, Mark, Range } from 'slate';
+import { Editor, Text, Range } from 'slate';
 import { Maybe } from 'tsmonad';
 import { create, Image, YouTube } from 'data/content/types';
 
-export type ValuePair = [Value, Value];
+export type ValuePair = [any, any];
 
 
 /**
@@ -66,8 +66,9 @@ export function removeInline(editor: Editor, key: string): Editor {
 
 // Inserting an inline adds an inline as new content
 export function insertInline(editor: Editor, wrapper: InlineData): Editor {
-  const inline = Inline.create({ data: { value: wrapper }, type: wrapper.object });
-  return editor.insertInline(inline);
+  //const inline = Node.create({ data: { value: wrapper }, type: wrapper.object });
+  //return editor.insertInline(inline);
+  return editor;
 }
 
 // Applying an inline turns the current selection into an inline
@@ -89,7 +90,7 @@ export function isEffectivelyEmpty(editor: Editor): boolean {
 // follows the cursor
 export function isCursorAtEffectiveEnd(editor: Editor): boolean {
   const node = (editor.value.document.nodes
-    .get(editor.value.document.nodes.size - 1) as Block);
+    .get(editor.value.document.nodes.size - 1) as any);
   const { key, text } = node;
 
   const selection = editor.value.selection;
@@ -102,7 +103,7 @@ export function isCursorAtEffectiveEnd(editor: Editor): boolean {
 // Returns true if the selection is collapsed and is at the
 // very beginning of the first block
 export function isCursorAtBeginning(editor: Editor): boolean {
-  const key = (editor.value.document.nodes.get(0) as Block).key;
+  const key = (editor.value.document.nodes.get(0) as any).key;
   const selection = editor.value.selection;
   return selection.isCollapsed
     && key === selection.anchor.key
@@ -110,13 +111,13 @@ export function isCursorAtBeginning(editor: Editor): boolean {
 }
 
 // Find a specific node by its key
-function findNodeByKey(editor: Editor, key: string): Maybe<Inline | Text | Block> {
+function findNodeByKey(editor: Editor, key: string): Maybe<any> {
   const predicate = b => b.key === key;
   return findNodeByPredicate(editor, predicate);
 }
 
 // Find an input ref inline by its input attribute
-function findInputRef(editor: Editor, input: string): Maybe<Inline | Text | Block> {
+function findInputRef(editor: Editor, input: string): Maybe<any> {
   const predicate = b => b.object === 'inline'
     && b.data.get('value').contenType === 'InputRef'
     && b.data.get('value').input === input;
@@ -125,11 +126,11 @@ function findInputRef(editor: Editor, input: string): Maybe<Inline | Text | Bloc
 
 // Flexible find a node by a supplied predicate
 function findNodeByPredicate(editor: Editor,
-  predicate: (node: Block | Inline | Text) => boolean): Maybe<Inline | Text | Block> {
+  predicate: (node: any) => boolean): Maybe<any> {
 
   const nodes = editor.value.document.nodes.toArray();
   for (let i = 0; i < nodes.length; i += 1) {
-    const b = nodes[i] as Block;
+    const b = nodes[i] as any;
     if (predicate(b)) {
       return Maybe.just(b);
     }
@@ -146,12 +147,12 @@ function findNodeByPredicate(editor: Editor,
 
 // Find a collection of nodes based on a predicate
 function findNodesByPredicate(editor: Editor,
-  predicate: (node: Block | Inline | Text) => boolean): Immutable.List<Inline | Text | Block> {
+  predicate: (node: any) => boolean): Immutable.List<any> {
 
   const found = [];
   const nodes = editor.value.document.nodes.toArray();
   for (let i = 0; i < nodes.length; i += 1) {
-    const b = nodes[i] as Block;
+    const b = nodes[i] as any;
     if (predicate(b)) {
       found.push(b);
     }
@@ -185,7 +186,7 @@ export function updateInlineData(editor: Editor, key: string, wrapper: InlineDat
     just: (n) => {
       if (n.object === 'inline') {
         return editor
-          .replaceNodeByKey(key, n.merge({ data: { value: wrapper } }) as Inline)
+          .replaceNodeByKey(key, n.merge({ data: { value: wrapper } }) as any)
           .select(selection);
       }
       return editor;
@@ -210,8 +211,9 @@ export function bareTextSelected(editor: Maybe<Editor>): boolean {
         return false;
       }
       const s = e.value.selection;
-      const range = new Range({ anchor: s.anchor, focus: s.focus });
-      return e.value.document.getInlinesAtRange(range).size === 0;
+      
+      //const range = new Range({ anchor: s.anchor, focus: s.focus });
+      return true;
     },
     nothing: () => false,
   });
@@ -295,7 +297,7 @@ export function updateAllInputRefs(
 
   return inputRefs.toArray().reduce(
     (editor, ref) => {
-      const updated = itemMap[(ref as Inline).data.get('value').input];
+      const updated = itemMap[(ref as any).data.get('value').input];
       return updated !== undefined
         ? editor.replaceNodeByKey(ref.key, updated)
         : editor;
@@ -313,7 +315,7 @@ export function removeInputRef(editor: Editor, itemId: string): Editor {
 }
 
 // Access the inline present at the users current selection
-export function getEntityAtCursor(editor: Editor): Maybe<Inline> {
+export function getEntityAtCursor(editor: Editor): Maybe<any> {
 
   const s = editor.value.selection;
 
@@ -324,7 +326,7 @@ export function getEntityAtCursor(editor: Editor): Maybe<Inline> {
     return Maybe.nothing();
   }
 
-  const b = editor.value.document.nodes.get(s.anchor.path.get(0)) as Block;
+  const b = editor.value.document.nodes.get(s.anchor.path.get(0)) as any;
 
   if (b === undefined) {
     return Maybe.nothing();

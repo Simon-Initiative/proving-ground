@@ -2,11 +2,12 @@ import React, { useState, useMemo, useRef, useEffect } from 'react'
 import { Slate, Editable, ReactEditor, withReact, useSlate } from 'slate-react'
 import { Editor, createEditor } from 'slate'
 import { withHistory } from 'slate-history'
+import { Marks } from './interfaces';
 
 import { Button, Icon, Menu, Portal } from './utils'
 import { Range } from 'slate'
 
-const HoveringMenuExample = () => {
+const EditorComponent = () => {
   const [value, setValue] = useState(initialValue)
   const [selection, setSelection] = useState(null)
   const editor = useMemo(
@@ -81,19 +82,13 @@ const isFormatActive = (editor, format) => {
 }
 
 const Leaf = ({ attributes, children, leaf }) => {
-  if (leaf.bold) {
-    children = <strong>{children}</strong>
-  }
 
-  if (leaf.italic) {
-    children = <em>{children}</em>
-  }
+  const markup = 
+    Object
+      .keys(Marks)
+      .reduce((m, k) => leaf[k] !== undefined ? React.createElement(Marks[k], m) : m, children);
 
-  if (leaf.underlined) {
-    children = <u>{children}</u>
-  }
-
-  return <span {...attributes}>{children}</span>
+  return <span {...attributes}>{markup}</span>
 }
 
 const HoveringToolbar = () => {
@@ -101,7 +96,7 @@ const HoveringToolbar = () => {
   const editor = useSlate()
 
   useEffect(() => {
-    const el = ref.current
+    const el = ref.current as any;
     const { selection } = editor
 
     if (!el) {
@@ -133,7 +128,7 @@ const HoveringToolbar = () => {
     <Portal>
       <Menu
         ref={ref}
-        className={css`
+        style={`
           padding: 8px 7px 6px;
           position: absolute;
           z-index: 1;
@@ -192,4 +187,4 @@ const initialValue = [
   },
 ]
 
-export default Editor;
+export default EditorComponent;

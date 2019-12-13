@@ -2,17 +2,15 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as Immutable from 'immutable';
 import { Maybe } from 'tsmonad';
-import { Editor as Slate, getEventTransfer } from 'slate-react';
-import { Value, Inline, Editor as EditorCore, Block } from 'slate';
+import { Editor as EditorCore } from 'slate';
 import { renderMark, renderInline, plugins, renderBlock } from './render/render';
 import * as editorUtils from './utils';
-import { schema } from './schema';
 
 import Prism from 'prismjs';
 
 export interface EditorProps {
   onInit: (editor) => void;
-  onSelectInline: (inline: Maybe<Inline>) => void;
+  onSelectInline: (inline: Maybe<any>) => void;
   onLink: () => void;
   onDefinition: () => void;
   onSnippet: () => void;
@@ -22,7 +20,7 @@ export interface EditorProps {
 }
 
 export interface EditorState {
-  value: Value;
+  value: any;
 }
 
 function getContent(token) {
@@ -103,7 +101,7 @@ const HoverMenu = React.forwardRef((e, ref) => {
 
 export class Editor extends React.Component<EditorProps, EditorState> {
 
-  editor: Slate;
+  editor: any;
 
   constructor(props) {
     super(props);
@@ -111,7 +109,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     this.slateOnFocus = this.slateOnFocus.bind(this);
     
     this.state = {
-      value: Value.fromJSON({ document: this.props.model }),
+      value: props.model
     };
 
   }
@@ -185,7 +183,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
   onChange = ({ value }) => {
 
-    const v: Value = value;
+    const v: any = value;
 
     const edited = v.document !== this.state.value.document;
     const updateSelection = v.selection !== this.state.value.selection;
@@ -452,7 +450,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   render(): JSX.Element {
     const { onSelectInline } = this.props;
 
-    const onInlineClick = (node: Inline) => {
+    const onInlineClick = (node: any) => {
       onSelectInline(Maybe.just(node));
     };
 
@@ -462,21 +460,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
     return (
       <div>
-        <Slate
-          ref={editor => this.editor = editor}
-          onFocus={this.slateOnFocus}
-          plugins={plugins}
-          value={this.state.value}
-          onChange={this.onChange}
-          onKeyDown={this.onKeyDown}
-          schema={schema}
-          renderDecoration={this.renderDecoration}
-          decorateNode={this.decorateNode}
-          renderBlock={renderBlock}
-          renderMark={renderMark}
-          renderEditor={this.renderEditor}
-          renderInline={renderInline.bind(this, extras)}
-        />
+        
       </div>
     );
   }
