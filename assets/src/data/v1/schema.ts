@@ -1,4 +1,3 @@
-import { Block, Editor } from 'slate';
 
 export const schema = {
   document: {

@@ -58,7 +58,5 @@ Repo.insert!(%Package{title: "Introduction to Programming", friendly: "introduct
 Repo.insert!(%Package{title: "The American Civil War", friendly: "american_civil_war", version: "1.0.0",
   activities: [
     Create.page("Overview", "intro", "priv/repo/overview.json"),
-    Create.page("Causes of Secession", "secession", "priv/repo/secession.json"),
-    Create.page("Outbreak of the War", "outbreak", "priv/repo/outbreak.json"),
   ]
 })

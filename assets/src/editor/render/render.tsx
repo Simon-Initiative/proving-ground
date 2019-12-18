@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Immutable from 'immutable';
-import { Editor, Block } from 'slate';
+import { Editor } from 'slate';
 import { CodeBlock, CodeBlockLine } from './CodeBlock';
 import { MathBlock, MathBlockLine } from './MathBlock';
 import { InlineData, InlineStyle, BlockStyle, BlockData, Link, getData, Definition } from 'data/content/types';
@@ -8,7 +8,6 @@ import { Image } from './Image';
 import { MultipleChoice, Choice, Feedback, Stem } from './MultipleChoice';
 import YouTube from './YouTube';
 import { Example } from './Example';
-import Lists from "@convertkit/slate-lists"
 import { DeliveryQuestion } from './DeliveryQuestion';
 
 // Slate plugin to allow Ctrl plus a character to
@@ -30,18 +29,7 @@ function markHotkey(options) {
   };
 }
 
-export const plugins = [Lists({
-    blocks: {
-      ordered_list: "ordered-list",
-      unordered_list: "unordered-list",
-      list_item: "list-item",
-    },
-    classNames: {
-      ordered_list: "ordered-list",
-      unordered_list: "unordered-list",
-      list_item: "list-item"
-    }
-  }),
+export const plugins = [
   markHotkey({ key: 'b', type: 'bold' }),
   markHotkey({ key: '`', type: 'code' }),
   markHotkey({ key: 'i', type: 'italic' }),
@@ -59,7 +47,7 @@ export function renderBlock(props, editor, next) {
     const dataMap = Immutable.Map<any, any>(kvs as any);
     const selection = editor.value.selection;
     editor
-      .replaceNodeByKey(node.key, node.merge({ data: dataMap }) as Block)
+      .replaceNodeByKey(node.key, node.merge({ data: dataMap }) as any)
       .select(selection);
   };
   

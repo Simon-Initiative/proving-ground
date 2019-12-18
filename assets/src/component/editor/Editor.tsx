@@ -1,19 +1,74 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react'
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import { Slate, Editable, ReactEditor, withReact, useSlate } from 'slate-react'
-import { Editor, createEditor } from 'slate'
+import { Editor, createEditor, Node } from 'slate'
 import { withHistory } from 'slate-history'
-import { Marks } from './interfaces';
-
+import { Marks, ModelElement } from './interfaces';
+import * as Editors from './elements';
 import { Button, Icon, Menu, Portal } from './utils'
 import { Range } from 'slate'
 
-const EditorComponent = () => {
-  const [value, setValue] = useState(initialValue)
+
+export type EditorProps = {
+  onEdit: (value) => void;
+  value: Node[];
+}
+
+export const EditorComponent = (props: EditorProps) => {
+  const [value, setValue] = useState(props.value)
   const [selection, setSelection] = useState(null)
   const editor = useMemo(
     () => withFormatting(withHistory(withReact(createEditor()))),
     []
   )
+
+
+  const renderElement = useCallback(props => {
+
+    const model = props.element as ModelElement;
+    
+    switch (model.type) {    
+      case 'code':
+        return <Editors.Code {...props} />;
+      case 'p':
+        return <Editors.P {...props} />;
+      case 'h1':
+        return <Editors.H1 {...props} />;
+      case 'h2':
+        return <Editors.H2 {...props} />;
+      case 'h3':
+        return <Editors.H3 {...props} />;
+      case 'h4':
+        return <Editors.H4 {...props} />;
+      case 'h5':
+        return <Editors.H5 {...props} />;
+      case 'h6':
+        return <Editors.H6 {...props} />;
+      case 'youtube':
+      case 'audio':
+      case 'img':
+      case 'table':
+      case 'tr':
+      case 'thead':
+      case 'tbody':
+      case 'tfoot':
+      case 'td':
+      case 'th':
+      case 'ol':
+      case 'ul':
+      case 'li':
+      case 'math':
+      case 'math_line':
+      case 'code_line':
+      case 'blockquote':
+      case 'example':
+      case 'a':
+      case 'dfn':
+      case 'cite':
+        return <span {...props.attributes}>Not implemented</span>;
+      default:
+        assertNever(model);
+    }
+  }, []);
 
   return (
     <Slate
@@ -27,6 +82,7 @@ const EditorComponent = () => {
     >
       <HoveringToolbar />
       <Editable
+        renderElement={renderElement}
         renderLeaf={props => <Leaf {...props} />}
         placeholder="Enter some text..."
         onDOMBeforeInput={event => {
@@ -80,6 +136,11 @@ const isFormatActive = (editor, format) => {
   })
   return !!match
 }
+
+function assertNever(x: never): never {
+  throw new Error("Unexpected object: " + x);
+}
+
 
 const Leaf = ({ attributes, children, leaf }) => {
 
@@ -141,9 +202,9 @@ const HoveringToolbar = () => {
           transition: opacity 0.75s;
         `}
       >
-        <FormatButton format="bold" icon="format_bold" />
-        <FormatButton format="italic" icon="format_italic" />
-        <FormatButton format="underlined" icon="format_underlined" />
+        <FormatButton format="strong" icon="format_bold" />
+        <FormatButton format="em" icon="format_italic" />
+        <FormatButton format="mark" icon="format_underlined" />
       </Menu>
     </Portal>
   )
@@ -165,26 +226,3 @@ const FormatButton = ({ format, icon }) => {
   )
 }
 
-const initialValue = [
-  {
-    children: [
-      {
-        text:
-          'This example shows how you can make a hovering menu appear above your content, which you can use to make text ',
-      },
-      { text: 'bold', bold: true },
-      { text: ', ' },
-      { text: 'italic', italic: true },
-      { text: ', or anything else you might want to do!' },
-    ],
-  },
-  {
-    children: [
-      { text: 'Try it out yourself! Just ' },
-      { text: 'select any piece of text and the menu will appear', bold: true },
-      { text: '.' },
-    ],
-  },
-]
-
-export default EditorComponent;

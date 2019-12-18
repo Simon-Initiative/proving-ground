@@ -1,11 +1,11 @@
 import * as React from 'react';
 import * as Immutable from 'immutable';
 import * as ReactDOM from 'react-dom';
-import { Editor } from './editor/Editor';
+import { EditorComponent as Editor } from './component/editor/Editor';
 import { persist, getSnippets, createSnippet } from 'data/persistence';
 import { Code, create, Snippet, Math } from 'data/content/types';
 import { OrderedMap } from 'immutable';
-import { Block, Document, Editor as SlateEditor, Value, Node } from 'slate';
+import { Editor as SlateEditor, Node, Command } from 'slate';
 import { insertImage, insertYouTube } from './editor/utils';
 import { Maybe } from 'tsmonad';
 import guid from 'utils/guid';
@@ -16,7 +16,7 @@ interface MainProps {
   packageId: string;
   id: string;
   title: string;
-  content: Object;
+  content: Node[];
 }
 
 type Header = {
@@ -74,7 +74,7 @@ export default class Main extends React.Component<MainProps, MainState> {
 
     this.state = {
       snippets: Maybe.nothing(),
-      headers: this.getHeaders(Value.fromJSON({ document: props.content }).document.nodes),
+      headers: []
     };
   }
 
@@ -175,11 +175,9 @@ export default class Main extends React.Component<MainProps, MainState> {
     (window as any).location = `/packages/${packageId}/activities/${id}/publish`;
   }
 
-  onEdit(obj: Value) {
+  onEdit(obj: any) {
 
-    const o = obj.toJSON();
-
-    console.log(JSON.stringify(o, null, 2));
+    const o = obj;
 
     const nodes = o.document.nodes;
     persist(this.props.id, { nodes });
@@ -194,12 +192,12 @@ export default class Main extends React.Component<MainProps, MainState> {
   renderOutline() {
 
     const indents = {
-      'heading-one': '0px',
-      'heading-two': '0px',
-      'heading-three': '0px',
-      'heading-four': '10px',
-      'heading-five': '20px',
-      'heading-six': '30px', 
+      'h1': '0px',
+      'h2': '0px',
+      'h3': '0px',
+      'h4': '10px',
+      'h5': '20px',
+      'h6': '30px', 
     };
 
     const onClick = (h: Header) => this.editor
@@ -242,104 +240,17 @@ export default class Main extends React.Component<MainProps, MainState> {
   };
 
   insertSnippet = (s) => {
-    const fragment = Document.fromJSON((s.content as any).nodes);
-    this.editor.insertFragment(fragment);
+    //const fragment = Document.fromJSON((s.content as any).nodes);
+    //this.editor.insertFragment(fragment);
   };
 
   renderToolbar2() {
-
-    const add = (data, nodes) => {
-      const block = Block.create({ data, type: data.object, nodes });
-      this.editor.insertBlock(block);
-    };
-
-  
-
-    const addCode = add.bind(this, create<Code>(
-      { object: 'code', tags: [], id: guid(), language: 'javascript' }),
-      [ { object: 'block', type: 'code_line', nodes: [ { object: 'text', text: 'var x = 5;' }] }],
-      );
     
-    const addMath = add.bind(this, create<Math>(
-      { object: 'math', tags: [], id: guid(), format: 'latex' }),
-      [ { object: 'block', type: 'math_line', nodes: [ { object: 'text', text: '{N}\\choose{k} \\cdot p^kq^{N-k}'}] }],
-      );
-
-    const addImage = event => {
-      event.preventDefault()
-      const src = window.prompt('Enter the URL of the image:')
-      if (!src) return
-      this.editor.command(insertImage, src)
-    }
-    
-    const addYouTube = event => {
-      event.preventDefault()
-      const src = window.prompt('Enter the YouTube id:')
-      if (!src) return
-      this.editor.command(insertYouTube, src)
-    }
-  
-    const addOrdered = () => {
-      (this.editor as any).toggleList({ type: 'ordered-list'});
+    const add = (obj) => {
+      //this.editor.exec()
     };
 
-    const addUnordered = () => {
-      (this.editor as any).toggleList({ type: 'unordered-list'});
-    };
-
-    const addTable = () => {
-
-      const p = (text) => Block.create({ type: 'paragraph', nodes: [{ object: 'text', text}]});
-      const td = (text) => Block.create({ type: 'td', nodes: [ p(text )]});
-      const th = (text) => Block.create({ type: 'th', nodes: [ p(text )]});
-      
-      const thead = (t) => 
-        Block.create({ type: 'thead', nodes: [tr(th, t)]});
-      
-      const tr = (f, t) => 
-        Block.create({ type: 'tr', nodes: t.map(e => f(e))});
-
-      const tbody = (d) => 
-        Block.create({ type: 'tbody', nodes: d.map(e => tr(td, e))});
-
-      const nodes = 
-        [ 
-          thead(['ID', 'Title', 'Description']), 
-          tbody([
-            ['1', 'Jaws', 'Shark scares beachgoers'],
-            ['2', 'Rocky', 'A nobody gets his chance'],
-            ['3', 'The Godfather', 'Crime pays'],
-          ])];
-
-      const block = Block.create({ data: {}, type: 'table', nodes });
-      this.editor.insertBlock(block);
-    }
-
-    const addQuestion = () => {
-
-      const p = (text) => Block.create({ type: 'paragraph', nodes: [{ object: 'text', text}]});
-      const choice = (text) => Block.create({ type: 'choice', nodes: [ p(text )]});
-      const feedback = (text) => Block.create({ type: 'feedback', nodes: [ p(text )]});
-      const choice_feedback = (c, f) => Block.create({ type: 'choice_feedback', nodes: [ choice(c), feedback(f)]});
-      const stem = (text) => Block.create({ type: 'stem', nodes: [ p(text )]});
-      const nodes = 
-        [ stem('Which of the following...'), choice_feedback('A', 'Correct!'), choice_feedback('B', 'Incorrect'), choice_feedback('C', 'Incorrect') ];
-
-      const block = Block.create({ data: {}, type: 'multiple_choice', nodes });
-      this.editor.insertBlock(block);
-    }
-
-    const addExample = () => {
-
-      const variant = (text) => Block.create({ type: 'variant', nodes: [p(text)]});
-      const p = (text) => Block.create({ type: 'paragraph', nodes: [{ object: 'text', text}]});
-      const nodes = 
-        [ variant(''), variant('') ];
-
-      const block = Block.create({ data: {}, type: 'example', nodes });
-      this.editor.insertBlock(block);
-    }
-
+    const noOp = () => {}
 
     const snippets = this.state.snippets.caseOf({
     just: s => s.map(sn => <a className="item" onClick={this.insertSnippet.bind(this, sn)}>{sn.name}</a>),
@@ -358,11 +269,11 @@ export default class Main extends React.Component<MainProps, MainState> {
           Media
           <div className="menu">
             <div className="header"><i className="image icon"></i>Images</div>
-            <a className="item" onClick={addImage}>From URL</a>
+            <a className="item" onClick={noOp}>From URL</a>
             <a className="item disabled">Upload</a>
             <a className="item disabled">From Media Library</a>
             <div className="header"><i className="youtube icon"></i>Youtube</div>
-            <a className="item" onClick={addYouTube}>From ID</a>
+            <a className="item" onClick={noOp}>From ID</a>
             <a className="item disabled">Browse</a>
           </div>
         </div>
@@ -370,17 +281,17 @@ export default class Main extends React.Component<MainProps, MainState> {
           <i className="dropdown icon"></i>
           Lists
           <div className="menu">
-            <a className="item" onClick={addTable}><i className="table ol icon"></i>Table</a>
+            <a className="item" onClick={noOp}><i className="table ol icon"></i>Table</a>
             <div className="divider"></div>
-            <a className="item" onClick={addOrdered}><i className="list ol icon"></i>Ordered</a>
-            <a className="item" onClick={addUnordered}><i className="list ul icon"></i>Unordered</a>
+            <a className="item" onClick={noOp}><i className="list ol icon"></i>Ordered</a>
+            <a className="item" onClick={noOp}><i className="list ul icon"></i>Unordered</a>
           </div>
         </div>
         <div className="ui dropdown item">
           <i className="dropdown icon"></i>
           Questions
           <div className="menu">
-            <a className="item" onClick={addQuestion}>Multiple choice</a>
+            <a className="item" onClick={noOp}>Multiple choice</a>
             <a className="item disabled">Check all that apply</a>
             <a className="item disabled">Ordering</a>
             <a className="item disabled">Fill in the blank</a>
@@ -397,9 +308,9 @@ export default class Main extends React.Component<MainProps, MainState> {
           More
           <i className="dropdown icon"></i>
           <div className="menu">
-            <a className="item" onClick={addCode}><i className="code icon"></i> Code Block</a>
-            <a className="item" onClick={addMath}><i className="calculator icon"></i> Math</a>
-            <a className="item" onClick={addExample}><i className="flask icon"></i> A/B Test</a>
+            <a className="item" onClick={noOp}><i className="code icon"></i> Code Block</a>
+            <a className="item" onClick={noOp}><i className="calculator icon"></i> Math</a>
+            <a className="item" onClick={noOp}><i className="flask icon"></i> A/B Test</a>
           </div>
         </div>
       </div>
@@ -428,14 +339,8 @@ export default class Main extends React.Component<MainProps, MainState> {
 
           <div id="editor">
             <Editor 
-              onLink={this.onClickLink}
-              onDefinition={this.onClickDefinition}
-              onSnippet={this.createSnippetHandler}
-              onInit={(e) => this.editor = e}
-              onSelectInline={() => {}}
               onEdit={this.onEdit}
-              orderedIds={OrderedMap<string, number>()}
-              model={content}/>
+              value={content}/>
           </div>
         </div>
       </div>
@@ -445,6 +350,6 @@ export default class Main extends React.Component<MainProps, MainState> {
 
 (window as any).mountAuthor = (id, context) => {
   ReactDOM.render(
-    <Main packageId={context.package} id={context.id} title={context.title} content={context.content} />, 
+    <Main packageId={context.package} id={context.id} title={context.title} content={context.content.nodes} />, 
     document.getElementById(id));
 }

@@ -3,7 +3,13 @@ import { Element, Text } from 'slate';
 export type ModelElement
   = Paragraph | HeadingOne | HeadingTwo | HeadingThree | HeadingFour | HeadingFive | HeadingSix | Image | YouTube
   | Audio | Table | TableHead | TableBody | TableFooter | TableRow | TableHeader | TableData | OrderedList | UnorderedList
-  | ListItem | Math | MathLine | Code | CodeLine | Blockquote | Example | Hyperlink | Definition | Citation | Text;
+  | ListItem | Math | MathLine | Code | CodeLine | Blockquote | Example | Hyperlink | Definition | Citation;
+
+export type BlockElement 
+  = Paragraph | HeadingOne | HeadingTwo | HeadingThree | HeadingFour | HeadingFive | HeadingSix | Image | YouTube
+  | Audio | Table | TableHead | TableBody | TableFooter | TableRow | TableHeader | TableData | OrderedList | UnorderedList
+  | ListItem | Math | MathLine | Code | CodeLine | Blockquote | Example;
+
 
 export interface Identifiable {
   id: string;
@@ -155,6 +161,6 @@ export enum Marks {
   sup = "sup"
 }
 
-  
+
 
 
