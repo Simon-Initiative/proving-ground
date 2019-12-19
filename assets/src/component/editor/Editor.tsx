@@ -3,7 +3,7 @@ import { Slate, Editable, ReactEditor, withReact, useSlate } from 'slate-react'
 import { Editor, Transforms, createEditor, Text, Node } from 'slate'
 import { withHistory } from 'slate-history'
 import { Marks, ModelElement, schema} from './interfaces';
-import { editorFor } from './elements';
+import { editorFor } from './editors';
 import { Button, Menu, Portal } from './utils'
 import { Range } from 'slate'
 
