@@ -5,7 +5,7 @@ import { EditorComponent as Editor } from './component/editor/Editor';
 import { persist, getSnippets, createSnippet } from 'data/persistence';
 import { Code, create, Snippet, Math } from 'data/content/types';
 import { OrderedMap } from 'immutable';
-import { Editor as SlateEditor, Node, Command } from 'slate';
+import { Editor as SlateEditor, Node } from 'slate';
 import { insertImage, insertYouTube } from './editor/utils';
 import { Maybe } from 'tsmonad';
 import guid from 'utils/guid';
@@ -121,10 +121,10 @@ export default class Main extends React.Component<MainProps, MainState> {
         return
       }
 
-      editor
-        .insertText(text)
-        .moveFocusBackward(text.length)
-        .command(wrapLink, href)
+     // editor
+     //   .insertText(text)
+        //.moveFocusBackward(text.length)
+      //  .command(wrapLink, href)
     }
   };
 
@@ -175,18 +175,13 @@ export default class Main extends React.Component<MainProps, MainState> {
     (window as any).location = `/packages/${packageId}/activities/${id}/publish`;
   }
 
-  onEdit(obj: any) {
+  onEdit(nodes: any) {
 
-    const o = obj;
-
-    const nodes = o.document.nodes;
     persist(this.props.id, { nodes });
 
-
-
-    this.setState({
-      headers: this.getHeaders(obj.document.nodes),
-    });
+    //this.setState({
+    //  headers: this.getHeaders(obj.document.nodes),
+   // });
   }
 
   renderOutline() {

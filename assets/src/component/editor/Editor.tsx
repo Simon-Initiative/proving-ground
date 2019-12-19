@@ -1,12 +1,17 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import { Slate, Editable, ReactEditor, withReact, useSlate } from 'slate-react'
-import { Editor, createEditor, Node } from 'slate'
+import { Editor, Transforms, createEditor, Text, Node } from 'slate'
 import { withHistory } from 'slate-history'
-import { Marks, ModelElement } from './interfaces';
-import * as Editors from './elements';
-import { Button, Icon, Menu, Portal } from './utils'
+import { Marks, ModelElement, schema} from './interfaces';
+import { editorFor } from './elements';
+import { Button, Menu, Portal } from './utils'
 import { Range } from 'slate'
 
+const withEmbeds = editor => {
+  const { isVoid } = editor
+  editor.isVoid = element => (schema[element.type].isVoid ? true : isVoid(element))
+  return editor
+}
 
 export type EditorProps = {
   onEdit: (value) => void;
@@ -15,69 +20,20 @@ export type EditorProps = {
 
 export const EditorComponent = (props: EditorProps) => {
   const [value, setValue] = useState(props.value)
-  const [selection, setSelection] = useState(null)
-  const editor = useMemo(
-    () => withFormatting(withHistory(withReact(createEditor()))),
-    []
-  )
-
+  const editor = useMemo(() => withEmbeds(withHistory(withReact(createEditor()))), [])
 
   const renderElement = useCallback(props => {
-
     const model = props.element as ModelElement;
-    
-    switch (model.type) {    
-      case 'code':
-        return <Editors.Code {...props} />;
-      case 'p':
-        return <Editors.P {...props} />;
-      case 'h1':
-        return <Editors.H1 {...props} />;
-      case 'h2':
-        return <Editors.H2 {...props} />;
-      case 'h3':
-        return <Editors.H3 {...props} />;
-      case 'h4':
-        return <Editors.H4 {...props} />;
-      case 'h5':
-        return <Editors.H5 {...props} />;
-      case 'h6':
-        return <Editors.H6 {...props} />;
-      case 'youtube':
-      case 'audio':
-      case 'img':
-      case 'table':
-      case 'tr':
-      case 'thead':
-      case 'tbody':
-      case 'tfoot':
-      case 'td':
-      case 'th':
-      case 'ol':
-      case 'ul':
-      case 'li':
-      case 'math':
-      case 'math_line':
-      case 'code_line':
-      case 'blockquote':
-      case 'example':
-      case 'a':
-      case 'dfn':
-      case 'cite':
-        return <span {...props.attributes}>Not implemented</span>;
-      default:
-        assertNever(model);
-    }
+    return editorFor(model, props);
   }, []);
 
   return (
     <Slate
-      editor={editor}
+      editor={editor as any}
       value={value}
-      selection={selection}
-      onChange={(value, selection) => {
+      onChange={value => {
         setValue(value as any)
-        setSelection(selection)
+        props.onEdit(value);
       }}
     >
       <HoveringToolbar />
@@ -103,42 +59,21 @@ export const EditorComponent = (props: EditorProps) => {
   )
 }
 
-const withFormatting = editor => {
-  const { exec } = editor
-
-  editor.exec = command => {
-    switch (command.type) {
-      case 'toggle_format': {
-        const { format } = command
-        const isActive = isFormatActive(editor, format)
-        Editor.setNodes(
-          editor,
-          { [format]: isActive ? null : true },
-          { match: 'text', split: true }
-        )
-        break
-      }
-
-      default: {
-        exec(command)
-        break
-      }
-    }
-  }
-
-  return editor
+const toggleFormat = (editor, format) => {
+  const isActive = isFormatActive(editor, format)
+  Transforms.setNodes(
+    editor,
+    { [format]: isActive ? null : true },
+    { match: Text.isText, split: true }
+  )
 }
 
 const isFormatActive = (editor, format) => {
   const [match] = Editor.nodes(editor, {
-    match: { [format]: true },
+    match: n => n[format] === true,
     mode: 'all',
   })
   return !!match
-}
-
-function assertNever(x: never): never {
-  throw new Error("Unexpected object: " + x);
 }
 
 
@@ -163,12 +98,12 @@ const HoveringToolbar = () => {
     if (!el) {
       return
     }
-
+    
     if (
       !selection ||
       !ReactEditor.isFocused(editor) ||
       Range.isCollapsed(selection) ||
-      Editor.text(editor, selection) === ''
+      Editor.string(editor, selection) === ''
     ) {
       el.removeAttribute('style')
       return
@@ -189,22 +124,22 @@ const HoveringToolbar = () => {
     <Portal>
       <Menu
         ref={ref}
-        style={`
-          padding: 8px 7px 6px;
-          position: absolute;
-          z-index: 1;
-          top: -10000px;
-          left: -10000px;
-          margin-top: -6px;
-          opacity: 0;
-          background-color: #222;
-          border-radius: 4px;
-          transition: opacity 0.75s;
-        `}
+        style={{
+          padding: "8px 7px 6px",
+          position: "absolute",
+          zIndex: "1",
+          top: "-10000px",
+          left: "-10000px",
+          marginTop: "-6px",
+          opacity: "0",
+          backgroundColor: "#222",
+          borderRadius: "4px",
+          transition: "opacity 0.75s"
+        }}
       >
-        <FormatButton format="strong" icon="format_bold" />
-        <FormatButton format="em" icon="format_italic" />
-        <FormatButton format="mark" icon="format_underlined" />
+        <FormatButton format="strong" icon="bold" />
+        <FormatButton format="em" icon="italic" />
+        <FormatButton format="code" icon="code" />
       </Menu>
     </Portal>
   )
@@ -221,7 +156,7 @@ const FormatButton = ({ format, icon }) => {
         editor.exec({ type: 'toggle_format', format })
       }}
     >
-      <Icon>{icon}</Icon>
+      <i className={`${icon} icon`}></i>
     </Button>
   )
 }

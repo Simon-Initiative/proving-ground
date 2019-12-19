@@ -1,5 +1,7 @@
 import { Element, Text } from 'slate';
 
+export type ElementType = 'block' | 'inline' | 'mark';
+
 export type ModelElement
   = Paragraph | HeadingOne | HeadingTwo | HeadingThree | HeadingFour | HeadingFive | HeadingSix | Image | YouTube
   | Audio | Table | TableHead | TableBody | TableFooter | TableRow | TableHeader | TableData | OrderedList | UnorderedList
@@ -161,6 +163,36 @@ export enum Marks {
   sup = "sup"
 }
 
-
+export const schema = {
+  p: { isVoid: false,  elementType: 'block'},
+  h1: { isVoid: false,  elementType: 'block'},
+  h2: { isVoid: false,  elementType: 'block'},
+  h3: { isVoid: false,  elementType: 'block'},
+  h4: { isVoid: false,  elementType: 'block'},
+  h5: { isVoid: false,  elementType: 'block'},
+  h6: { isVoid: false,  elementType: 'block'},
+  img: { isVoid: true,  elementType: 'block'},
+  youtube: { isVoid: true,  elementType: 'block'},
+  audio: { isVoid: true,  elementType: 'block'},
+  table: { isVoid: false,  elementType: 'block'},
+  thead: { isVoid: false,  elementType: 'block'},
+  tbody: { isVoid: false,  elementType: 'block'},
+  tfoot: { isVoid: false,  elementType: 'block'},
+  tr: { isVoid: false,  elementType: 'block'},
+  th: { isVoid: false,  elementType: 'block'},
+  td: { isVoid: false,  elementType: 'block'},
+  ol: { isVoid: false,  elementType: 'block'},
+  ul: { isVoid: false,  elementType: 'block'},
+  li: { isVoid: false,  elementType: 'block'},
+  math: { isVoid: false,  elementType: 'block'},
+  math_line: { isVoid: false,  elementType: 'block'},
+  code: { isVoid: false,  elementType: 'block'},
+  code_line: { isVoid: false,  elementType: 'block'},
+  blockquote: { isVoid: false,  elementType: 'block'},
+  example: { isVoid: false,  elementType: 'block'},
+  a: { isVoid: false,  elementType: 'inline'},
+  dfn: { isVoid: false,  elementType: 'inline'},
+  cite: { isVoid: false,  elementType: 'inline'},
+};
 
 

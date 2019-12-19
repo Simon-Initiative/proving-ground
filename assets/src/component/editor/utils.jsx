@@ -6,15 +6,17 @@ export const Button = React.forwardRef(
     <span
       {...props}
       ref={ref}
-      style={`
-          cursor: pointer;
-          color: ${reversed
+      style={{
+          cursor: "pointer",
+          color: reversed
             ? active
               ? 'white'
               : '#aaa'
             : active
             ? 'black'
-            : '#ccc'}`}
+            : '#ccc'
+          }
+        }
     />
   )
 )
@@ -29,29 +31,29 @@ export const EditorValue = React.forwardRef(
       <div
         ref={ref}
         {...props}
-        style="margin: 30px -20px 0;"
+        style={{margin: '30px -20px 0'}}
       >
         <div
-          style={`
-            font-size: 14px;
-            padding: 5px 20px;
-            color: #404040;
-            border-top: 2px solid #eeeeee;
-            background: #f8f8f8;
-          `}
+          style={{
+            fontSize: '14px',
+            padding: '5px 20px',
+            color: '#404040',
+            borderTop: '2px solid #eeeeee',
+            background: '#f8f8f8'
+          }}
         >
           Slate's value as text
         </div>
         <div
-          style={`
-            color: #404040;
-            font: 12px monospace;
-            white-space: pre-wrap;
-            padding: 10px 20px;
-            div {
-              margin: 0 0 0.5em;
+          style={{
+            color: '#404040',
+            font: '12px monospace',
+            whiteSpace: 'pre-wrap',
+            padding: '10px 20px',
+            div: {
+              margin: '0 0 0.5em',
             }
-          `}
+          }}
         >
           {textLines}
         </div>
@@ -64,52 +66,36 @@ export const Icon = React.forwardRef(({ className, ...props }, ref) => (
     {...props}
     ref={ref}
     className="material-icons"
-    style={`
-        font-size: 18px;
-        vertical-align: text-bottom;
-      `}
+    style={{
+        fontSize: '18px',
+        verticalAlign: 'text-bottom'
+    }}
   />
 ))
 export const Instruction = React.forwardRef(({ className, ...props }, ref) => (
   <div
     {...props}
     ref={ref}
-    style={`
-        white-space: pre-wrap;
-        margin: 0 -20px 10px;
-        padding: 10px 20px;
-        font-size: 14px;
-        background: #f8f8e8;
-      `}
+    style={{
+        whiteSpace: 'pre-wrap',
+        margin: '0 -20px 10px',
+        padding: '10px 20px',
+        fontSize: '14px',
+        background: '#f8f8e8'
+      }}
   />
 ))
 export const Menu = React.forwardRef(({ className, ...props }, ref) => (
   <div
     {...props}
     ref={ref}
-    style={`
-        & > * {
-          display: inline-block;
-        }
-        & > * + * {
-          margin-left: 15px;
-        }
-      `}
+    style={{
+       
+          display: 'inline-block',
+          marginLeft: '15px'
+            }}
   />
 ))
 export const Portal = ({ children }) => {
   return ReactDOM.createPortal(children, document.body)
 }
-export const Toolbar = React.forwardRef(({ className, ...props }, ref) => (
-  <Menu
-    {...props}
-    ref={ref}
-    style={`
-        position: relative;
-        padding: 1px 18px 17px;
-        margin: 0 -20px;
-        border-bottom: 2px solid #eee;
-        margin-bottom: 20px;
-      `}
-  />
-))
