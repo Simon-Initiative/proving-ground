@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ModelElement } from './interfaces';
+import { ModelElement } from './model';
 
 
 function assertNever(x: never): never {

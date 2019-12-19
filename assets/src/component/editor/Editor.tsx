@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import { Slate, Editable, ReactEditor, withReact, useSlate } from 'slate-react'
 import { Editor, Transforms, createEditor, Text, Node } from 'slate'
 import { withHistory } from 'slate-history'
-import { Marks, ModelElement, schema} from './interfaces';
+import { Marks, ModelElement, schema} from './model';
 import { editorFor } from './editors';
 import { Button, Menu, Portal } from './utils'
 import { Range } from 'slate'
