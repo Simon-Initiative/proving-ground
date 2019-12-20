@@ -1,7 +1,8 @@
 import * as React from 'react';
 
-import { ModelElement } from './model';
-
+import { ModelElement, Mark } from './model';
+import * as Commands from './commands';
+import { ImageEditor } from './editors/Image';
 
 function assertNever(x: never): never {
   throw new Error("Unexpected object: " + x);
@@ -16,52 +17,26 @@ export const Code = props => {
   );
 }
 
-export const P = props => {
-  return <p {...props.attributes}>{props.children}</p>;
-}
-
-export const H1 = props => {
-  return <h1 {...props.attributes}>{props.children}</h1>;
-}
-
-export const H2 = props => {
-  return <h2 {...props.attributes}>{props.children}</h2>;
-}
-
-export const H3 = props => {
-  return <h3 {...props.attributes}>{props.children}</h3>;
-}
-
-export const H4 = props => {
-  return <h4 {...props.attributes}>{props.children}</h4>;
-}
-
-export const H5 = props => {
-  return <h5 {...props.attributes}>{props.children}</h5>;
-}
-
-export const H6 = props => {
-  return <h6 {...props.attributes}>{props.children}</h6>;
-}
-
-export function editorFor(element: ModelElement, props) : JSX.Element {
+export function editorFor(element: ModelElement, props, editor) : JSX.Element {
   switch (element.type) {    
     case 'code':
       return <Code {...props} />;
     case 'p':
-      return <P {...props} />;
+      return <p {...props.attributes}>{props.children}</p>;
     case 'h1':
-      return <H1 {...props} />;
+      return <h1 {...props.attributes}>{props.children}</h1>;
     case 'h2':
-      return <H2 {...props} />;
+      return <h2 {...props.attributes}>{props.children}</h2>;
     case 'h3':
-      return <H3 {...props} />;
+      return <h3 {...props.attributes}>{props.children}</h3>;
     case 'h4':
-      return <H4 {...props} />;
+      return <h4 {...props.attributes}>{props.children}</h4>;
     case 'h5':
-      return <H5 {...props} />;
+      return <h5 {...props.attributes}>{props.children}</h5>;
     case 'h6':
-      return <H6 {...props} />;
+      return <h6 {...props.attributes}>{props.children}</h6>;
+    case 'img':
+      return <ImageEditor editor={editor} attributes={props.attributes} element={element} isFocused={false} isSelected={false}/>;
     case 'youtube':
     case 'audio':
     case 'img':
@@ -88,3 +63,33 @@ export function editorFor(element: ModelElement, props) : JSX.Element {
       assertNever(element);
   }
 }
+
+export function markFor(mark: Mark, children) : JSX.Element {
+  switch (mark) {
+    case 'em':
+      return <em>{children}</em>;
+    case 'strong':
+      return <strong>{children}</strong>;
+    case 'del':
+      return <del>{children}</del>;
+    case 'mark':
+      return <mark>{children}</mark>;
+    case 'code':
+      return <code>{children}</code>;
+    case 'var':
+      return <var>{children}</var>;
+    case 'sub':
+      return <sub>{children}</sub>;
+    case 'sup':
+      return <sup>{children}</sup>;                                                 
+    default:
+      assertNever(mark);
+  }
+}
+
+export const hoverMenuButtons = [
+  { icon: 'bold', command: e => Commands.toggleMark(e, 'strong')},
+  { icon: 'italic', command: e => Commands.toggleMark(e, 'em')},
+  { icon: 'code', command: e => Commands.toggleMark(e, 'code')}
+];
+

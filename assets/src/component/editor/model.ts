@@ -1,17 +1,21 @@
-import { Element, Text } from 'slate';
+import { Element } from 'slate';
 
-export type ElementType = 'block' | 'inline' | 'mark';
+
+export function create<ModelElement>(params: ModelElement) : ModelElement {
+  return (params as ModelElement);
+}
+
+export function mutate<ModelElement>(obj: ModelElement, changes: Object) : ModelElement {
+  return Object.assign({}, obj, changes) as ModelElement;
+}
+
+
+
 
 export type ModelElement
   = Paragraph | HeadingOne | HeadingTwo | HeadingThree | HeadingFour | HeadingFive | HeadingSix | Image | YouTube
   | Audio | Table | TableHead | TableBody | TableFooter | TableRow | TableHeader | TableData | OrderedList | UnorderedList
   | ListItem | Math | MathLine | Code | CodeLine | Blockquote | Example | Hyperlink | Definition | Citation;
-
-export type BlockElement 
-  = Paragraph | HeadingOne | HeadingTwo | HeadingThree | HeadingFour | HeadingFive | HeadingSix | Image | YouTube
-  | Audio | Table | TableHead | TableBody | TableFooter | TableRow | TableHeader | TableData | OrderedList | UnorderedList
-  | ListItem | Math | MathLine | Code | CodeLine | Blockquote | Example;
-
 
 export interface Identifiable {
   id: string;
@@ -50,7 +54,7 @@ export interface Image extends Element, Identifiable {
   src: string; 
   height: string;
   width: string;
-  alt: string;
+  alt?: string;
 }
 
 export interface YouTube extends Element, Identifiable {
@@ -150,49 +154,38 @@ export interface Citation extends Element, Identifiable {
   ordinal: number;
 }
 
-// Marksd
-
-export enum Marks {
-  em = "em",
-  strong = "strong",
-  code = "code",
-  del = "del",
-  mark = "mark",
-  var = "var",
-  sub = "sub",
-  sup = "sup"
-}
+export type Mark = 'em' | 'strong' | 'mark' | 'del' | 'var' | 'code' | 'sub' | 'sup';
 
 export const schema = {
-  p: { isVoid: false,  elementType: 'block'},
-  h1: { isVoid: false,  elementType: 'block'},
-  h2: { isVoid: false,  elementType: 'block'},
-  h3: { isVoid: false,  elementType: 'block'},
-  h4: { isVoid: false,  elementType: 'block'},
-  h5: { isVoid: false,  elementType: 'block'},
-  h6: { isVoid: false,  elementType: 'block'},
-  img: { isVoid: true,  elementType: 'block'},
-  youtube: { isVoid: true,  elementType: 'block'},
-  audio: { isVoid: true,  elementType: 'block'},
-  table: { isVoid: false,  elementType: 'block'},
-  thead: { isVoid: false,  elementType: 'block'},
-  tbody: { isVoid: false,  elementType: 'block'},
-  tfoot: { isVoid: false,  elementType: 'block'},
-  tr: { isVoid: false,  elementType: 'block'},
-  th: { isVoid: false,  elementType: 'block'},
-  td: { isVoid: false,  elementType: 'block'},
-  ol: { isVoid: false,  elementType: 'block'},
-  ul: { isVoid: false,  elementType: 'block'},
-  li: { isVoid: false,  elementType: 'block'},
-  math: { isVoid: false,  elementType: 'block'},
-  math_line: { isVoid: false,  elementType: 'block'},
-  code: { isVoid: false,  elementType: 'block'},
-  code_line: { isVoid: false,  elementType: 'block'},
-  blockquote: { isVoid: false,  elementType: 'block'},
-  example: { isVoid: false,  elementType: 'block'},
-  a: { isVoid: false,  elementType: 'inline'},
-  dfn: { isVoid: false,  elementType: 'inline'},
-  cite: { isVoid: false,  elementType: 'inline'},
+  p: { isVoid: false,  isBlock: true},
+  h1: { isVoid: false,  isBlock: true},
+  h2: { isVoid: false,  isBlock: true},
+  h3: { isVoid: false,  isBlock: true},
+  h4: { isVoid: false,  isBlock: true},
+  h5: { isVoid: false,  isBlock: true},
+  h6: { isVoid: false,  isBlock: true},
+  img: { isVoid: true,  isBlock: true},
+  youtube: { isVoid: true,  isBlock: true},
+  audio: { isVoid: true,  isBlock: true},
+  table: { isVoid: false,  isBlock: true},
+  thead: { isVoid: false,  isBlock: true},
+  tbody: { isVoid: false,  isBlock: true},
+  tfoot: { isVoid: false,  isBlock: true},
+  tr: { isVoid: false,  isBlock: true},
+  th: { isVoid: false,  isBlock: true},
+  td: { isVoid: false,  isBlock: true},
+  ol: { isVoid: false,  isBlock: true},
+  ul: { isVoid: false,  isBlock: true},
+  li: { isVoid: false,  isBlock: true},
+  math: { isVoid: false,  isBlock: true},
+  math_line: { isVoid: false,  isBlock: true},
+  code: { isVoid: false,  isBlock: true},
+  code_line: { isVoid: false,  isBlock: true},
+  blockquote: { isVoid: false,  isBlock: true},
+  example: { isVoid: false,  isBlock: true},
+  a: { isVoid: false,  isBlock: false},
+  dfn: { isVoid: false,  isBlock: false},
+  cite: { isVoid: false,  isBlock: false},
 };
 
 
