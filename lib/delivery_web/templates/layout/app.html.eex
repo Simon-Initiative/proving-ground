@@ -92,6 +92,7 @@
           $('.ui.dropdown.item').dropdown();
           $('.ui.radio.checkbox').checkbox();
           $('.definition').popup();
+          $('.ui.accordion').accordion();
     });
     </script>
 

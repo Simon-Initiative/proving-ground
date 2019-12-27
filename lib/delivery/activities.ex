@@ -29,26 +29,28 @@ defmodule Delivery.Activities do
   end
 
   def get_draft_activities(package_id) do
+    query =
+      from e in Activity,
+        where: e.package_id == ^package_id and e.is_draft == true,
+        select: %{id: e.id, title: e.title}
 
-    query = from e in Activity,
-          where: e.package_id == ^package_id and e.is_draft == true,
-          select:  %{id: e.id, title: e.title}
     Repo.all(query)
   end
 
   def publish_all(package_id) do
     from(a in Activity,
       where: a.package_id == ^package_id,
-      update: [set: [content: a.draft_content, is_draft: false]])
-      |> Repo.update_all([])
-
+      update: [set: [content: a.draft_content, is_draft: false]]
+    )
+    |> Repo.update_all([])
   end
 
   def publish(activity_id) do
     from(a in Activity,
       where: a.id == ^activity_id,
-      update: [set: [content: a.draft_content, is_draft: false]])
-      |> Repo.update_all([])
+      update: [set: [content: a.draft_content, is_draft: false]]
+    )
+    |> Repo.update_all([])
   end
 
   @doc """
@@ -80,14 +82,17 @@ defmodule Delivery.Activities do
 
   """
   def create_activity(attrs \\ %{}) do
-
-    content = %{ "nodes" =>
-      [%{ "object" => "block", "type" => "paragraph", "nodes" =>
-        [%{ "object" => "text", "text" => "New Page"}]
+    content = %{
+      "nodes" => [
+        %{
+          "object" => "block",
+          "type" => "paragraph",
+          "nodes" => [%{"object" => "text", "text" => "New Page"}]
         }
-      ]}
+      ]
+    }
 
-    %Activity{content: content, draft_content: content }
+    %Activity{content: content, draft_content: content}
     |> Activity.changeset(attrs)
     |> Repo.insert()
   end

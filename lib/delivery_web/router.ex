@@ -5,7 +5,7 @@ defmodule DeliveryWeb.Router do
 
   defp fetch_user_token(conn, _) do
     conn
-      |> assign(:current_user, get_session(conn, :user))
+    |> assign(:current_user, get_session(conn, :user))
   end
 
   defp redirect_to_login(conn, _) do
@@ -43,12 +43,10 @@ defmodule DeliveryWeb.Router do
   scope "/", DeliveryWeb do
     pipe_through :browser
 
-
     get "/login", LoginController, :show
     post "/login", LoginController, :login
     get "/users/new", UserController, :new
     post "/users", UserController, :create
-
   end
 
   scope "/", DeliveryWeb do
@@ -72,6 +70,11 @@ defmodule DeliveryWeb.Router do
     post "/sections/:section_id/enrollment", SectionController, :add_enrollment
     delete "/sections/:section_id/enrollment/:id", SectionController, :remove_enrollment
 
+    resources "packages/:package_id/objectives", ObjectiveController,
+      only: [:create, :update, :delete]
+
+    resources "packages/:package_id/skills", SkillController, only: [:create, :update, :delete]
+
     resources "/packages/:package_id/activities", ActivityController, except: [:edit]
     get "/packages/:package_id/activities/publish/all", ActivityController, :publish_all
     get "/packages/:package_id/activities/:activity_id/publish", ActivityController, :publish
@@ -79,7 +82,6 @@ defmodule DeliveryWeb.Router do
     get "/course/:section_id", CourseController, :index
     get "/course/:section_id/glossary", CourseController, :glossary
     get "/course/:section_id/:page_id", CourseController, :page
-
 
     get "/packages/:package_id/activities/:id/edit", PageController, :show
 
@@ -93,7 +95,6 @@ defmodule DeliveryWeb.Router do
 
     get "/sound", SoundController, :index
     get "/sound/:id", SoundController, :loaded
-
 
     live "/search", SearchLive
     live "/notification/:activity_id", NotificationLive
@@ -112,6 +113,5 @@ defmodule DeliveryWeb.Router do
     get "/snippets", SnippetController, :read_all
     post "/snippets", SnippetController, :write
     post "/sound", SoundController, :write
-
   end
 end

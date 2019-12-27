@@ -2,3 +2,29 @@
 
 @import "./phoenix.css";
 
+.objectives .close {
+    color: rgba(0, 0, 0, 0.2);
+}
+
+.objectives .close:hover {
+    color: #db2828;
+}
+
+.ui .list .list {
+    padding-left: 1rem;
+}
+
+.editable-text {
+    display: inline-block;
+    border-width: 2px;
+    padding: 6px;
+    border-color: transparent;
+    border-radius: 3px;
+    border-style: solid;
+    transition: background-color 0.2s ease-in-out 0s, border-color 0.2s ease-in-out 0s;
+}
+
+.editable-text:hover {
+    background-color: #f8f8f9;
+    border-color: #f8f8f9;
+}

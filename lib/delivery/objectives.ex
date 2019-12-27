@@ -3,36 +3,30 @@ defmodule Delivery.Objectives do
   alias Delivery.Repo
 
   alias Delivery.Objectives.Objective
+  alias DeliveryWeb.Utils.OneLiners
 
   def list_objectives do
     Repo.all(Objective)
   end
 
-  def list_skills do
-    Repo.all(Skill)
-  end
-
   def list_objectives_for(package_id) do
-    query = from o in Objective, where: o.package_id == ^package_id, order_by: o.description
-    Repo.all(query)
-  end
+    query =
+      from o in Objective, where: o.package_id == ^package_id, order_by: [desc: o.inserted_at]
 
-  def list_skills_for(package_id) do
-    query = from a in Objective, where: a.package_id == ^package_id, order_by: a.id
     Repo.all(query)
   end
 
   def get_objective!(id), do: Repo.get!(Objective, id)
 
   def create_objective(attrs \\ %{}) do
-    description = "She was an open book; he was illiterate."
+    description = Map.get(attrs, :description, hd(Enum.take_random(OneLiners.objectives(), 1)))
 
     %Objective{description: description}
     |> Objective.changeset(attrs)
     |> Repo.insert()
   end
 
-  def update_objective(%Objective{} = objective, attrs) do
+  def update_objective(%Objective{} = objective, attrs \\ %{}) do
     objective
     |> Objective.changeset(attrs)
     |> Repo.update()

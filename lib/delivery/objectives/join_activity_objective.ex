@@ -1,9 +1,9 @@
-defmodule Delivery.Objectives.ActivityObjectives do
+defmodule Delivery.Objectives.ActivityObjective do
   use Ecto.Schema
   import Ecto.Changeset
 
   # Join table for activities, objectives
-  schema "skills" do
+  schema "activity_objective" do
     belongs_to :activities, Delivery.Activities.Activity, foreign_key: :activity_id
     belongs_to :objectives, Delivery.Objectives.Objective, foreign_key: :objective_id
 

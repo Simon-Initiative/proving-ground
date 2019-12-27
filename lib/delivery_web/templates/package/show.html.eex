@@ -1,29 +1,21 @@
 <div class="ui message">
   <div style="float: right;">
-    <%= button("Experiments", to: Routes.qa_path(@conn, :experiments, @package), method: "get", class: "ui button mini")  %>  
-    <%= button("QA", to: Routes.qa_path(@conn, :index, @package), method: "get", class: "ui button mini")  %>  
-    <%= button("Edit", to: Routes.live_path(@conn, PackageLive.Edit, @package), method: "get", class: "ui button mini")  %>  
+    <%= button("Experiments", to: Routes.qa_path(@conn, :experiments, @package), method: "get", class: "ui button mini")  %>
+    <%= button("QA", to: Routes.qa_path(@conn, :index, @package), method: "get", class: "ui button mini")  %>
+    <%= button("Edit", to: Routes.live_path(@conn, PackageLive.Edit, @package), method: "get", class: "ui button mini")  %>
   </div>
   <div class="header">
     <%= @package.title %>
   </div>
-  
   <p><%= @package.description %></p>
   <p>Version: <%= @package.version %></p>
 </div>
-
+<%= render DeliveryWeb.ObjectiveView, "index.html", assigns %>
 <div class="ui message">
-
   <div style="float: right;">
     <%= button("New", to: Routes.activity_path(@conn, :new, @package.id), method: "get", class: "ui button tiny primary")  %>
     <%= button("Publish all", to: Routes.activity_path(@conn, :publish_all, @package.id), method: :get, data: [confirm: "Are you sure?"], class: "ui button tiny") %>
   </div>
-
-  <div class="header">
-    Objectives
-  </div>
-  <%= render DeliveryWeb.ObjectiveView, "index.html", assigns %>
-
   <div class="header">
     Pages
   </div>

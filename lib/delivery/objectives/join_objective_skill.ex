@@ -3,7 +3,7 @@ defmodule Delivery.Objectives.ObjectiveSkill do
   import Ecto.Changeset
 
   # Join table for objectives, skills
-  schema "objective_skills" do
+  schema "objective_skill" do
     belongs_to :objectives, Delivery.Objectives.Objective, foreign_key: :objective_id
     belongs_to :skills, Delivery.Objectives.Skill, foreign_key: :skill_id
     timestamps()

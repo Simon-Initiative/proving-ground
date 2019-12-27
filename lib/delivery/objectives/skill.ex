@@ -4,7 +4,9 @@ defmodule Delivery.Objectives.Skill do
 
   schema "skills" do
     field :description, :string
-    many_to_many :objectives, Delivery.Objectives.Objective, join_through: "objective_skill"
+
+    many_to_many :objectives, Delivery.Objectives.Objective,
+      join_through: Delivery.Objectives.ObjectiveSkill
 
     timestamps()
   end
@@ -12,7 +14,7 @@ defmodule Delivery.Objectives.Skill do
   @doc false
   def changeset(skill, attrs) do
     skill
-    |> cast(attrs, [:description])
+    |> cast(attrs, [:description, :objectives])
     |> validate_required([:description])
   end
 end

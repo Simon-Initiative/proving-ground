@@ -1,40 +1,21 @@
 defmodule DeliveryWeb.ObjectiveController do
   use DeliveryWeb, :controller
 
-  alias DeliveryWeb.Utils.HTML
-  alias DeliveryWeb.Utils.Latex
-  alias DeliveryWeb.Utils.Markdown
-  alias DeliveryWeb.Utils.Text
-  alias DeliveryWeb.Utils.XML
-
   alias Delivery.Objectives
   alias Delivery.Objectives.Objective
 
-  def index(conn, %{"package_id" => package_id}) do
-    objectives = Objectives.list_objectives_for(package_id)
-    render(conn, "index.html", objectives: objectives, package_id: package_id)
-  end
+  def create(%Plug.Conn{} = conn, objective_params) do
+    package_id = objective_params["package_id"]
 
-  def show(conn, %{"id" => id, "package_id" => package_id}) do
-    o = Objectives.get_objective!(id)
-
-    render(conn, "index.html", package_id: package_id, description: o.description)
-  end
-
-  def new(conn, %{"package_id" => package_id}) do
-    changeset = Objectives.change_objective(%Objective{package_id: package_id})
-    render(conn, "new.html", changeset: changeset, package_id: package_id)
-  end
-
-  def create(conn, %{"objective" => objective_params}) do
     case Objectives.create_objective(objective_params) do
-      {:ok, objective} ->
+      {:ok, _objective} ->
         conn
-        |> put_flash(:info, "Page created successfully.")
-        |> redirect(to: Routes.page_path(conn, :show, objective_params["package_id"], objective))
+        |> put_flash(:info, "Objective created successfully.")
+        |> redirect(to: Routes.package_path(conn, :show, package_id))
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset, package_id: objective_params["package_id"])
+      {:error, %Ecto.Changeset{} = _changeset} ->
+        conn
+        |> put_flash(:error, "Objective creation failed.")
     end
   end
 
@@ -45,21 +26,19 @@ defmodule DeliveryWeb.ObjectiveController do
   end
 
   def update(conn, %{"id" => id, "package_id" => package_id, "objective" => objective_params}) do
+    IO.inspect(objective_params)
     objective = Objectives.get_objective!(id)
 
     case Objectives.update_objective(objective, objective_params) do
-      {:ok, objective} ->
+      {:ok, _objective} ->
         conn
         |> put_flash(:info, "Objective updated successfully.")
+        |> redirect(to: Routes.package_path(conn, :show, package_id))
 
-      # |> redirect(to: Routes.objective_path(conn, :show, package_id, objective))
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html",
-          objective: objective,
-          changeset: changeset,
-          package_id: package_id
-        )
+      {:error, %Ecto.Changeset{} = _changeset} ->
+        conn
+        |> put_flash(:danger, "Objective failed to be updated.")
+        |> redirect(to: Routes.package_path(conn, :show, package_id))
     end
   end
 

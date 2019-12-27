@@ -1,21 +1,14 @@
-
 <%= form_for @changeset, "#", [class: "ui form attached fluid segment", phx_change: :validate, phx_submit: :save], fn f -> %>
-  
-  <%= input f, :title %>
-
-  <div class="field">
-
+<%= input f, :title %>
+<div class="field">
   <label>Course package id</label>
   <%= text_input f, :friendly, disabled: true %>
   <small class="form-text text-muted">The user friendly identifier for this package</small>
   <%= error_tag f, :friendly %>
-  </div>
-
-  <%= input f, :version %>
-  <%= input f, :description %>
-
-  <div>
-    <%= submit "Save", class: "ui primary button", phx_disable_with: "Saving..." %>
-  </div>
-
+</div>
+<%= input f, :version %>
+<%= input f, :description %>
+<div>
+  <%= submit "Save", class: "ui primary button", phx_disable_with: "Saving..." %>
+</div>
 <% end %>

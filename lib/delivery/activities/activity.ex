@@ -18,7 +18,7 @@ defmodule Delivery.Activities.Activity do
     field :type, :string
     field :is_draft, :boolean
     belongs_to :package, Delivery.Packages.Package, foreign_key: :package_id
-    many_to_many :objectives, Delivery.Objectives.Objective, join_through: "activity_objective"
+    many_to_many :objectives, Delivery.Objectives.Objective, join_through: "activity_objectives"
     timestamps()
   end
 
