@@ -14,5 +14,5 @@ F.create<Link>({ src: 'test'})
 const link = F.create<Link>({ src: 'test', tags: ['one', 'two', 'three'] });
 const updated = F.merge<Link>(link, { src: 'updated' });  // Good!
 
-updated.src = "test"
+
 

@@ -12,7 +12,6 @@ defmodule Delivery.Content.Readers.Pressbooks do
 
   @behaviour Reader
 
-
   @spec segment(binary) :: {:ok, %{pages: [any()], toc: any()}} | {:error, String.t()}
   def segment(input) do
     parsed = Floki.parse(input)
@@ -75,21 +74,26 @@ defmodule Delivery.Content.Readers.Pressbooks do
     sections =
       Floki.find(root, "li[class=\"section\"]")
       |> Enum.map(fn item ->
-          case item do
-            {"li", _, [{"a", [{"href", "#" <> id}], _}]} ->
-              %Reference{id: id}
-            _ ->
-              :ignore
-          end
+        case item do
+          {"li", _, [{"a", [{"href", "#" <> id}], _}]} ->
+            %Reference{id: id}
+
+          _ ->
+            :ignore
+        end
       end)
 
     %Organization{nodes: sections}
   end
 
-
-  def page({"div", attributes, children}) do
+  def page({"div", attributes, children} = item) do
     id = get_attr_by_key(attributes, "id", "unknown")
-    title = get_attr_by_key(attributes, "title", "unknown")
+
+    title =
+      case get_attr_by_key(attributes, "title", "unknown") do
+        "unknown" -> Floki.find(item, ".chapter-title") |> Floki.text()
+        title -> title
+      end
 
     content_nodes =
       get_div_by_class(children, "ugc chapter-ugc")
@@ -107,13 +111,13 @@ defmodule Delivery.Content.Readers.Pressbooks do
   end
 
   def clean(%Document{} = doc) do
-
     nodes =
       List.flatten(doc.nodes)
       |> Enum.map(fn n ->
         case n do
           n when is_binary(n) -> %Block{nodes: [%Text{text: n}], type: "paragraph"}
           %{object: "text"} -> %Block{nodes: [n], type: "paragraph"}
+          %{object: "inline"} -> %Block{nodes: [n], type: "paragraph"}
           nil -> %Block{nodes: [%Text{text: ""}], type: "paragraph"}
           n -> n
         end
@@ -155,16 +159,17 @@ defmodule Delivery.Content.Readers.Pressbooks do
 
     nodes = List.flatten(block.nodes)
 
+    nodes = Enum.reduce(nodes, [], fn c, acc ->
+      case check.(c) do
+        item when is_list(item) -> acc ++ item
+        scalar -> acc ++ [scalar]
+      end
+    end)
+
     %Block{
       type: block.type,
       data: block.data,
-      nodes:
-        Enum.reduce(nodes, [], fn c, acc ->
-          case check.(c) do
-            item when is_list(item) -> acc ++ item
-            scalar -> acc ++ [scalar]
-          end
-        end)
+      nodes: nodes
     }
   end
 
@@ -263,6 +268,30 @@ defmodule Delivery.Content.Readers.Pressbooks do
   def handle({"ul", attributes, children}) do
     %Block{
       type: "unordered-list",
+      data: extract_id(attributes),
+      nodes: Enum.map(children, fn c -> handle(c) end)
+    }
+  end
+
+  def handle({"dl", attributes, children}) do
+    %Block{
+      type: "dl",
+      data: extract_id(attributes),
+      nodes: Enum.map(children, fn c -> handle(c) end)
+    }
+  end
+
+  def handle({"dd", attributes, children}) do
+    %Block{
+      type: "dd",
+      data: extract_id(attributes),
+      nodes: Enum.map(children, fn c -> handle(c) end)
+    }
+  end
+
+  def handle({"dt", attributes, children}) do
+    %Block{
+      type: "dt",
       data: extract_id(attributes),
       nodes: Enum.map(children, fn c -> handle(c) end)
     }
@@ -418,9 +447,17 @@ defmodule Delivery.Content.Readers.Pressbooks do
   end
 
   def handle({"a", attributes, children}) do
+
+    data = extract(attributes)
+
+    data = case Map.get(data, "href", "") do
+      "#" <> _ -> Map.put(data, "href", "https://oli.cmu.edu")
+      _ -> data
+    end
+
     %Inline{
       type: "link",
-      data: extract(attributes),
+      data: data,
       nodes: Enum.map(children, fn c -> handle(c) end)
     }
   end
@@ -439,7 +476,7 @@ defmodule Delivery.Content.Readers.Pressbooks do
 
   def handle({"em", _, [text]}) when is_binary(text) do
     %Text{
-      text: text,
+      text: latex(text),
       marks: [%Mark{type: "italic"}]
     }
   end
@@ -451,10 +488,22 @@ defmodule Delivery.Content.Readers.Pressbooks do
   def handle({"em", _, [item]}) when is_tuple(item) do
     inner = handle(item)
 
-    %Text{
-      text: inner.text,
-      marks: [%Mark{type: "italic"}] ++ inner.marks
-    }
+    case inner do
+      "" -> %Text{text: " "}
+      m -> if Map.has_key?(m, :text) do
+        %Text{
+          text: latex(m.text),
+          marks: [%Mark{type: "italic"}] ++ m.marks
+        }
+      else
+        %Text{
+          text: " ",
+          marks: [%Mark{type: "italic"}]
+        }
+      end
+    end
+
+
   end
 
   def handle({"em", _, text}) do
@@ -474,6 +523,13 @@ defmodule Delivery.Content.Readers.Pressbooks do
     %Text{
       text: span(text),
       marks: [%Mark{type: "bold"}]
+    }
+  end
+
+  def handle({"del", _, text}) do
+    %Text{
+      text: span(text),
+      marks: [%Mark{type: "strikethrough"}]
     }
   end
 
@@ -515,13 +571,14 @@ defmodule Delivery.Content.Readers.Pressbooks do
 
   def handle(text) when is_binary(text) do
     %Text{
-      text: text
+      text: latex(text)
     }
   end
 
   def handle(unsupported) do
     IO.puts("Unsupported")
     IO.inspect(unsupported)
+    ""
   end
 
   def span({_, _, children}) when is_list(children) do
@@ -530,7 +587,7 @@ defmodule Delivery.Content.Readers.Pressbooks do
   end
 
   def span({_, _, text}) when is_binary(text) do
-    text
+    latex(text)
   end
 
   def span(list) when is_list(list) do
@@ -539,7 +596,11 @@ defmodule Delivery.Content.Readers.Pressbooks do
   end
 
   def span(text) when is_binary(text) do
-    text
+    latex(text)
+  end
+
+  def latex(text) do
+    String.replace(text, "[latex]", "\\(", global: true) |> String.replace("[/latex]", "\\)", global: true)
   end
 
   def determine_type(input) do

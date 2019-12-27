@@ -20,7 +20,12 @@ defmodule Delivery.Content.PressBooksTest do
   def pressbook_to_workbook(segment) do
     parsed = Pressbooks.page(segment)
     id = Map.get(parsed.data, :id)
+
+
+    IO.puts("page id")
+    IO.puts(id)
     xml = Writer.render(%Context{}, parsed, XML)
+
 
     # File.write!(@out_path <> "/content/x-oli-workbook_page/#{index}.json", Poison.encode!(parsed))
     File.write!(@out_path <> "/content/x-oli-workbook_page/#{id}.xml", xml)
@@ -48,7 +53,7 @@ defmodule Delivery.Content.PressBooksTest do
   end
 
   test "converting all" do
-    input = read_from_file("./test/delivery/content/bio.html")
+    input = read_from_file("./test/delivery/content/college-physics.html")
 
     {:ok, %{pages: pages, toc: toc}} = Pressbooks.segment(input)
     IO.inspect(Enum.at(pages, 0))

@@ -20,7 +20,7 @@ defmodule Delivery.MixProject do
   def application do
     [
       mod: {Delivery.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :crypto]
     ]
   end
 
