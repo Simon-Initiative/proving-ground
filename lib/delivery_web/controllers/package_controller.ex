@@ -17,18 +17,10 @@ defmodule DeliveryWeb.PackageController do
     activities = Activities.list_activities_for(id)
     objectives = Repo.preload(Objectives.list_objectives_for(id), :skills)
 
-    objectives_changesets =
-      Enum.map(
-        objectives,
-        fn o -> {o, Objective.changeset(o)} end
-      )
-
     render(conn, "show.html",
       package: package,
       activities: activities,
-      objectives: objectives,
-      objectives_changesets: objectives_changesets
-      # skills_changesets:
+      objectives: objectives
     )
   end
 

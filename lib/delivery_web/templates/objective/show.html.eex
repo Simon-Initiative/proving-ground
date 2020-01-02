@@ -1,0 +1,19 @@
+      
+<div class="ui container segment">
+  <div class="item">
+    <div class="header" style="font-size: 1.1rem; margin-bottom: 10px">
+      <p>Objective:</p>
+    </div>
+    <div class="description">
+      <div style="display: flex; flex-direction: row; align-items: center">
+        <%= link to: Routes.objective_path(@conn, :delete, @package.id, @objective),
+                method: :delete,
+                data: [confirm: "Are you sure? Deleting this objective will delete all attached skills that are not used by any other objectives."] do %>
+          <i class="close icon"></i>
+        <% end %>
+        <%= render "edit.html", assigns %>
+      </div>
+    </div>
+    <%= render DeliveryWeb.SkillView, "index.html", Map.put(assigns, :skills, @objective.skills) %>
+  </div>
+</div>

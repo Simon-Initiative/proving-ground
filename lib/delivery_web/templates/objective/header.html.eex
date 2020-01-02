@@ -1,0 +1,11 @@
+<div class="active title" style="padding: 0">
+  <div class="ui message raised padded" style="height: 65px">
+    <div class="header" style="display: inline-block; line-height: 35px; width: 100%">
+      <i class="dropdown icon"></i>
+      Learning Objectives
+      <div style="float: right; line-height: 27px;">
+        <%= button("New", to: Routes.objective_path(@conn, :create, @package.id), method: "post", class: "ui button tiny primary") %>
+      </div>
+    </div>
+  </div>
+</div>

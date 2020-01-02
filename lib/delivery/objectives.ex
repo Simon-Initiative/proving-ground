@@ -11,7 +11,7 @@ defmodule Delivery.Objectives do
 
   def list_objectives_for(package_id) do
     query =
-      from o in Objective, where: o.package_id == ^package_id, order_by: [desc: o.inserted_at]
+      from o in Objective, where: o.package_id == ^package_id, order_by: [asc: o.inserted_at]
 
     Repo.all(query)
   end

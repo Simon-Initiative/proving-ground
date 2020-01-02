@@ -1,82 +1,12 @@
-<%# <script>
-  const objs = document.querySelector('.editable-text.objective');
-  objs.forEach(obj => obj.addEventListener('click', function() {
-    obj.outerHTML = <input type="text" name="description" value=""
-  }));
-</script> %>
 <div class="ui accordion objectives">
-  <div class="active title" style="padding: 0">
-    <div class="ui message raised padded" style="height: 65px">
-      <div class="header" style="display: inline-block; line-height: 35px; width: 100%">
-        <i class="dropdown icon"></i>
-        Learning Objectives
-        <div style="float: right; line-height: 27px;">
-          <%= button("New", to: Routes.objective_path(@conn, :create, @package.id), method: "post", class: "ui button tiny primary") %>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="active ui padded container segment content">
-    <%= if length(@objectives) == 0 do %>
-      <div class="list">
-        <div class="item">
-          <div class="description">
-            <p>No objectives</p>
-          </div>
-        </div>
-      </div>
-    <% end %>
-    <%= for {objective, changeset} <- @objectives_changesets do %>
-      <div class="ui container segment">
-        <div class="ui list">
-          <div class="item">
-            <div class="header" style="font-size: 1.1rem; margin-bottom: 10px">
-              <p>Objective:</p>
-            </div>
-            <div class="description">
-              <div style="display: flex; flex-direction: row; align-items: center">
-                <%# <p class="objective editable-text" style="font-size: 1.1rem"> %>
-                <%= link to: Routes.objective_path(@conn, :delete, @package.id, objective),
-                method: :delete,
-                data: [confirm: "Are you sure? Deleting this objective will delete all attached skills that are not used by any other objectives."] do %>
-                  <i class="close icon"></i>
-                <% end %>
-                <%= form_for changeset, Routes.objective_path(@conn, :update, @package.id, objective),
-              [style: "display: flex; flex: 1", class: "ui form"], fn f -> %>
-                <%= text_input f, :description %>
-                <%= submit "Save", class: "ui primary button"%>
-              <% end %>
-            </div>
-          </div>
-          <%# <%= objective.description %>
-          <%# </p> %>
-          <div class="header" style="display: block; margin-top: 1rem; font-size: 1.1rem">
-            <%= if length(objective.skills) == 0 do %>
-              <p>No skills</p>
-            <% end %>
-            <%= if length(objective.skills) != 0 do %>
-              <p>Skills:</p>
-            <% end %>
-          </div>
-          <div class="list" style="display: block">
-            <%= for skill <- objective.skills do %>
-              <div class="item">
-                <div class="description">
-                  <%= link to: Routes.skill_path(@conn, :delete, @package.id, skill, objective: objective), 
-                      method: :delete do %>
-                    <i class="close icon"></i>
-                  <% end %>
-                  <%= skill.description %>
-                </div>
-              </div>
-            <% end %>
-            <p class="item" style="margin-top: 10px">
-              <%= button("Add skill", to: Routes.skill_path(@conn, :create, @package.id, objective: objective.id), class: "ui button tiny primary") %>
-            </p>
-          </div>
-        </div>
+  <%= render "header.html", assigns %>
+  <%= if length(@objectives) == 0 do %>
+    <div>No objectives</div>
+  <% else %>
+    <div class="active ui padded container segment content">
+      <div class="ui list">
+        <%= render_many @objectives, DeliveryWeb.ObjectiveView, "show.html", assigns %>
       </div>
     </div>
   <% end %>
-</div>
 </div>

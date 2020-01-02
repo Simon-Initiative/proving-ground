@@ -1,0 +1,9 @@
+<div class="item">
+  <div class="description" style="display: flex; flex-direction: row; align-items: center">
+    <%= link to: Routes.skill_path(@conn, :delete, @package.id, @skill, objective: @objective), 
+                      method: :delete do %>
+      <i class="close icon"></i>
+    <% end %>
+    <%= render "edit.html", assigns %>
+  </div>
+</div>

@@ -2,7 +2,6 @@ defmodule DeliveryWeb.ObjectiveController do
   use DeliveryWeb, :controller
 
   alias Delivery.Objectives
-  alias Delivery.Objectives.Objective
 
   def create(%Plug.Conn{} = conn, objective_params) do
     package_id = objective_params["package_id"]

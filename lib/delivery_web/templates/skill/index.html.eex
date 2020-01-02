@@ -1,0 +1,9 @@
+<div class="header" style="display: block; margin-top: 1rem; font-size: 1.1rem">
+  <%= if length(@skills) == 0 do "No skills" else "Skills:" end %>
+    <div class="list" style="display: block">
+      <%= render_many @skills, DeliveryWeb.SkillView, "show.html", assigns %>
+      <p class="item" style="margin-top: 10px">
+        <%= button("Add skill", to: Routes.skill_path(@conn, :create, @package.id, objective: @objective.id), class: "ui button tiny primary") %>
+      </p>
+    </div>
+  </div>
