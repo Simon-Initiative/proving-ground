@@ -17,6 +17,7 @@ defmodule Delivery.Objectives.Objective do
   def changeset(%Objective{} = objective, attrs \\ %{}) do
     objective
     |> cast(attrs, [:description, :package_id])
+    |> cast_assoc(:skills)
     |> validate_required([:description, :package_id])
   end
 end
