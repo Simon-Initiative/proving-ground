@@ -1,21 +1,27 @@
-
 <%= form_for @changeset, "#", [class: "ui form attached fluid segment", phx_change: :validate, phx_submit: :save], fn f -> %>
-  
-  <%= input f, :title %>
-
-  <div class="field">
-
+<div class="field">
+  <label for="title">Title</label>
+  <%= text_input f, :title, placeholder: "Introduction to Psychology" %>
+</div>
+<div class="field">
   <label>Course package id</label>
-  <%= text_input f, :friendly, disabled: true %>
-  <small class="form-text text-muted">The user friendly identifier for this package</small>
+  <%= text_input f, :friendly, disabled: true, placeholder: "Auto-generated" %>
+  <small class="form-text text-muted">The user-friendly identifier for this package</small>
   <%= error_tag f, :friendly %>
-  </div>
+</div>
+<div class="field">
+  <label>Version</label>
+  <%= text_input f, :version %>
+  <%= error_tag f, :version %>
+  <small class="form-text text-muted">Only change this if you're an advanced user</small>
+</div>
+<div class="field">
+  <label for="description">Description</label>
+  <%= textarea f, :description, placeholder: "Have you ever wondered how human chess experts keep beating the computer program DeepBlue? Have you ever considered what makes the performances of Yo-yo Ma, Serena Williams, and Kevin Spacey so great? Have you actually tried to become an expert or highly skilled performer in a particular domain and needed help deciding on the best approach?
 
-  <%= input f, :version %>
-  <%= input f, :description %>
-
-  <div>
-    <%= submit "Save", class: "ui primary button", phx_disable_with: "Saving..." %>
-  </div>
-
+In this course, we will address these and many other questions. In particular, we will be reading from the primary literature on expertise and from other relevant sources. We will cover a variety of domains, from chess to sports to visual arts. You will also each learn first-hand what it takes to acquire expertise by practicing a skill of your choice and documenting your progress throughout the semester." %>
+</div>
+<div>
+  <%= submit "Save", class: "ui primary button", phx_disable_with: "Saving..." %>
+</div>
 <% end %>

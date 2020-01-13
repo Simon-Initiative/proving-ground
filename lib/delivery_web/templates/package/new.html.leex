@@ -1,10 +1,14 @@
-<div class="ui attached message">
-  <div class="header">
-    Create package
-  </div>
-  <p>Fill out the form below to create a new course package</p>
+<h2 class="ui header">Create package...</h2>
+<div class="ui teal progress" data-percent="<%= progress(@step, @total_steps) %>" id="progress_bar">
+  <div class="bar" style="width: <%= progress(@step, @total_steps) %>%"></div>
+  <div class="label">Step <%= @step %></div>
 </div>
-
-<%= render "form.html", assigns %>
-      
-<span><%= link "Back", to: Routes.package_path(DeliveryWeb.Endpoint, :index) %></span>
+<%= render "step_#{@step}.html", assigns %>
+<br />
+<span>
+  <%= if parse_step(@step) > 1 do %>
+    <button phx-click="step", phx-value-step="<%= previous_step(@step) %>">Back</span>
+  <% else %>
+    <%= link "Back", to: Routes.package_path(DeliveryWeb.Endpoint, :index) %>
+  <% end %>
+</span>
