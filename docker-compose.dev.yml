@@ -1,0 +1,29 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    container_name: proving_ground_postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+  app:
+    build: .
+    container_name: proving_ground_app
+    ports:
+      - "4000:4000"
+    environment:
+      MODE: development
+      DB_HOST: db
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/assets/node_modules
+
+  # ngrok:
+  #   container_name: proving_ground_ngrok
+
+volumes:
+  postgres_data:
