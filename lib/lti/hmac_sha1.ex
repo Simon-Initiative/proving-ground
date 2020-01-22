@@ -5,29 +5,38 @@ defmodule LTI.HmacSHA1 do
   @spec build_signature(
     String.t,
     String.t,
-    String.t,
     # [key: String.t],  #FIXME: not sure why this keyword list spec doesnt work
     any,
     String.t,
     String.t | nil) :: String.t
   def build_signature(
     req_url,
-    query_params,
     method,
     body_params,
     consumer_secret,
     token \\ ""
   ) do
-    [
+    [url, query_params] = case String.split(req_url, "?") do
+      [url, query_params] -> [
+        (if String.ends_with?(url, "/"), do: url, else: url <> "/"),
+        query_params
+      ]
+      [url] -> [url, ""]
+    end
+
+    str = [
       String.upcase(method),
-      special_encode(req_url),
+      special_encode(url),
       process_params(
         body_params,
         params_str_to_keyword_list(query_params)
       )
     ]
     |> Enum.join("&")
-    |> sign_text(special_encode(consumer_secret), token)
+
+    IO.puts(str)
+
+    sign_text(str, special_encode(consumer_secret), token)
   end
 
   @spec sign_text(String.t, String.t) :: String.t
@@ -39,13 +48,22 @@ defmodule LTI.HmacSHA1 do
   def sign_text(secret_key, text, token) do
     text = "#{text}&#{token}"
 
+    IO.puts("sign_text text: " <> text)
+
     :crypto.hmac(:sha, secret_key, text) |> Base.encode64
   end
 
   defp params_str_to_keyword_list(str) do
     String.split(str, "&")
-    |> Enum.map(fn param_keyval -> Enum.split(param_keyval, "=") end)
-    |> Enum.map(fn [key, val] -> {key, val} end)
+    |> Enum.map(fn param_keyval -> String.split(param_keyval, "=") end)
+    # |> Enum.map(fn [key, val] -> {key, val} end)
+    |> Enum.map(fn el ->
+      case el do
+        [key, val] -> {key, val}
+        _ -> nil
+      end
+    end)
+    |> Enum.filter(fn el -> el != nil end)
   end
 
   defp process_params(body_params, query_params) do
@@ -56,8 +74,8 @@ defmodule LTI.HmacSHA1 do
   end
 
   defp special_encode(str) do
-    # |> URI.encode(" & ", &URI.char_unreserved?(&1))
-    URI.encode(str)
+    # |> URI.encode(str, " & ", &URI.char_unreserved?(&1))
+    URI.encode_www_form(str)
     |> String.replace(~r/[!'()]/, &HTML.javascript_escape(&1))
     |> String.replace(~r/\*/, "%2A")
   end
