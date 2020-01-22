@@ -24,7 +24,7 @@ defmodule LTI.HmacSHA1 do
       [url] -> [url, ""]
     end
 
-    str = [
+    [
       String.upcase(method),
       special_encode(url),
       process_params(
@@ -33,30 +33,24 @@ defmodule LTI.HmacSHA1 do
       )
     ]
     |> Enum.join("&")
-
-    IO.puts(str)
-
-    sign_text(str, special_encode(consumer_secret), token)
+    |> sign_text(special_encode(consumer_secret), token)
   end
 
   @spec sign_text(String.t, String.t) :: String.t
-  def sign_text(secret_key, text) do
-    sign_text(secret_key, text, "")
+  def sign_text(text, secret) do
+    sign_text(text, secret, "")
   end
 
   @spec sign_text(String.t, String.t, String.t) :: String.t
-  def sign_text(secret_key, text, token) do
-    text = "#{text}&#{token}"
-
-    IO.puts("sign_text text: " <> text)
-
-    :crypto.hmac(:sha, secret_key, text) |> Base.encode64
+  def sign_text(text, secret, token) do
+    secret = "#{secret}&#{token}"
+    :crypto.hmac(:sha, secret, text) |> Base.encode64
   end
 
   defp params_str_to_keyword_list(str) do
-    String.split(str, "&")
+    str
+    |> String.split("&")
     |> Enum.map(fn param_keyval -> String.split(param_keyval, "=") end)
-    # |> Enum.map(fn [key, val] -> {key, val} end)
     |> Enum.map(fn el ->
       case el do
         [key, val] -> {key, val}
@@ -74,7 +68,6 @@ defmodule LTI.HmacSHA1 do
   end
 
   defp special_encode(str) do
-    # |> URI.encode(str, " & ", &URI.char_unreserved?(&1))
     URI.encode_www_form(str)
     |> String.replace(~r/[!'()]/, &HTML.javascript_escape(&1))
     |> String.replace(~r/\*/, "%2A")

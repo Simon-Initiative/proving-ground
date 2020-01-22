@@ -6,11 +6,11 @@ defmodule LTI.HmacSHA1Test do
   describe "build_signature" do
 
     test "signs a string using SHA1 without token" do
-      assert HmacSHA1.sign_text("somesecret", "somestring") === "b4I/0mJP8Ge4vMU5kjfx6Lapat8="
+      assert HmacSHA1.sign_text("somestring", "somesecret") === "O3PJtYlosGkEH5lzlA2NMCjPThw="
     end
 
     test "signs a string using SHA1 with token" do
-      assert HmacSHA1.sign_text("somesecret", "somestring", "sometoken") === "JIwdEm5bo8nY4jyPfZhtDibB6RY="
+      assert HmacSHA1.sign_text("somestring", "somesecret", "sometoken") === "VpCox2URGm9K2H2lORhqOvq3e8A="
     end
 
     test "builds the correct signature" do
