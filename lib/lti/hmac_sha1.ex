@@ -5,8 +5,7 @@ defmodule LTI.HmacSHA1 do
   @spec build_signature(
     String.t,
     String.t,
-    # [key: String.t],  #FIXME: not sure why this keyword list spec doesnt work
-    any,
+    [{String.t, String.t}],
     String.t,
     String.t | nil) :: String.t
   def build_signature(
@@ -18,6 +17,7 @@ defmodule LTI.HmacSHA1 do
   ) do
     [url, query_params] = case String.split(req_url, "?") do
       [url, query_params] -> [
+        # ensure the url string always ends with a slash
         (if String.ends_with?(url, "/"), do: url, else: url <> "/"),
         query_params
       ]
@@ -75,7 +75,7 @@ defmodule LTI.HmacSHA1 do
 
   @spec clean_params([key: String.t]) :: [String.t]
   defp clean_params(params) do
-    Enum.filter(params, fn {key, _val} -> key != "oauth_signature" end)
+    Enum.filter(params, fn {key, _val} -> key != :oauth_signature end)
     |> Enum.map(&encode_param/1)
   end
 

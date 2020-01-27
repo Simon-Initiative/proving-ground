@@ -1,6 +1,6 @@
 defmodule LTI.Provider do
 
-  @type lti_message_params :: %{
+  @type lti_message_params :: [
     lti_message_type: String.t, # "basic-lti-launch-request" | "ContentItemSelectionRequest",
     lti_version: String.t,   # version of the specification is being used
     resource_link_id: String.t,   # unique identifier that the TC guarantees will be unique
@@ -45,6 +45,7 @@ defmodule LTI.Provider do
 
     # security params
     oauth_consumer_key: String.t,
+    oauth_signature: String.t,
     oauth_signature_method: String.t,
     oauth_timestamp: String.t,
     oauth_nonce: String.t,
@@ -55,30 +56,37 @@ defmodule LTI.Provider do
     ext_content_intended_use: String.t | nil,      # hint to the provider for how the content will be used
     ext_content_return_url: String.t | nil,        # url that the provider should redirect the user to
     ext_content_file_extensions: String.t | nil,   # comma separated list of the file extensions
-  }
+  ]
 
-  @spec validate_request(String.t, String.t, Plug.Conn.t) :: { :ok } | { :error }
-  def validate_request(consumer_key, shared_secret, conn) do
-    { :ok }
+  @spec validate_request(String.t, String.t, lti_message_params, String.t) :: { :ok } | { :error }
+  def validate_request(host, method, body_params, shared_secret) do
+    if validate_parameters(body_params) && validate_oauth(host, method, body_params, shared_secret) do
+      { :ok }
+    else
+      { :error }
+    end
   end
 
   @spec validate_parameters(lti_message_params) :: boolean
   def validate_parameters(body_params) do
-    case body_params do
-      %{ :lti_message_type => lti_message_type,
-        :lti_version => lti_version,
-        :resource_link_id => resource_link_id } ->
-        # TODO: replace hardcoded supported versions with a configurable variable
-        is_basic_launch = lti_message_type === "basic-lti-launch-request"
-        is_correct_version = Enum.member?(["LTI-1p0"], lti_version)
-        has_resource_link_id = resource_link_id !== nil
+    # TODO: replace hardcoded supported versions with a configurable variable
+    is_basic_launch = Keyword.get(body_params, :lti_message_type) === "basic-lti-launch-request"
+    is_correct_version = Enum.member?(["LTI-1p0"], Keyword.get(body_params, :lti_version))
+    has_resource_link_id = Keyword.get(body_params, :resource_link_id) !== nil
 
-        is_basic_launch && is_correct_version && has_resource_link_id
-      _ -> false
-    end
+    is_basic_launch && is_correct_version && has_resource_link_id
   end
 
-  def validate_oauth(conn, lti_message_params) do
+  @spec validate_oauth(String.t, String.t, lti_message_params, String.t) :: boolean
+  def validate_oauth(url, method, body_params, shared_secret) do
+    req_signature = LTI.HmacSHA1.build_signature(
+      url,
+      method,
+      body_params,
+      shared_secret
+    )
 
+    req_signature == Keyword.get(body_params, :oauth_signature)
   end
+
 end

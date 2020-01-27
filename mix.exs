@@ -33,6 +33,8 @@ defmodule Delivery.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 0.5.0", only: [:dev], runtime: false},
       {:floki, "~> 0.23.0"},
       {:phoenix, "~> 1.4.10"},
       {:phoenix_pubsub, "~> 1.1"},
