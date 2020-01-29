@@ -69,4 +69,45 @@ defmodule LTI.ProviderTest do
       ) === false
     end
   end
+
+  describe "validate_request" do
+    test "successfully validates a valid request" do
+      assert Provider.validate_request(
+        "https://someurl.com/",
+        "POST",
+        [
+          lti_version: "LTI-1p0",
+          resource_link_id: "some_resource_link_id",
+          lti_message_type: "basic-lti-launch-request",
+          oauth_consumer_key: "consumer_key",
+          oauth_nonce: "nonce",
+          oauth_signature_method: "HMAC-SHA1",
+          oauth_timestamp: "0",
+          oauth_version: "1.0",
+          oauth_signature: "8vGuVoSKBBVUL+ZxC8Du7Rtkbqk=",
+          custom_param1: "value1"
+        ],
+        "secret"
+      ) === { :ok }
+    end
+
+    test "fails when request is invalid" do
+      assert Provider.validate_request(
+        "https://someurl.com/",
+        "POST",
+        [
+          lti_version: "LTI-1p0",
+          resource_link_id: "some_resource_link_id",
+          oauth_consumer_key: "consumer_key",
+          oauth_nonce: "nonce",
+          oauth_signature_method: "HMAC-SHA1",
+          oauth_timestamp: "0",
+          oauth_version: "1.0",
+          oauth_signature: "notavalidsignature=",
+          custom_param1: "value1"
+        ],
+        "secret"
+      ) === { :error }
+    end
+  end
 end

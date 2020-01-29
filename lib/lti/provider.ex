@@ -60,6 +60,7 @@ defmodule LTI.Provider do
 
   @spec validate_request(String.t, String.t, lti_message_params, String.t) :: { :ok } | { :error }
   def validate_request(host, method, body_params, shared_secret) do
+    IO.puts("validate_parameters(body_params): " <> validate_parameters(body_params))
     if validate_parameters(body_params) && validate_oauth(host, method, body_params, shared_secret) do
       { :ok }
     else
