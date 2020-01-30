@@ -1,10 +1,23 @@
 <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/components.js") %>"></script>
 
+<script>
+// initialize the global redux store for the specified state trees
+store.configureStore({
+  // counter state must be of type CounterStateParams
+  counter: {
+    count: 5,
+    animals: Maybe.just(
+      Immutable.List(['duck', 'duck', 'goose'])
+    ),
+  },
+});
+</script>
+
 <h1>React Discrete Components Example</h1>
 
 <div id="countDisplay"></div>
 <script type="text/javascript">
-  component.mount('CountDisplay', document.getElementById('countDisplay'));
+  component.mount('CountDisplay', document.getElementById('countDisplay'), { name: 'Neil Armstrong' });
 </script>
 
 <p style="margin-top: 20px">Here's a server-side rendered image</p>

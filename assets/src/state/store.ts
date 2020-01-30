@@ -2,9 +2,9 @@ import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
-import rootReducer, { State } from 'state';
+import rootReducer, { State, initState } from 'state';
 
-export function configureStore(initialState?: State) {
+export function configureStore(initialState?) {
   const logger = createLogger({
     stateTransformer: state => {
       const newState = {};
@@ -28,9 +28,7 @@ export function configureStore(initialState?: State) {
     middleware = composeWithDevTools(applyMiddleware(thunk));
   }
 
-  const store = initialState
-    ? createStore(rootReducer, initialState, middleware)
-    : createStore(rootReducer, middleware);
+  const store = createStore(rootReducer, initState(initialState), middleware);
 
   if ((module as any).hot) {
     (module as any).hot.accept('./index', () => {

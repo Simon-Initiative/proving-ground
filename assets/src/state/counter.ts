@@ -1,4 +1,5 @@
-import { Record } from 'immutable';
+import { Record, List } from 'immutable';
+import { Maybe } from 'tsmonad';
 import { OtherAction } from 'state/other';
 import { Dispatch, Action } from 'redux';
 import { State } from 'state';
@@ -52,14 +53,17 @@ export type ActionTypes
 
 interface CounterStateParams {
   count: number;
+  animals: Maybe<List<string>>;
 }
 
 const defaults = (params: Partial<CounterStateParams> = {}): CounterStateParams => ({
   count: valueOr(params.count, 0),
+  animals: valueOr(params.animals, Maybe.nothing()),
 });
 
 export class CounterState extends Record(defaults()) implements CounterStateParams {
   count: number;
+  animals: Maybe<List<string>>;
 
   constructor(params?: Partial<CounterStateParams>) {
     super(defaults(params));

@@ -18,10 +18,10 @@ const CounterButtons = ({
   className, count, onUpdateCount, onClearCount,
 }: CounterButtonsProps) => {
   return (
-    <div className={classNames(['CounterButtons ', className])}>
-      <button onClick={() => onUpdateCount(count + 1)}>+1</button>
-      <button onClick={() => onUpdateCount(count - 1)}>-1</button>
-      <button onClick={() => onClearCount()}>Clear</button>
+    <div className={classNames(['CounterButtons', className])}>
+      <button className="ui secondary basic button"onClick={() => onUpdateCount(count + 1)}>+1</button>
+      <button className="ui secondary basic button"onClick={() => onUpdateCount(count - 1)}>-1</button>
+      <button className="ui secondary basic button" onClick={() => onClearCount()}>Clear</button>
     </div>
   );
 };
