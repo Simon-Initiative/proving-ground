@@ -447,9 +447,17 @@ defmodule Delivery.Content.Readers.Pressbooks do
   end
 
   def handle({"a", attributes, children}) do
+
+    data = extract(attributes)
+
+    data = case Map.get(data, "href", "") do
+      "#" <> _ -> Map.put(data, "href", "https://oli.cmu.edu")
+      _ -> data
+    end
+
     %Inline{
       type: "link",
-      data: extract(attributes),
+      data: data,
       nodes: Enum.map(children, fn c -> handle(c) end)
     }
   end

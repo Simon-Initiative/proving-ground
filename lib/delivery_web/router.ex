@@ -55,6 +55,9 @@ defmodule DeliveryWeb.Router do
     post "/login", LoginController, :login
     get "/users/new", UserController, :new
     post "/users", UserController, :create
+
+    get "/discrete_components", DiscreteComponentsController, :index
+
   end
 
   scope "/", DeliveryWeb do

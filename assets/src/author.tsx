@@ -11,7 +11,6 @@ import { Maybe } from 'tsmonad';
 import guid from 'utils/guid';
 import $ from 'jquery';
 
-
 interface MainProps {
   packageId: string;
   id: string;
