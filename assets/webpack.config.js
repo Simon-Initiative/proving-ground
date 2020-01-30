@@ -16,7 +16,7 @@ module.exports = (env, options) => ({
   entry: {
     app: ['./js/app.js'],
     author: ['whatwg-fetch', './src/author.tsx'],
-    registry: ['whatwg-fetch', './src/registry.tsx']
+    components: ['whatwg-fetch', './src/components.tsx']
   },
   output: {
     filename: '[name].js',

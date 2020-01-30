@@ -15,18 +15,16 @@ export type ComponentName = keyof typeof registry;
 
 const store = configureStore();
 
-(window as any).mountComponent = (id: string, componentName: ComponentName, props: any = {}) => {
+(window as any).component = {
+  mount: (componentName: ComponentName, element: HTMLElement, props: any = {}) => {
     maybe(registry[componentName]).lift((Component) => {
-      // ReactDOM.render(
-      //   React.createElement(component),
-      //   document.getElementById(id),
-      // );
-
       ReactDOM.render(
         <Provider store={store}>
           <Component {...props} />
         </Provider>,
-        document.getElementById(id),
+        element,
       );
     });
+  },
 };
+
