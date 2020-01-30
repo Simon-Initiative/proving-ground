@@ -2,3 +2,18 @@
 
 @import "./phoenix.css";
 
+.CountDisplay {
+    border: 1px solid transparent;
+}
+
+.CountDisplay:hover {
+    border-color: #1abc9c;
+}
+
+.CounterButtons {
+    border: 1px solid transparent;
+}
+
+.CounterButtons:hover {
+    border-color: #9b59b6;
+}

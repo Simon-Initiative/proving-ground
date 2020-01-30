@@ -1,0 +1,18 @@
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/registry.js") %>"></script>
+
+<h1>React Discrete Components Example</h1>
+
+<div id="countDisplay"></div>
+<script type="text/javascript">
+  mountComponent('countDisplay', 'CountDisplay');
+</script>
+
+<p style="margin-top: 20px">Here's a server-side rendered image</p>
+
+<img src="https://cdn.vox-cdn.com/thumbor/lzvDwsteIBkXN4AyTCH41qn3sVE=/1600x0/filters:no_upscale()/cdn.vox-cdn.com/uploads/chorus_asset/file/8689079/tenor.gif" />
+
+<p>Use these buttons to change the discrete React CounterDisplay component above ^ </p>
+<div id="counterButtons"></div>
+<script type="text/javascript">
+  mountComponent('counterButtons', 'CounterButtons');
+</script>
