@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const path = require('path');
 const glob = require('glob');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -13,26 +14,22 @@ module.exports = (env, options) => ({
     ]
   },
   entry: {
-    app: ['./js/app.js'],
-    author: ['whatwg-fetch', './src/author.tsx']
+    app: ['babel-polyfill', './js/app.js'],
+    author: ['whatwg-fetch', './src/author.tsx'],
+    components: ['whatwg-fetch', './src/components.tsx']
   },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, '../priv/static/js')
   },
   resolve: {
-    
-    extensions: ['.ts', '.tsx', '.js', '.jss'],
+    extensions: ['.ts', '.tsx', '.js'],
     // Add webpack aliases for top level imports
     alias: {
-        actions: path.resolve(__dirname, 'src/actions'),
         components: path.resolve(__dirname, 'src/components'),
         data: path.resolve(__dirname, 'src/data'),
-        editors: path.resolve(__dirname, 'src/editors'),
-        reducers: path.resolve(__dirname, 'src/reducers'),
-        styles: path.resolve(__dirname, 'src/styles'),
-        stylesheets: path.resolve(__dirname, 'src/stylesheets'),
-        types: path.resolve(__dirname, 'src/types'),
+        editor: path.resolve(__dirname, 'src/editor'),
+        state: path.resolve(__dirname, 'src/state'),
         utils: path.resolve(__dirname, 'src/utils'),
     },
   },
@@ -68,7 +65,10 @@ module.exports = (env, options) => ({
     ]
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      React: 'react',
+    }),
     new MiniCssExtractPlugin({ filename: '../css/app.css' }),
-    new CopyWebpackPlugin([{ from: 'static/', to: '../' }])
+    new CopyWebpackPlugin([{ from: 'static/', to: '../' }]),
   ]
 });
