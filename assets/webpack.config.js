@@ -14,7 +14,7 @@ module.exports = (env, options) => ({
     ]
   },
   entry: {
-    app: ['./js/app.js'],
+    app: ['babel-polyfill', './js/app.js'],
     author: ['whatwg-fetch', './src/author.tsx'],
     components: ['whatwg-fetch', './src/components.tsx']
   },

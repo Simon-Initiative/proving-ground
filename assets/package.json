@@ -17,6 +17,7 @@
     "@types/slate": "^0.47.1",
     "@types/slate-react": "^0.22.5",
     "autoprefixer": "^9.6.1",
+    "babel-polyfill": "^6.26.0",
     "file-loader": "^4.2.0",
     "image-extensions": "^1.1.0",
     "immutable": "^4.0.0-rc.12",

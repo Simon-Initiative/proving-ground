@@ -23,7 +23,7 @@ const CountDisplay = ({ className, count, name, animals }: CountDisplayProps) =>
         {animals.caseOf({
           just: animals => animals.join(', '),
           nothing: () => 'No Animals',
-        )}
+        })}
       </div>
     </div>
   );

@@ -16,19 +16,15 @@ export type UpdateCountAction = {
   count: number,
 };
 
-// export const updateCount = (count: number) =>
-//   async (dispatch: Dispatch<Action>, getState: () => State) => {
-//     // dispatch any async actions such as AJAX calls, etc...
+export const updateCount = (count: number) =>
+  async (dispatch: Dispatch<Action>, getState: () => State) => {
+    // dispatch any async actions such as AJAX calls, etc...
 
-//     dispatch({
-//       type: UPDATE_COUNT,
-//       count,
-//     });
-//   };
-export const updateCount = (count: number): UpdateCountAction => ({
-  type: UPDATE_COUNT,
-  count,
-});
+    dispatch({
+      type: UPDATE_COUNT,
+      count,
+    });
+  };
 
 // clear count
 export type CLEAR_COUNT = 'count/CLEAR_COUNT';

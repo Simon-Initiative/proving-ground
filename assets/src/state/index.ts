@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux';
 import { counter, CounterState } from 'state/counter';
-import { valueOr } from 'utils/common';
 
 export interface State {
   counter: CounterState;
