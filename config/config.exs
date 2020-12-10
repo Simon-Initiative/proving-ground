@@ -28,6 +28,30 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :git_ops,
+  mix_project: Mix.Project.get!(),
+  changelog_file: "CHANGELOG.md",
+  repository_url: "https://github.com/Simon-Initiative/proving-ground",
+  types: [
+    # Makes an allowed commit type called `tidbit` that is not
+    # shown in the changelog
+    tidbit: [
+      hidden?: true
+    ],
+    # Makes an allowed commit type called `important` that gets
+    # a section in the changelog with the header "Important Changes"
+    important: [
+      header: "Important Changes"
+    ]
+  ],
+  # Instructs the tool to manage your mix version in your `mix.exs` file
+  # See below for more information
+  manage_mix_version?: false,
+  # Instructs the tool to manage the version in your README.md
+  # Pass in `true` to use `"README.md"` or a string to customize
+  manage_readme_version: "README.md",
+  version_tag_prefix: "v"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

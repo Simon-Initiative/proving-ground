@@ -38,6 +38,7 @@ defmodule Delivery.MixProject do
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.1"},
+      {:git_ops, "~> 2.1.0", only: [:dev]},
       {:postgrex, ">= 0.0.0"},
       {:poison, "~> 3.1"},
       {:httpoison, "~> 1.6"},
