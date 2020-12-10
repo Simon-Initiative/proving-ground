@@ -1,5 +1,6 @@
 # Proving Ground
 
+
 Testbed for proving out future Simon/OLI technologies.
 
 ## Dependencies
@@ -38,4 +39,3 @@ $ mix run priv/repo/seeds.exs
 $ mix phx.server
 ```
 7. Access the app at `localhost:4000`
-
